@@ -34,7 +34,7 @@ using namespace Sapphire;
 // garbage to ignore models
 bool noObj = false;
 
-std::string gamePath( "C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
+std::string gamePath( "C:\\Program Files\\Square Enix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
 std::unordered_map< uint16_t, std::string > zoneNameMap;
 std::map< std::string, std::string > exportedTeriMap;
 

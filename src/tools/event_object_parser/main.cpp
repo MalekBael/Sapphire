@@ -39,7 +39,7 @@ namespace fs = std::filesystem;
 bool ignoreModels = false;
 //std::string gamePath( "/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY XIV Online/game/sqpack" );
 //std::string gamePath( "C:\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
-std::string gamePath( "F:\\client3.0\\game\\sqpack" );
+std::string gamePath( "C:\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
 std::unordered_map< uint32_t, std::string > eobjNameMap;
 
 struct instanceContent

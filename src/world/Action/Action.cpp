@@ -45,6 +45,7 @@ using namespace Sapphire::World;
 using namespace Sapphire::World::Manager;
 
 
+
 Action::Action::Action( Entity::CharaPtr caster, uint32_t actionId, uint16_t requestId ) :
   Action( std::move( caster ), actionId, requestId, nullptr )
 {
@@ -506,21 +507,17 @@ void Action::Action::buildActionResults()
 
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   auto hasLutEntry = hasValidLutEntry();
-  auto hasScript = scriptMgr.onExecute( *this );
 
-  if( !hasScript && !hasLutEntry )
+  if( !scriptMgr.onExecute( *this ) && !hasLutEntry )
   {
     if( auto player = m_pSource->getAsPlayer() )
       Manager::PlayerMgr::sendUrgent( *player, "missing lut entry for action#{}", getId() );
     return;
   }
 
-  if( !hasScript )
-    m_enableGenericHandler = true;
-
   Network::Util::Packet::sendHudParam( *m_pSource );
 
-  if( !m_enableGenericHandler || !hasLutEntry || m_hitActors.empty() )
+  if( !hasLutEntry || m_hitActors.empty() )
   {
     // send any effect packet added by script or an empty one just to play animation for other players
     m_actionResultBuilder->sendActionResults( {} );

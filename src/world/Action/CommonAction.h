@@ -12,7 +12,10 @@ namespace Sapphire::World::Action
     Maim = 37,
     StormsPath = 42,
     StormsEye = 45,
-    ButchersBlock = 47
+    ButchersBlock = 47,
+    // ARC
+    HeavyShot = 97,
+    StraightShot = 98
   };
 
   enum ActionStatus
@@ -25,6 +28,8 @@ namespace Sapphire::World::Action
     WrathIV = 96,
     Infuriated = 97,
     InnerBeast = 411,
-    Deliverance = 729
+    Deliverance = 729,
+    // ARC
+    StraighterShot = 122
   };
 }

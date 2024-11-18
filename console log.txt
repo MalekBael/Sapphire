@@ -1,0 +1,229 @@
+[20:02:01.170] [debug] Unloaded module
+[20:02:01.349] [debug] Loaded module: script_action.dll
+[20:02:09.107] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:09.107] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:200002 p4:0 )
+[20:02:09.107] [debug] [2097154] Unhandled Command: 0004
+[20:02:11.286] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:11.286] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:E0000000 p4:0 )
+[20:02:11.286] [debug] [2097154] Unhandled Command: 0004
+[20:02:15.330] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[20:02:15.335] [debug] EffectBuilder result:
+[20:02:15.335] [debug] Targets afflicted: 0
+[20:02:15.335] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:15.649] [info] [TaskMgr] ActionIntegrityTask: ResultId#92, TargetId#2097154, ElapsedTimeMs: 300
+[20:02:33.732] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:33.732] [debug]           TARGET_DECIDE | 3 ( p1:500D010C p11:500D010C p12:0 p2:0 p3:0 p4:0 )
+[20:02:34.666] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:34.666] [debug]           DRAWN_SWORD | 1 ( p1:100000001 p11:1 p12:1 p2:0 p3:0 p4:0 )
+[20:02:34.666] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:34.666] [debug]           DRAWN_SWORD | 2 ( p1:500D010C00000001 p11:1 p12:500D010C p2:0 p3:0 p4:0 )
+[20:02:34.666] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
+[ActionHeavyShot] Hit Characters Count: 16
+ - Chara ID: 1343029401, ObjKind: 2
+ - Chara ID: 1343029515, ObjKind: 2
+ - Chara ID: 1343029514, ObjKind: 2
+ - Chara ID: 1343029516, ObjKind: 2
+ - Chara ID: 1343029523, ObjKind: 2
+ - Chara ID: 1343029522, ObjKind: 2
+ - Chara ID: 1343029520, ObjKind: 2
+ - Chara ID: 1343029757, ObjKind: 2
+ - Chara ID: 1343029756, ObjKind: 2
+ - Chara ID: 1343029792, ObjKind: 2
+ - Chara ID: 1343029798, ObjKind: 2
+ - Chara ID: 1343029799, ObjKind: 2
+ - Chara ID: 1343029858, ObjKind: 2
+ - Chara ID: 1343029900, ObjKind: 2
+ - Chara ID: 1343029898, ObjKind: 2
+ - Chara ID: 1343029899, ObjKind: 2
+[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
+[ActionHeavyShot] Calculated Damage - Physical: 13
+[ActionHeavyShot] Applying physical damage to target ID: 1343029401
+[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
+[ActionHeavyShot] Damage successfully applied to BNpc.
+[20:02:34.678] [debug] EffectBuilder result:
+[20:02:34.678] [debug] Targets afflicted: 0
+[20:02:34.678] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:34.985] [info] [TaskMgr] ActionIntegrityTask: ResultId#93, TargetId#1343029401, ElapsedTimeMs: 300
+[20:02:37.780] [debug] EffectBuilder result:
+[20:02:37.780] [debug] Targets afflicted: 1
+[20:02:37.780] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:38.082] [info] [TaskMgr] ActionIntegrityTask: ResultId#94, TargetId#1343029516, ElapsedTimeMs: 300
+[20:02:38.090] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
+[ActionHeavyShot] Hit Characters Count: 16
+ - Chara ID: 1343029401, ObjKind: 2
+ - Chara ID: 1343029515, ObjKind: 2
+ - Chara ID: 1343029514, ObjKind: 2
+ - Chara ID: 1343029516, ObjKind: 2
+ - Chara ID: 1343029523, ObjKind: 2
+ - Chara ID: 1343029522, ObjKind: 2
+ - Chara ID: 1343029520, ObjKind: 2
+ - Chara ID: 1343029757, ObjKind: 2
+ - Chara ID: 1343029756, ObjKind: 2
+ - Chara ID: 1343029792, ObjKind: 2
+ - Chara ID: 1343029798, ObjKind: 2
+ - Chara ID: 1343029799, ObjKind: 2
+ - Chara ID: 1343029858, ObjKind: 2
+ - Chara ID: 1343029900, ObjKind: 2
+ - Chara ID: 1343029898, ObjKind: 2
+ - Chara ID: 1343029899, ObjKind: 2
+[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
+[ActionHeavyShot] Calculated Damage - Physical: 13
+[ActionHeavyShot] Applying physical damage to target ID: 1343029401
+[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
+[ActionHeavyShot] Damage successfully applied to BNpc.
+[20:02:38.102] [debug] EffectBuilder result:
+[20:02:38.102] [debug] Targets afflicted: 0
+[20:02:38.102] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:38.409] [info] [TaskMgr] ActionIntegrityTask: ResultId#95, TargetId#1343029401, ElapsedTimeMs: 300
+[20:02:40.579] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
+[ActionHeavyShot] Hit Characters Count: 16
+ - Chara ID: 1343029401, ObjKind: 2
+ - Chara ID: 1343029515, ObjKind: 2
+ - Chara ID: 1343029514, ObjKind: 2
+ - Chara ID: 1343029516, ObjKind: 2
+ - Chara ID: 1343029523, ObjKind: 2
+ - Chara ID: 1343029522, ObjKind: 2
+ - Chara ID: 1343029520, ObjKind: 2
+ - Chara ID: 1343029757, ObjKind: 2
+ - Chara ID: 1343029756, ObjKind: 2
+ - Chara ID: 1343029792, ObjKind: 2
+ - Chara ID: 1343029798, ObjKind: 2
+ - Chara ID: 1343029799, ObjKind: 2
+ - Chara ID: 1343029858, ObjKind: 2
+ - Chara ID: 1343029900, ObjKind: 2
+ - Chara ID: 1343029898, ObjKind: 2
+ - Chara ID: 1343029899, ObjKind: 2
+[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
+[ActionHeavyShot] Calculated Damage - Physical: 12
+[ActionHeavyShot] Applying physical damage to target ID: 1343029401
+[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 12
+[ActionHeavyShot] Damage successfully applied to BNpc.
+[20:02:40.591] [debug] EffectBuilder result:
+[20:02:40.591] [debug] Targets afflicted: 0
+[20:02:40.591] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:40.898] [info] [TaskMgr] ActionIntegrityTask: ResultId#96, TargetId#1343029401, ElapsedTimeMs: 300
+[20:02:43.072] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[20:02:43.075] [debug] EffectBuilder result:
+[20:02:43.075] [debug] Targets afflicted: 1
+[20:02:43.075] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:43.375] [info] [TaskMgr] ActionIntegrityTask: ResultId#97, TargetId#1343029516, ElapsedTimeMs: 300
+[20:02:45.566] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[20:02:45.568] [debug] EffectBuilder result:
+[20:02:45.568] [debug] Targets afflicted: 1
+[20:02:45.568] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:45.871] [info] [TaskMgr] ActionIntegrityTask: ResultId#98, TargetId#1343029516, ElapsedTimeMs: 300
+[20:02:48.063] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[20:02:48.067] [debug] EffectBuilder result:
+[20:02:48.067] [debug] Targets afflicted: 1
+[20:02:48.067] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:48.368] [info] [TaskMgr] ActionIntegrityTask: ResultId#99, TargetId#1343029516, ElapsedTimeMs: 300
+[20:02:50.561] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[20:02:50.564] [debug] EffectBuilder result:
+[20:02:50.564] [debug] Targets afflicted: 1
+[20:02:50.564] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:50.864] [info] [TaskMgr] ActionIntegrityTask: ResultId#100, TargetId#1343029516, ElapsedTimeMs: 300
+[20:02:53.056] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[20:02:53.059] [debug] EffectBuilder result:
+[20:02:53.059] [debug] Targets afflicted: 1
+[20:02:53.059] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:53.359] [info] [TaskMgr] ActionIntegrityTask: ResultId#101, TargetId#1343029516, ElapsedTimeMs: 300
+[20:02:55.546] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:55.546] [debug]           DRAWN_SWORD | 2 ( p1:E000000000000000 p11:0 p12:E0000000 p2:1 p3:0 p4:0 )
+[20:02:55.546] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:55.546] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
+[20:02:57.101] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:57.101] [debug]           TARGET_DECIDE | 3 ( p1:500D010C p11:500D010C p12:0 p2:0 p3:0 p4:0 )
+[20:02:58.657] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:58.657] [debug]           DRAWN_SWORD | 1 ( p1:100000000 p11:0 p12:1 p2:0 p3:0 p4:0 )
+[20:02:58.657] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:58.657] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
+[20:02:58.968] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:58.968] [debug]           TARGET_DECIDE | 3 ( p1:500D010C p11:500D010C p12:0 p2:0 p3:0 p4:0 )
+[20:02:59.279] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:59.279] [debug]           DRAWN_SWORD | 1 ( p1:100000001 p11:1 p12:1 p2:0 p3:0 p4:0 )
+[20:02:59.279] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:02:59.279] [debug]           DRAWN_SWORD | 2 ( p1:500D010C00000001 p11:1 p12:500D010C p2:0 p3:0 p4:0 )
+[20:02:59.279] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
+[ActionHeavyShot] Hit Characters Count: 13
+ - Chara ID: 1343029401, ObjKind: 2
+ - Chara ID: 1343029515, ObjKind: 2
+ - Chara ID: 1343029514, ObjKind: 2
+ - Chara ID: 1343029516, ObjKind: 2
+ - Chara ID: 1343029523, ObjKind: 2
+ - Chara ID: 1343029522, ObjKind: 2
+ - Chara ID: 1343029520, ObjKind: 2
+ - Chara ID: 1343029756, ObjKind: 2
+ - Chara ID: 1343029792, ObjKind: 2
+ - Chara ID: 1343029858, ObjKind: 2
+ - Chara ID: 1343029900, ObjKind: 2
+ - Chara ID: 1343029898, ObjKind: 2
+ - Chara ID: 1343029899, ObjKind: 2
+[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
+[ActionHeavyShot] Calculated Damage - Physical: 12
+[ActionHeavyShot] Applying physical damage to target ID: 1343029401
+[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 12
+[ActionHeavyShot] Damage successfully applied to BNpc.
+[20:02:59.289] [debug] EffectBuilder result:
+[20:02:59.289] [debug] Targets afflicted: 0
+[20:02:59.289] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:02:59.603] [info] [TaskMgr] ActionIntegrityTask: ResultId#102, TargetId#1343029401, ElapsedTimeMs: 300
+[20:03:01.457] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
+[ActionHeavyShot] Hit Characters Count: 13
+ - Chara ID: 1343029401, ObjKind: 2
+ - Chara ID: 1343029515, ObjKind: 2
+ - Chara ID: 1343029514, ObjKind: 2
+ - Chara ID: 1343029516, ObjKind: 2
+ - Chara ID: 1343029523, ObjKind: 2
+ - Chara ID: 1343029522, ObjKind: 2
+ - Chara ID: 1343029520, ObjKind: 2
+ - Chara ID: 1343029756, ObjKind: 2
+ - Chara ID: 1343029792, ObjKind: 2
+ - Chara ID: 1343029858, ObjKind: 2
+ - Chara ID: 1343029900, ObjKind: 2
+ - Chara ID: 1343029898, ObjKind: 2
+ - Chara ID: 1343029899, ObjKind: 2
+[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
+[ActionHeavyShot] Calculated Damage - Physical: 13
+[ActionHeavyShot] Applying physical damage to target ID: 1343029401
+[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
+[ActionHeavyShot] Damage successfully applied to BNpc.
+[20:03:01.468] [debug] EffectBuilder result:
+[20:03:01.468] [debug] Targets afflicted: 0
+[20:03:01.468] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:03:01.778] [info] [TaskMgr] ActionIntegrityTask: ResultId#103, TargetId#1343029401, ElapsedTimeMs: 300
+[20:03:04.256] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
+[ActionHeavyShot] Hit Characters Count: 13
+ - Chara ID: 1343029401, ObjKind: 2
+ - Chara ID: 1343029515, ObjKind: 2
+ - Chara ID: 1343029514, ObjKind: 2
+ - Chara ID: 1343029516, ObjKind: 2
+ - Chara ID: 1343029523, ObjKind: 2
+ - Chara ID: 1343029522, ObjKind: 2
+ - Chara ID: 1343029520, ObjKind: 2
+ - Chara ID: 1343029756, ObjKind: 2
+ - Chara ID: 1343029792, ObjKind: 2
+ - Chara ID: 1343029858, ObjKind: 2
+ - Chara ID: 1343029900, ObjKind: 2
+ - Chara ID: 1343029898, ObjKind: 2
+ - Chara ID: 1343029899, ObjKind: 2
+[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
+[ActionHeavyShot] Calculated Damage - Physical: 13
+[ActionHeavyShot] Applying physical damage to target ID: 1343029401
+[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
+[ActionHeavyShot] Damage successfully applied to BNpc.
+[20:03:04.266] [debug] EffectBuilder result:
+[20:03:04.266] [debug] Targets afflicted: 0
+[20:03:04.266] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[20:03:04.577] [info] [TaskMgr] ActionIntegrityTask: ResultId#104, TargetId#1343029401, ElapsedTimeMs: 300
+[20:03:06.129] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:03:06.129] [debug]           DRAWN_SWORD | 2 ( p1:E000000000000000 p11:0 p12:E0000000 p2:1 p3:0 p4:0 )
+[20:03:06.129] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:03:06.129] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
+[20:03:08.936] [debug] [2097154] Zone IPC : Command ( 0191 )
+[20:03:08.936] [debug]           DRAWN_SWORD | 1 ( p1:100000000 p11:0 p12:1 p2:0 p3:0 p4:0 )
