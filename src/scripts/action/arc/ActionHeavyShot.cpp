@@ -9,6 +9,8 @@
 #include <vector>
 #include <Actor/Chara.h>
 
+#include <random>
+
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 using namespace Sapphire::Entity;
@@ -35,11 +37,14 @@ public:
     auto dmg = action.calcDamage( Potency );
     action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
 
-    {
-      uint32_t duration = 10000;
+    std::random_device rd;
+    std::mt19937 gen( rd() );
+    std::uniform_int_distribution<> distr( 1, 100 );
 
+    if( distr( gen ) <= 20 )
+    {
       pSource->replaceSingleStatusEffectById( StraighterShot );
-      action.getActionResultBuilder()->applyStatusEffectSelf( StraighterShot, duration, 0 );
+      action.getActionResultBuilder()->applyStatusEffectSelf( StraighterShot, 15000, 0, { StatusModifier{ Common::ParamModifier::CriticalHitPercent, +100 } } );
     }
   }
 };

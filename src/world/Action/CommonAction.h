@@ -15,7 +15,8 @@ namespace Sapphire::World::Action
     ButchersBlock = 47,
     // ARC
     HeavyShot = 97,
-    StraightShot = 98
+    StraightShot = 98,
+    VenomousBite = 100,
   };
 
   enum ActionStatus
@@ -30,6 +31,7 @@ namespace Sapphire::World::Action
     InnerBeast = 411,
     Deliverance = 729,
     // ARC
-    StraighterShot = 122
+    StraighterShot = 122,
+    Venomous_Bite = 124,
   };
 }
