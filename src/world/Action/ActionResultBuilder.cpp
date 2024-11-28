@@ -125,15 +125,15 @@ void ActionResultBuilder::mount( Entity::CharaPtr& target, uint16_t mountId )
 
 void ActionResultBuilder::sendActionResults( const std::vector< Entity::CharaPtr >& targetList )
 {
-  Logger::debug( "EffectBuilder result: " );
-  Logger::debug( "Targets afflicted: {}", targetList.size() );
+  Logger::debug( "sendActionResults called. Targets afflicted: {}", targetList.size() );
 
-  do // we want to send at least one packet even nothing is hit so other players can see
+  do
   {
     auto packet = createActionResultPacket( targetList );
     server().queueForPlayers( m_sourceChara->getInRangePlayerIds( true ), packet );
-  }
-  while( !m_actorResultsMap.empty() );
+    Logger::debug( "Packet sent for action ID {}", m_actionId );
+    m_actorResultsMap.clear();
+  } while( !m_actorResultsMap.empty() );
 }
 
 std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket( const std::vector< Entity::CharaPtr >& targetList )

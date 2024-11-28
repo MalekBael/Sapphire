@@ -41,15 +41,7 @@ public:
     pTarget->replaceSingleStatusEffectById( 124 );// Assuming 124 is Venomous Bite ID
 
     // Apply Venomous Bite status effect to the target
-    action.getActionResultBuilder()->applyStatusEffect(
-            pTarget,                              // Target to apply the status effect
-            124,                                  // Status Effect ID for Venomous Bite
-            30000,                                // Duration in milliseconds (30 seconds)
-            0,                                    // Flags (adjust as needed)
-            {
-                                                  // Status Modifiers
-            StatusModifier{ Common::ParamModifier::PoisonResistance, -100 }// Example modifier
-            } );
+    action.getActionResultBuilder()->applyStatusEffect( pTarget, 124, 45000, 0 );
 
     // Optional: Log the application for debugging
     spdlog::info( "Venomous Bite applied to enemy {}", pTarget->getId() );

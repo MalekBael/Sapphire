@@ -1,3 +1,5 @@
+//code credit to Kooper @ Sapphire Discord
+
 #include <Action/Action.h>
 #include <Action/CommonAction.h>
 #include <Script/NativeScriptApi.h>
@@ -43,8 +45,10 @@ public:
 
     if( distr( gen ) <= 20 )
     {
+      uint32_t duration = 10000;
+
       pSource->replaceSingleStatusEffectById( StraighterShot );
-      action.getActionResultBuilder()->applyStatusEffectSelf( StraighterShot, 15000, 0, { StatusModifier{ Common::ParamModifier::CriticalHitPercent, +100 } } );
+      action.getActionResultBuilder()->applyStatusEffectSelf( StraighterShot, duration, 0 );
     }
   }
 };

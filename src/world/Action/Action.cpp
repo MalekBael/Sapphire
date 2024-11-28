@@ -2,35 +2,38 @@
 
 #include <Inventory/Item.h>
 
+#include "Script/ScriptMgr.h"
 #include <Exd/ExdData.h>
 #include <Util/Util.h>
 #include <Util/UtilMath.h>
-#include "Script/ScriptMgr.h"
 
 #include <Math/CalcStats.h>
 
-#include "Actor/Player.h"
 #include "Actor/BNpc.h"
+#include "Actor/Player.h"
 
 #include "Territory/Territory.h"
 
-#include "Manager/PlayerMgr.h"
 #include "Manager/MgrUtil.h"
+#include "Manager/PlayerMgr.h"
 #include "Manager/TerritoryMgr.h"
 
-#include "Session.h"
 #include "Network/GameConnection.h"
-#include <Network/CommonActorControl.h>
 #include "Network/PacketWrappers/ActorControlPacket.h"
 #include "Network/PacketWrappers/ActorControlSelfPacket.h"
 #include "Network/PacketWrappers/ActorControlTargetPacket.h"
 #include "Network/Util/PacketUtil.h"
+#include "Session.h"
+#include <Network/CommonActorControl.h>
 
 #include <Logging/Logger.h>
 
-#include <Util/ActorFilter.h>
-#include <Service.h>
 #include "WorldServer.h"
+#include <Service.h>
+#include <Util/ActorFilter.h>
+
+#include <spdlog/spdlog.h>
+   
 
 #include "Job/Warrior.h"
 
@@ -45,22 +48,19 @@ using namespace Sapphire::World;
 using namespace Sapphire::World::Manager;
 
 
-
-Action::Action::Action( Entity::CharaPtr caster, uint32_t actionId, uint16_t requestId ) :
-  Action( std::move( caster ), actionId, requestId, nullptr )
+Action::Action::Action( Entity::CharaPtr caster, uint32_t actionId, uint16_t requestId ) : Action( std::move( caster ), actionId, requestId, nullptr )
 {
 }
 
 Action::Action::Action( Entity::CharaPtr caster, uint32_t actionId, uint16_t requestId,
-                        std::shared_ptr< Excel::ExcelStruct< Excel::Action > > actionData ) :
-  m_pSource( std::move( caster ) ),
-  m_actionData( std::move( actionData ) ),
-  m_id( actionId ),
-  m_targetId( 0 ),
-  m_startTime( 0 ),
-  m_interruptType( Common::ActionInterruptType::None ),
-  m_requestId( requestId ),
-  m_actionKind( Common::ActionKind::ACTION_KIND_NORMAL )
+                        std::shared_ptr< Excel::ExcelStruct< Excel::Action > > actionData ) : m_pSource( std::move( caster ) ),
+                                                                                              m_actionData( std::move( actionData ) ),
+                                                                                              m_id( actionId ),
+                                                                                              m_targetId( 0 ),
+                                                                                              m_startTime( 0 ),
+                                                                                              m_interruptType( Common::ActionInterruptType::None ),
+                                                                                              m_requestId( requestId ),
+                                                                                              m_actionKind( Common::ActionKind::ACTION_KIND_NORMAL )
 {
 }
 
@@ -270,7 +270,7 @@ bool Action::Action::update()
     if( lastActionTick > 0 )
     {
       lastTickMs = static_cast< uint32_t >( std::difftime( tickCount, lastActionTick ) );
-      if( lastTickMs > 100 ) //max 100ms
+      if( lastTickMs > 100 )//max 100ms
         lastTickMs = 100;
     }
 
@@ -338,7 +338,7 @@ void Action::Action::start()
     if( player )
       player->setCondition( PlayerCondition::Casting );
   }
-  
+
   // todo: m_recastTimeMs needs to be adjusted for player sks/sps
   auto actionStartPkt = makeActorControlSelf( m_pSource->getId(), ActorControlType::ActionStart, m_cooldownGroup, getId(), m_recastTimeMs / 10 );
 
@@ -374,7 +374,6 @@ void Action::Action::onStart()
 
     return;
   }
-
 }
 
 void Action::Action::interrupt()
@@ -407,7 +406,6 @@ void Action::Action::interrupt()
   }
 
   onInterrupt();
-
 }
 
 void Action::Action::onInterrupt()
@@ -441,7 +439,7 @@ void Action::Action::execute()
     Manager::PlayerMgr::sendDebug( *player, "action combo success from action#{0}", player->getLastComboActionId() );
   }
 
-  if( !hasClientsideTarget()  )
+  if( !hasClientsideTarget() )
     buildActionResults();
   else if( auto player = m_pSource->getAsPlayer() )
     scriptMgr.onEObjHit( *player, m_targetId, getId() );
@@ -453,7 +451,7 @@ void Action::Action::execute()
     // potential combo starter or correct combo from last action, must hit something to progress combo
     if( !m_hitActors.empty() && ( !isComboAction() || isCorrectCombo() ) )
       m_pSource->setLastComboActionId( getId() );
-    else // clear last combo action if the combo breaks
+    else// clear last combo action if the combo breaks
       m_pSource->setLastComboActionId( 0 );
   }
 }
@@ -503,24 +501,31 @@ std::pair< uint32_t, Common::CalcResultType > Action::Action::calcHealing( uint3
 
 void Action::Action::buildActionResults()
 {
+  spdlog::debug( "buildActionResults called for action ID {}", getId() );
+
   snapshotAffectedActors( m_hitActors );
 
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   auto hasLutEntry = hasValidLutEntry();
+  auto hasScript = scriptMgr.onExecute( *this );
 
-  if( !scriptMgr.onExecute( *this ) && !hasLutEntry )
+  if( !hasScript && !hasLutEntry )
   {
     if( auto player = m_pSource->getAsPlayer() )
       Manager::PlayerMgr::sendUrgent( *player, "missing lut entry for action#{}", getId() );
     return;
   }
 
+  if( !hasScript )
+    m_enableGenericHandler = true;
+
   Network::Util::Packet::sendHudParam( *m_pSource );
 
-  if( !hasLutEntry || m_hitActors.empty() )
+  if( !m_enableGenericHandler || !hasLutEntry || m_hitActors.empty() )
   {
+    spdlog::debug( "Sending action results (script or empty) for action ID {}", getId() );
     // send any effect packet added by script or an empty one just to play animation for other players
-    m_actionResultBuilder->sendActionResults( m_hitActors );
+    //m_actionResultBuilder->sendActionResults( m_hitActors );
     return;
   }
 
@@ -554,7 +559,7 @@ void Action::Action::buildActionResults()
 
       if( !isComboAction() || isCorrectCombo() )
       {
-        if( m_lutEntry.curePotency > 0 ) // actions with self heal
+        if( m_lutEntry.curePotency > 0 )// actions with self heal
         {
           auto heal = calcHealing( m_lutEntry.curePotency );
           m_actionResultBuilder->heal( actor, m_pSource, heal.first, heal.second, Common::ActionResultFlag::EffectOnSource );
@@ -566,8 +571,8 @@ void Action::Action::buildActionResults()
           shouldRestoreMP = false;
         }
 
-        if( !m_lutEntry.nextCombo.empty() ) // if we have a combo action followup
-          m_actionResultBuilder->startCombo( m_pSource, getId() ); // this is on all targets hit
+        if( !m_lutEntry.nextCombo.empty() )                       // if we have a combo action followup
+          m_actionResultBuilder->startCombo( m_pSource, getId() );// this is on all targets hit
       }
     }
     else if( m_lutEntry.curePotency > 0 )
@@ -596,6 +601,9 @@ void Action::Action::buildActionResults()
 
   handleJobAction();
   handleStatusEffects();
+
+  spdlog::debug( "Sending final action results for action ID {}", getId() );
+  m_actionResultBuilder->sendActionResults( m_hitActors );
 
   m_actionResultBuilder->sendActionResults( m_hitActors );
 
@@ -696,11 +704,11 @@ bool Action::Action::playerPreCheck( Entity::Player& player )
 
   // todo: does this need to check for party/alliance stuff or it's just same type?
   // todo: m_pTarget doesn't exist at this stage because we only fill it when we snapshot targets
-//  if( !m_actionData->canTargetFriendly && m_pSource->getObjKind() == m_pTarget->getObjKind() )
-//    return false;
-//
-//  if( !m_actionData->canTargetHostile && m_pSource->getObjKind() != m_pTarget->getObjKind() )
-//    return false;
+  //  if( !m_actionData->canTargetFriendly && m_pSource->getObjKind() == m_pTarget->getObjKind() )
+  //    return false;
+  //
+  //  if( !m_actionData->canTargetHostile && m_pSource->getObjKind() != m_pTarget->getObjKind() )
+  //    return false;
 
   // todo: party/dead validation
 
@@ -865,10 +873,10 @@ void Action::Action::addDefaultActorFilters()
       break;
     }
 
-//    case Common::CastType::RectangularAOE:
-//    {
-//      break;
-//    }
+      //    case Common::CastType::RectangularAOE:
+      //    {
+      //      break;
+      //    }
 
     default:
     {
@@ -892,14 +900,14 @@ bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
   // todo: evaluate other actions that can hit condition (eg. sprint)
   /* if( !m_canTargetSelf && chara->getId() == m_pSource->getId() )
     return false;*/
-  
-  if( ( m_lutEntry.potency > 0 || m_lutEntry.curePotency > 0 ) && !chara->isAlive() ) // !m_canTargetDead not working for aoe
+
+  if( ( m_lutEntry.potency > 0 || m_lutEntry.curePotency > 0 ) && !chara->isAlive() )// !m_canTargetDead not working for aoe
     return false;
 
-  if( m_lutEntry.potency > 0 && m_pSource->getObjKind() == chara->getObjKind() ) // !m_canTargetFriendly not working for aoe
+  if( m_lutEntry.potency > 0 && m_pSource->getObjKind() == chara->getObjKind() )// !m_canTargetFriendly not working for aoe
     return false;
 
-  if( ( m_lutEntry.potency == 0 && m_lutEntry.curePotency > 0 ) && m_pSource->getObjKind() != chara->getObjKind() ) // !m_canTargetHostile not working for aoe
+  if( ( m_lutEntry.potency == 0 && m_lutEntry.curePotency > 0 ) && m_pSource->getObjKind() != chara->getObjKind() )// !m_canTargetHostile not working for aoe
     return false;
 
   return true;
@@ -920,8 +928,8 @@ Entity::CharaPtr Action::Action::getHitChara()
 bool Action::Action::hasValidLutEntry() const
 {
   return m_lutEntry.potency != 0 || m_lutEntry.comboPotency != 0 || m_lutEntry.flankPotency != 0 || m_lutEntry.frontPotency != 0 ||
-    m_lutEntry.rearPotency != 0 || m_lutEntry.curePotency != 0 || m_lutEntry.restoreMPPercentage != 0 ||
-    m_lutEntry.statuses.caster.size() > 0 || m_lutEntry.statuses.target.size() > 0;
+         m_lutEntry.rearPotency != 0 || m_lutEntry.curePotency != 0 || m_lutEntry.restoreMPPercentage != 0 ||
+         m_lutEntry.statuses.caster.size() > 0 || m_lutEntry.statuses.target.size() > 0;
 }
 
 Action::ActionResultBuilderPtr Action::Action::getActionResultBuilder()
