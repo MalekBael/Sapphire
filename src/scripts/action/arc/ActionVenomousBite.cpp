@@ -31,22 +31,16 @@ public:
     if( !pSource->isPlayer() )
       return;
 
-    // Calculate damage
+
+    //action.enableGenericHandler();
     auto dmg = action.calcDamage( Potency );
 
-    // Apply damage (set magic damage to 0 if Venomous Bite is purely physical)
     action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
 
-    // Replace existing Venomous Bite status effect on the target
-    pTarget->replaceSingleStatusEffectById( 124 );// Assuming 124 is Venomous Bite ID
+    pTarget->replaceSingleStatusEffectById( Venomous_Bite );
 
     // Apply Venomous Bite status effect to the target
-    action.getActionResultBuilder()->applyStatusEffect( pTarget, 124, 45000, 0 );
-
-    // Optional: Log the application for debugging
-    spdlog::info( "Venomous Bite applied to enemy {}", pTarget->getId() );
+    action.getActionResultBuilder()->applyStatusEffect( pTarget, Venomous_Bite, 45000, 0 );
   }
 };
-
-// Expose the script to the scripting engine
 EXPOSE_SCRIPT( ActionVenomousBite );

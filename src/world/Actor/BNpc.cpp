@@ -834,7 +834,8 @@ void BNpc::autoAttack( CharaPtr pTarget )
 
   uint64_t tick = Common::Util::getTimeMs();
 
-  // todo: this needs to use the auto attack delay for the equipped weapon
+  // todo: this needs to use the
+  // delay for the equipped weapon
   if( ( tick - m_lastAttack ) > 2500 )
   {
     pTarget->onActionHostile( getAsChara() );

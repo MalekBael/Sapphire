@@ -33,7 +33,7 @@
 #include <Util/ActorFilter.h>
 
 #include <spdlog/spdlog.h>
-   
+
 
 #include "Job/Warrior.h"
 
@@ -521,15 +521,6 @@ void Action::Action::buildActionResults()
 
   Network::Util::Packet::sendHudParam( *m_pSource );
 
-  if( !m_enableGenericHandler || !hasLutEntry || m_hitActors.empty() )
-  {
-    spdlog::debug( "Sending action results (script or empty) for action ID {}", getId() );
-    // send any effect packet added by script or an empty one just to play animation for other players
-    //m_actionResultBuilder->sendActionResults( m_hitActors );
-    return;
-  }
-
-  // no script exists but we have a valid lut entry
   if( auto player = getSourceChara()->getAsPlayer() )
   {
     Manager::PlayerMgr::sendDebug( *player, "Hit target: pot: {} (c: {}, f: {}, r: {}), heal pot: {}, mpp: {}",
@@ -537,61 +528,70 @@ void Action::Action::buildActionResults()
                                    m_lutEntry.curePotency, m_lutEntry.restoreMPPercentage );
   }
 
-  // when aoe, these effects are in the target whatever is hit first
+  // Variables to ensure effects are applied only once
   bool shouldRestoreMP = true;
   bool shouldApplyComboSucceedEffect = true;
 
-  for( auto& actor : m_hitActors )
+  // **Wrap the damage application within the m_enableGenericHandler condition**
+  if( m_enableGenericHandler )
   {
-    if( m_lutEntry.potency > 0 )
+    for( auto& actor : m_hitActors )
     {
-      auto dmg = calcDamage( isCorrectCombo() ? m_lutEntry.comboPotency : m_lutEntry.potency );
-      m_actionResultBuilder->damage( m_pSource, actor, dmg.first, dmg.second );
-
-      if( dmg.first > 0 )
-        actor->onActionHostile( m_pSource );
-
-      if( isCorrectCombo() && shouldApplyComboSucceedEffect )
+      if( m_lutEntry.potency > 0 )
       {
-        m_actionResultBuilder->comboSucceed( m_pSource );
-        shouldApplyComboSucceedEffect = false;
-      }
+        auto dmg = calcDamage( isCorrectCombo() ? m_lutEntry.comboPotency : m_lutEntry.potency );
+        m_actionResultBuilder->damage( m_pSource, actor, dmg.first, dmg.second );
 
-      if( !isComboAction() || isCorrectCombo() )
-      {
-        if( m_lutEntry.curePotency > 0 )// actions with self heal
+        if( dmg.first > 0 )
+          actor->onActionHostile( m_pSource );
+
+        if( isCorrectCombo() && shouldApplyComboSucceedEffect )
         {
-          auto heal = calcHealing( m_lutEntry.curePotency );
-          m_actionResultBuilder->heal( actor, m_pSource, heal.first, heal.second, Common::ActionResultFlag::EffectOnSource );
+          m_actionResultBuilder->comboSucceed( m_pSource );
+          shouldApplyComboSucceedEffect = false;
         }
+
+        if( !isComboAction() || isCorrectCombo() )
+        {
+          if( m_lutEntry.curePotency > 0 )// Actions with self-heal
+          {
+            auto heal = calcHealing( m_lutEntry.curePotency );
+            m_actionResultBuilder->heal( actor, m_pSource, heal.first, heal.second, Common::ActionResultFlag::EffectOnSource );
+          }
+
+          if( m_lutEntry.restoreMPPercentage > 0 && shouldRestoreMP )
+          {
+            m_actionResultBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.restoreMPPercentage / 100,
+                                              Common::ActionResultFlag::EffectOnSource );
+            shouldRestoreMP = false;
+          }
+
+          if( !m_lutEntry.nextCombo.empty() )                       // If we have a combo action follow-up
+            m_actionResultBuilder->startCombo( m_pSource, getId() );// This is on all targets hit
+        }
+      }
+      else if( m_lutEntry.curePotency > 0 )
+      {
+        auto heal = calcHealing( m_lutEntry.curePotency );
+        m_actionResultBuilder->heal( actor, actor, heal.first, heal.second );
 
         if( m_lutEntry.restoreMPPercentage > 0 && shouldRestoreMP )
         {
-          m_actionResultBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.restoreMPPercentage / 100, Common::ActionResultFlag::EffectOnSource );
+          m_actionResultBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.restoreMPPercentage / 100,
+                                            Common::ActionResultFlag::EffectOnSource );
           shouldRestoreMP = false;
         }
-
-        if( !m_lutEntry.nextCombo.empty() )                       // if we have a combo action followup
-          m_actionResultBuilder->startCombo( m_pSource, getId() );// this is on all targets hit
       }
-    }
-    else if( m_lutEntry.curePotency > 0 )
-    {
-      auto heal = calcHealing( m_lutEntry.curePotency );
-      m_actionResultBuilder->heal( actor, actor, heal.first, heal.second );
-
-      if( m_lutEntry.restoreMPPercentage > 0 && shouldRestoreMP )
+      else if( m_lutEntry.restoreMPPercentage > 0 && shouldRestoreMP )
       {
-        m_actionResultBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.restoreMPPercentage / 100, Common::ActionResultFlag::EffectOnSource );
+        m_actionResultBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.restoreMPPercentage / 100,
+                                          Common::ActionResultFlag::EffectOnSource );
         shouldRestoreMP = false;
       }
     }
-    else if( m_lutEntry.restoreMPPercentage > 0 && shouldRestoreMP )
-    {
-      m_actionResultBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.restoreMPPercentage / 100, Common::ActionResultFlag::EffectOnSource );
-      shouldRestoreMP = false;
-    }
   }
+
+  // **End of m_enableGenericHandler condition**
 
   // If we hit an enemy
   if( !m_hitActors.empty() && getHitChara()->getObjKind() != m_pSource->getObjKind() )
@@ -604,12 +604,6 @@ void Action::Action::buildActionResults()
 
   spdlog::debug( "Sending final action results for action ID {}", getId() );
   m_actionResultBuilder->sendActionResults( m_hitActors );
-
-  m_actionResultBuilder->sendActionResults( m_hitActors );
-
-  // TODO: disabled, reset kills our queued actions
-  // at this point we're done with it and no longer need it
-  // m_effectBuilder.reset();
 }
 
 void Action::Action::handleStatusEffects()
