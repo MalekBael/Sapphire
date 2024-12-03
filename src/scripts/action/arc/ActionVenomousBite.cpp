@@ -35,6 +35,12 @@ public:
     //action.enableGenericHandler();
     auto dmg = action.calcDamage( Potency );
 
+    // Establish aggro if damage was dealt
+    if( dmg.first > 0 )
+    {
+      pTarget->onActionHostile( pSource );
+    }
+
     action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
 
     pTarget->replaceSingleStatusEffectById( Venomous_Bite );
