@@ -2,11 +2,11 @@
 
 #include <Action/Action.h>
 #include <Actor/Chara.h>
+#include <Network/Util/PacketUtil.h>
 #include <Script/NativeScriptApi.h>
 #include <ScriptObject.h>
 #include <StatusEffect/StatusEffect.h>
 #include <spdlog/spdlog.h>
-#include <Network/Util/PacketUtil.h>
 
 // Include necessary namespaces
 using namespace Sapphire;
@@ -69,7 +69,6 @@ public:
     {
       actor.onActionHostile( pSource );
     }
-
   }
 
   // Called when the status effect is removed or expires
@@ -78,7 +77,6 @@ public:
     spdlog::debug( "Venomous Bite expired on target ID {}", actor.getId() );
     // No additional actions needed on expire
   }
-
 };
 
 EXPOSE_SCRIPT( StatusEffectVenomousBite );

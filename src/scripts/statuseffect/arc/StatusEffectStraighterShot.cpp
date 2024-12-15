@@ -1,7 +1,7 @@
+#include <Action/CommonAction.h>
+#include <Actor/Player.h>
 #include <Script/NativeScriptApi.h>
 #include <ScriptObject.h>
-#include <Actor/Player.h>
-#include <Action/CommonAction.h>
 #include <StatusEffect/StatusEffect.h>
 
 using namespace Sapphire;

@@ -31,11 +31,8 @@ public:
     if( !pSource->isPlayer() )
       return;
 
-
-    //action.enableGenericHandler();
     auto dmg = action.calcDamage( Potency );
 
-    // Establish aggro if damage was dealt
     if( dmg.first > 0 )
     {
       pTarget->onActionHostile( pSource );

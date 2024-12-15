@@ -17,6 +17,7 @@ namespace Sapphire::World::Action
     HeavyShot = 97,
     StraightShot = 98,
     VenomousBite = 100,
+    RagingStrikes = 101,
   };
 
   enum ActionStatus
@@ -33,5 +34,6 @@ namespace Sapphire::World::Action
     // ARC
     StraighterShot = 122,
     Venomous_Bite = 124,
+    Raging_Strikes = 125,
   };
 }

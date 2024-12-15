@@ -1,3 +1,6 @@
+// NativeScriptApi.cpp
+
+
 #include <string>
 #include <typeinfo>
 #include <typeindex>
@@ -30,6 +33,19 @@ namespace Sapphire::ScriptAPI
   {
     return m_type;
   }
+
+  ///////////////////////////////////////////////////////////////////
+
+  BNpcScript::BNpcScript( uint32_t bNpcId )
+      : ScriptObject( bNpcId, typeid( BNpcScript ).hash_code() )
+  {
+  }
+
+  void BNpcScript::onTick( Sapphire::Entity::BNpc& bnpc, uint64_t tickCount )
+  {
+    // Default implementation (if any)
+  }
+
 
   ///////////////////////////////////////////////////////////////////
 

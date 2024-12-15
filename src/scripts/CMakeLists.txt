@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 project(Script)
 
 file(GLOB SCRIPT_INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -46,7 +46,7 @@ foreach(_scriptDir ${children})
                        MODULE 
                          ${SCRIPT_BUILD_FILES} 
                          "${SCRIPT_INCLUDE_FILES}"
-                         "${_scriptDir}/ScriptLoader.cpp"  "action/arc/ActionHeavyShot.cpp" "action/arc/ActionVenomousBite.cpp"  "statuseffect/arc/StatusEffectVenomousBite.cpp")
+                         "${_scriptDir}/ScriptLoader.cpp" )
 
         target_link_libraries( "script_${_name}" world )
 

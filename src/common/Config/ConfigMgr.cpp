@@ -56,7 +56,7 @@ bool ConfigMgr::loadGlobalConfig( Common::Config::GlobalConfig& config, const st
   config.database.asyncThreads = getValue< uint8_t >( "Database", "AsyncThreads", 2 );
 
   // params
-  config.general.dataPath = getValue< std::string >( "General", "DataPath", "C:\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
+  config.general.dataPath = getValue< std::string >( "General", "DataPath", "C:\\Program Files( x86 )\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
   config.general.dataVersion = getValue< std::string >( "General", "DataVersion", "2016.07.05.0000.0001" );
   config.general.serverSecret = getValue< std::string >( "General", "ServerSecret", "default" );
   config.general.worldID = getValue< uint16_t >( "General", "WorldID", 67 );

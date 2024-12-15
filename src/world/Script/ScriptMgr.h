@@ -5,8 +5,8 @@
 #include <mutex>
 #include <set>
 
-#include <Common.h>
 #include "Forwards.h"
+#include <Common.h>
 
 namespace Sapphire::Scripting
 {
@@ -19,7 +19,7 @@ namespace Sapphire::Scripting
      */
     std::shared_ptr< NativeScriptMgr > m_nativeScriptMgr;
 
-    std::function< std::string( Entity::Player & ) > m_onFirstEnterWorld;
+    std::function< std::string( Entity::Player& ) > m_onFirstEnterWorld;
 
     /*!
      * @brief Used to ignore the first change notification that Watchdog emits.
@@ -125,5 +125,5 @@ namespace Sapphire::Scripting
 
     NativeScriptMgr& getNativeScriptHandler();
   };
-}
+}// namespace Sapphire::Scripting
 #endif

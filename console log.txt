@@ -1,229 +1,404 @@
-[20:02:01.170] [debug] Unloaded module
-[20:02:01.349] [debug] Loaded module: script_action.dll
-[20:02:09.107] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:09.107] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:200002 p4:0 )
-[20:02:09.107] [debug] [2097154] Unhandled Command: 0004
-[20:02:11.286] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:11.286] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:E0000000 p4:0 )
-[20:02:11.286] [debug] [2097154] Unhandled Command: 0004
-[20:02:15.330] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[20:02:15.335] [debug] EffectBuilder result:
-[20:02:15.335] [debug] Targets afflicted: 0
-[20:02:15.335] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:15.649] [info] [TaskMgr] ActionIntegrityTask: ResultId#92, TargetId#2097154, ElapsedTimeMs: 300
-[20:02:33.732] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:33.732] [debug]           TARGET_DECIDE | 3 ( p1:500D010C p11:500D010C p12:0 p2:0 p3:0 p4:0 )
-[20:02:34.666] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:34.666] [debug]           DRAWN_SWORD | 1 ( p1:100000001 p11:1 p12:1 p2:0 p3:0 p4:0 )
-[20:02:34.666] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:34.666] [debug]           DRAWN_SWORD | 2 ( p1:500D010C00000001 p11:1 p12:500D010C p2:0 p3:0 p4:0 )
-[20:02:34.666] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
-[ActionHeavyShot] Hit Characters Count: 16
- - Chara ID: 1343029401, ObjKind: 2
- - Chara ID: 1343029515, ObjKind: 2
- - Chara ID: 1343029514, ObjKind: 2
- - Chara ID: 1343029516, ObjKind: 2
- - Chara ID: 1343029523, ObjKind: 2
- - Chara ID: 1343029522, ObjKind: 2
- - Chara ID: 1343029520, ObjKind: 2
- - Chara ID: 1343029757, ObjKind: 2
- - Chara ID: 1343029756, ObjKind: 2
- - Chara ID: 1343029792, ObjKind: 2
- - Chara ID: 1343029798, ObjKind: 2
- - Chara ID: 1343029799, ObjKind: 2
- - Chara ID: 1343029858, ObjKind: 2
- - Chara ID: 1343029900, ObjKind: 2
- - Chara ID: 1343029898, ObjKind: 2
- - Chara ID: 1343029899, ObjKind: 2
-[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
-[ActionHeavyShot] Calculated Damage - Physical: 13
-[ActionHeavyShot] Applying physical damage to target ID: 1343029401
-[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
-[ActionHeavyShot] Damage successfully applied to BNpc.
-[20:02:34.678] [debug] EffectBuilder result:
-[20:02:34.678] [debug] Targets afflicted: 0
-[20:02:34.678] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:34.985] [info] [TaskMgr] ActionIntegrityTask: ResultId#93, TargetId#1343029401, ElapsedTimeMs: 300
-[20:02:37.780] [debug] EffectBuilder result:
-[20:02:37.780] [debug] Targets afflicted: 1
-[20:02:37.780] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:38.082] [info] [TaskMgr] ActionIntegrityTask: ResultId#94, TargetId#1343029516, ElapsedTimeMs: 300
-[20:02:38.090] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
-[ActionHeavyShot] Hit Characters Count: 16
- - Chara ID: 1343029401, ObjKind: 2
- - Chara ID: 1343029515, ObjKind: 2
- - Chara ID: 1343029514, ObjKind: 2
- - Chara ID: 1343029516, ObjKind: 2
- - Chara ID: 1343029523, ObjKind: 2
- - Chara ID: 1343029522, ObjKind: 2
- - Chara ID: 1343029520, ObjKind: 2
- - Chara ID: 1343029757, ObjKind: 2
- - Chara ID: 1343029756, ObjKind: 2
- - Chara ID: 1343029792, ObjKind: 2
- - Chara ID: 1343029798, ObjKind: 2
- - Chara ID: 1343029799, ObjKind: 2
- - Chara ID: 1343029858, ObjKind: 2
- - Chara ID: 1343029900, ObjKind: 2
- - Chara ID: 1343029898, ObjKind: 2
- - Chara ID: 1343029899, ObjKind: 2
-[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
-[ActionHeavyShot] Calculated Damage - Physical: 13
-[ActionHeavyShot] Applying physical damage to target ID: 1343029401
-[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
-[ActionHeavyShot] Damage successfully applied to BNpc.
-[20:02:38.102] [debug] EffectBuilder result:
-[20:02:38.102] [debug] Targets afflicted: 0
-[20:02:38.102] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:38.409] [info] [TaskMgr] ActionIntegrityTask: ResultId#95, TargetId#1343029401, ElapsedTimeMs: 300
-[20:02:40.579] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
-[ActionHeavyShot] Hit Characters Count: 16
- - Chara ID: 1343029401, ObjKind: 2
- - Chara ID: 1343029515, ObjKind: 2
- - Chara ID: 1343029514, ObjKind: 2
- - Chara ID: 1343029516, ObjKind: 2
- - Chara ID: 1343029523, ObjKind: 2
- - Chara ID: 1343029522, ObjKind: 2
- - Chara ID: 1343029520, ObjKind: 2
- - Chara ID: 1343029757, ObjKind: 2
- - Chara ID: 1343029756, ObjKind: 2
- - Chara ID: 1343029792, ObjKind: 2
- - Chara ID: 1343029798, ObjKind: 2
- - Chara ID: 1343029799, ObjKind: 2
- - Chara ID: 1343029858, ObjKind: 2
- - Chara ID: 1343029900, ObjKind: 2
- - Chara ID: 1343029898, ObjKind: 2
- - Chara ID: 1343029899, ObjKind: 2
-[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
-[ActionHeavyShot] Calculated Damage - Physical: 12
-[ActionHeavyShot] Applying physical damage to target ID: 1343029401
-[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 12
-[ActionHeavyShot] Damage successfully applied to BNpc.
-[20:02:40.591] [debug] EffectBuilder result:
-[20:02:40.591] [debug] Targets afflicted: 0
-[20:02:40.591] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:40.898] [info] [TaskMgr] ActionIntegrityTask: ResultId#96, TargetId#1343029401, ElapsedTimeMs: 300
-[20:02:43.072] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[20:02:43.075] [debug] EffectBuilder result:
-[20:02:43.075] [debug] Targets afflicted: 1
-[20:02:43.075] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:43.375] [info] [TaskMgr] ActionIntegrityTask: ResultId#97, TargetId#1343029516, ElapsedTimeMs: 300
-[20:02:45.566] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[20:02:45.568] [debug] EffectBuilder result:
-[20:02:45.568] [debug] Targets afflicted: 1
-[20:02:45.568] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:45.871] [info] [TaskMgr] ActionIntegrityTask: ResultId#98, TargetId#1343029516, ElapsedTimeMs: 300
-[20:02:48.063] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[20:02:48.067] [debug] EffectBuilder result:
-[20:02:48.067] [debug] Targets afflicted: 1
-[20:02:48.067] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:48.368] [info] [TaskMgr] ActionIntegrityTask: ResultId#99, TargetId#1343029516, ElapsedTimeMs: 300
-[20:02:50.561] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[20:02:50.564] [debug] EffectBuilder result:
-[20:02:50.564] [debug] Targets afflicted: 1
-[20:02:50.564] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:50.864] [info] [TaskMgr] ActionIntegrityTask: ResultId#100, TargetId#1343029516, ElapsedTimeMs: 300
-[20:02:53.056] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[20:02:53.059] [debug] EffectBuilder result:
-[20:02:53.059] [debug] Targets afflicted: 1
-[20:02:53.059] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:53.359] [info] [TaskMgr] ActionIntegrityTask: ResultId#101, TargetId#1343029516, ElapsedTimeMs: 300
-[20:02:55.546] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:55.546] [debug]           DRAWN_SWORD | 2 ( p1:E000000000000000 p11:0 p12:E0000000 p2:1 p3:0 p4:0 )
-[20:02:55.546] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:55.546] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
-[20:02:57.101] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:57.101] [debug]           TARGET_DECIDE | 3 ( p1:500D010C p11:500D010C p12:0 p2:0 p3:0 p4:0 )
-[20:02:58.657] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:58.657] [debug]           DRAWN_SWORD | 1 ( p1:100000000 p11:0 p12:1 p2:0 p3:0 p4:0 )
-[20:02:58.657] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:58.657] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
-[20:02:58.968] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:58.968] [debug]           TARGET_DECIDE | 3 ( p1:500D010C p11:500D010C p12:0 p2:0 p3:0 p4:0 )
-[20:02:59.279] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:59.279] [debug]           DRAWN_SWORD | 1 ( p1:100000001 p11:1 p12:1 p2:0 p3:0 p4:0 )
-[20:02:59.279] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:02:59.279] [debug]           DRAWN_SWORD | 2 ( p1:500D010C00000001 p11:1 p12:500D010C p2:0 p3:0 p4:0 )
-[20:02:59.279] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
-[ActionHeavyShot] Hit Characters Count: 13
- - Chara ID: 1343029401, ObjKind: 2
- - Chara ID: 1343029515, ObjKind: 2
- - Chara ID: 1343029514, ObjKind: 2
- - Chara ID: 1343029516, ObjKind: 2
- - Chara ID: 1343029523, ObjKind: 2
- - Chara ID: 1343029522, ObjKind: 2
- - Chara ID: 1343029520, ObjKind: 2
- - Chara ID: 1343029756, ObjKind: 2
- - Chara ID: 1343029792, ObjKind: 2
- - Chara ID: 1343029858, ObjKind: 2
- - Chara ID: 1343029900, ObjKind: 2
- - Chara ID: 1343029898, ObjKind: 2
- - Chara ID: 1343029899, ObjKind: 2
-[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
-[ActionHeavyShot] Calculated Damage - Physical: 12
-[ActionHeavyShot] Applying physical damage to target ID: 1343029401
-[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 12
-[ActionHeavyShot] Damage successfully applied to BNpc.
-[20:02:59.289] [debug] EffectBuilder result:
-[20:02:59.289] [debug] Targets afflicted: 0
-[20:02:59.289] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:02:59.603] [info] [TaskMgr] ActionIntegrityTask: ResultId#102, TargetId#1343029401, ElapsedTimeMs: 300
-[20:03:01.457] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
-[ActionHeavyShot] Hit Characters Count: 13
- - Chara ID: 1343029401, ObjKind: 2
- - Chara ID: 1343029515, ObjKind: 2
- - Chara ID: 1343029514, ObjKind: 2
- - Chara ID: 1343029516, ObjKind: 2
- - Chara ID: 1343029523, ObjKind: 2
- - Chara ID: 1343029522, ObjKind: 2
- - Chara ID: 1343029520, ObjKind: 2
- - Chara ID: 1343029756, ObjKind: 2
- - Chara ID: 1343029792, ObjKind: 2
- - Chara ID: 1343029858, ObjKind: 2
- - Chara ID: 1343029900, ObjKind: 2
- - Chara ID: 1343029898, ObjKind: 2
- - Chara ID: 1343029899, ObjKind: 2
-[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
-[ActionHeavyShot] Calculated Damage - Physical: 13
-[ActionHeavyShot] Applying physical damage to target ID: 1343029401
-[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
-[ActionHeavyShot] Damage successfully applied to BNpc.
-[20:03:01.468] [debug] EffectBuilder result:
-[20:03:01.468] [debug] Targets afflicted: 0
-[20:03:01.468] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:03:01.778] [info] [TaskMgr] ActionIntegrityTask: ResultId#103, TargetId#1343029401, ElapsedTimeMs: 300
-[20:03:04.256] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
-[ActionHeavyShot] onStart: ActorFilterExcludePlayer added.
-[ActionHeavyShot] Hit Characters Count: 13
- - Chara ID: 1343029401, ObjKind: 2
- - Chara ID: 1343029515, ObjKind: 2
- - Chara ID: 1343029514, ObjKind: 2
- - Chara ID: 1343029516, ObjKind: 2
- - Chara ID: 1343029523, ObjKind: 2
- - Chara ID: 1343029522, ObjKind: 2
- - Chara ID: 1343029520, ObjKind: 2
- - Chara ID: 1343029756, ObjKind: 2
- - Chara ID: 1343029792, ObjKind: 2
- - Chara ID: 1343029858, ObjKind: 2
- - Chara ID: 1343029900, ObjKind: 2
- - Chara ID: 1343029898, ObjKind: 2
- - Chara ID: 1343029899, ObjKind: 2
-[ActionHeavyShot] Target BNpc ID: 1343029401, ObjKind: 2
-[ActionHeavyShot] Calculated Damage - Physical: 13
-[ActionHeavyShot] Applying physical damage to target ID: 1343029401
-[ActionHeavyShot] Damage applied to Target ID: 1343029401, Damage - Physical: 13
-[ActionHeavyShot] Damage successfully applied to BNpc.
-[20:03:04.266] [debug] EffectBuilder result:
-[20:03:04.266] [debug] Targets afflicted: 0
-[20:03:04.266] [debug] Sapphire::World::ActionIntegrityTask::onQueue
-[20:03:04.577] [info] [TaskMgr] ActionIntegrityTask: ResultId#104, TargetId#1343029401, ElapsedTimeMs: 300
-[20:03:06.129] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:03:06.129] [debug]           DRAWN_SWORD | 2 ( p1:E000000000000000 p11:0 p12:E0000000 p2:1 p3:0 p4:0 )
-[20:03:06.129] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:03:06.129] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
-[20:03:08.936] [debug] [2097154] Zone IPC : Command ( 0191 )
-[20:03:08.936] [debug]           DRAWN_SWORD | 1 ( p1:100000000 p11:0 p12:1 p2:0 p3:0 p4:0 )
+[19:57:59.256] [debug] buildActionResults called for action ID 82
+[19:57:59.256] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 1.91106
+[19:57:59.257] [debug] Sending final action results for action ID 82
+[19:57:59.257] [debug] sendActionResults called. Targets afflicted: 1
+[19:57:59.257] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:57:59.257] [debug] Packet sent for action ID 82
+[19:57:59.562] [info] [TaskMgr] ActionIntegrityTask: ResultId#56, TargetId#2097154, ElapsedTimeMs: 300
+[19:57:59.570] [debug] buildActionResults called for action ID 88
+[19:57:59.570] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.00852
+[19:57:59.571] [debug] Sending final action results for action ID 88
+[19:57:59.571] [debug] sendActionResults called. Targets afflicted: 1
+[19:57:59.571] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:57:59.571] [debug] Packet sent for action ID 88
+[19:57:59.874] [info] [TaskMgr] ActionIntegrityTask: ResultId#57, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:02.382] [debug] buildActionResults called for action ID 7
+[19:58:02.383] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 1.94686
+[19:58:02.384] [debug] Sending final action results for action ID 7
+[19:58:02.384] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:02.384] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:02.384] [debug] Packet sent for action ID 7
+[19:58:02.685] [info] [TaskMgr] ActionIntegrityTask: ResultId#58, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:03.626] [debug] buildActionResults called for action ID 89
+[19:58:03.627] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.01747
+[19:58:03.627] [debug] Sending final action results for action ID 89
+[19:58:03.627] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:03.627] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:03.627] [debug] Packet sent for action ID 89
+[19:58:03.930] [info] [TaskMgr] ActionIntegrityTask: ResultId#59, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:05.809] [debug] buildActionResults called for action ID 90
+[19:58:05.810] [debug] dmg: pot: 1.2 (120) wd: 2 (1) ap: 0.96 det: 1  = 1.90112
+[19:58:05.810] [debug] Sending final action results for action ID 90
+[19:58:05.811] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:05.811] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:05.811] [debug] Packet sent for action ID 90
+[19:58:06.114] [info] [TaskMgr] ActionIntegrityTask: ResultId#60, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:07.678] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:07.678] [debug]           TARGET_DECIDE | 3 ( p1:500D0006 p11:500D0006 p12:0 p2:0 p3:0 p4:0 )
+[19:58:07.680] [debug] buildActionResults called for action ID 91
+[19:58:07.681] [debug] dmg: pot: 1.7 (170) wd: 2 (1) ap: 0.96 det: 1  = 3.1429
+[19:58:07.681] [debug] Sending final action results for action ID 91
+[19:58:07.682] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:07.682] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:07.682] [debug] Packet sent for action ID 91
+[19:58:07.984] [info] [TaskMgr] ActionIntegrityTask: ResultId#61, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:08.304] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:08.304] [debug]           DRAWN_SWORD | 1 ( p1:100000001 p11:1 p12:1 p2:0 p3:0 p4:0 )
+[19:58:08.304] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:08.304] [debug]           DRAWN_SWORD | 2 ( p1:500D000600000001 p11:1 p12:500D0006 p2:0 p3:0 p4:0 )
+[19:58:08.304] [debug] [2097154] Zone IPC : ActionRequest ( 0196 )
+[19:58:08.307] [debug] buildActionResults called for action ID 97
+[19:58:08.309] [debug] Sending final action results for action ID 97
+[19:58:08.309] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:08.309] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:08.309] [debug] Packet sent for action ID 97
+[19:58:08.623] [info] [TaskMgr] ActionIntegrityTask: ResultId#62, TargetId#1343029254, ElapsedTimeMs: 300
+[19:58:09.541] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:09.541] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:E0000000 p4:0 )
+[19:58:09.541] [debug] [2097154] Unhandled Command: 0004
+[19:58:09.856] [debug] buildActionResults called for action ID 92
+[19:58:09.857] [debug] dmg: pot: 2 (200) wd: 2 (1) ap: 0.96 det: 1  = 2.99178
+[19:58:09.858] [debug] Sending final action results for action ID 92
+[19:58:09.858] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:09.858] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:09.858] [debug] Packet sent for action ID 92
+[19:58:10.161] [info] [TaskMgr] ActionIntegrityTask: ResultId#63, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:11.412] [debug] buildActionResults called for action ID 7
+[19:58:11.414] [debug] Sending final action results for action ID 7
+[19:58:11.414] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:11.414] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:11.414] [debug] Packet sent for action ID 7
+[19:58:11.718] [info] [TaskMgr] ActionIntegrityTask: ResultId#64, TargetId#1343029254, ElapsedTimeMs: 300
+[19:58:11.727] [debug] buildActionResults called for action ID 81
+[19:58:11.728] [debug] dmg: pot: 1.8 (180) wd: 2 (1) ap: 0.96 det: 1  = 2.92324
+[19:58:11.729] [debug] Sending final action results for action ID 81
+[19:58:11.729] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:11.729] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:11.729] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:11.729] [debug] Packet sent for action ID 81
+[19:58:12.031] [info] [TaskMgr] ActionIntegrityTask: ResultId#65, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:12.031] [info] [TaskMgr] ActionIntegrityTask: ResultId#65, TargetId#1343029254, ElapsedTimeMs: 300
+[19:58:13.597] [debug] buildActionResults called for action ID 82
+[19:58:13.597] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 2.08552
+[19:58:13.598] [debug] Sending final action results for action ID 82
+[19:58:13.598] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:13.598] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:13.599] [debug] Packet sent for action ID 82
+[19:58:13.899] [info] [TaskMgr] ActionIntegrityTask: ResultId#66, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:13.906] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:13.906] [debug]           DRAWN_SWORD | 2 ( p1:E000000000000000 p11:0 p12:E0000000 p2:1 p3:0 p4:0 )
+[19:58:13.906] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:13.906] [debug]           TARGET_DECIDE | 3 ( p1:E0000000 p11:E0000000 p12:0 p2:0 p3:0 p4:0 )
+[19:58:13.908] [debug] buildActionResults called for action ID 88
+[19:58:13.908] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 0.964363
+[19:58:13.909] [debug] Sending final action results for action ID 88
+[19:58:13.909] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:13.909] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:13.909] [debug] Packet sent for action ID 88
+[19:58:14.210] [info] [TaskMgr] ActionIntegrityTask: ResultId#67, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:16.708] [debug] buildActionResults called for action ID 7
+[19:58:16.708] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 2.03178
+[19:58:16.709] [debug] Sending final action results for action ID 7
+[19:58:16.709] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:16.709] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:16.709] [debug] Packet sent for action ID 7
+[19:58:17.023] [info] [TaskMgr] ActionIntegrityTask: ResultId#68, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:17.946] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:17.946] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:500D0006 p4:0 )
+[19:58:17.946] [debug] [2097154] Unhandled Command: 0004
+[19:58:17.948] [debug] buildActionResults called for action ID 89
+[19:58:17.949] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.0116
+[19:58:17.949] [debug] Sending final action results for action ID 89
+[19:58:17.949] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:17.949] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:17.949] [debug] Packet sent for action ID 89
+[19:58:18.251] [info] [TaskMgr] ActionIntegrityTask: ResultId#69, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:20.179] [debug] buildActionResults called for action ID 90
+[19:58:20.180] [debug] dmg: pot: 1.2 (120) wd: 2 (1) ap: 0.96 det: 1  = 1.97857
+[19:58:20.193] [debug] Sending final action results for action ID 90
+[19:58:20.196] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:20.196] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:20.196] [debug] Packet sent for action ID 90
+[19:58:20.510] [info] [TaskMgr] ActionIntegrityTask: ResultId#70, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:21.685] [debug] [2097154] Zone IPC : Command ( 0191 )
+[19:58:21.685] [debug]           UNKNOWN | 4 ( p1:0 p11:0 p12:0 p2:0 p3:500D0006 p4:0 )
+[19:58:21.685] [debug] [2097154] Unhandled Command: 0004
+[19:58:21.996] [debug] buildActionResults called for action ID 91
+[19:58:21.996] [debug] dmg: pot: 1.7 (170) wd: 2 (1) ap: 0.96 det: 1  = 2.8816
+[19:58:21.997] [debug] Sending final action results for action ID 91
+[19:58:21.997] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:21.997] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:21.997] [debug] Packet sent for action ID 91
+[19:58:22.298] [info] [TaskMgr] ActionIntegrityTask: ResultId#71, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:24.173] [debug] buildActionResults called for action ID 92
+[19:58:24.173] [debug] dmg: pot: 2 (200) wd: 2 (1) ap: 0.96 det: 1  = 2.88647
+[19:58:24.174] [debug] Sending final action results for action ID 92
+[19:58:24.174] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:24.174] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:24.174] [debug] Packet sent for action ID 92
+[19:58:24.474] [info] [TaskMgr] ActionIntegrityTask: ResultId#72, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:26.042] [debug] buildActionResults called for action ID 81
+[19:58:26.042] [debug] dmg: pot: 1.8 (180) wd: 2 (1) ap: 0.96 det: 1  = 3.11119
+[19:58:26.044] [debug] Sending final action results for action ID 81
+[19:58:26.044] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:26.044] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:26.044] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:26.044] [debug] Packet sent for action ID 81
+[19:58:26.345] [info] [TaskMgr] ActionIntegrityTask: ResultId#73, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:26.345] [info] [TaskMgr] ActionIntegrityTask: ResultId#73, TargetId#1343029254, ElapsedTimeMs: 300
+[19:58:28.227] [debug] buildActionResults called for action ID 82
+[19:58:28.228] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 1.97485
+[19:58:28.228] [debug] Sending final action results for action ID 82
+[19:58:28.228] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:28.228] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:28.228] [debug] Packet sent for action ID 82
+[19:58:28.530] [info] [TaskMgr] ActionIntegrityTask: ResultId#74, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:28.538] [debug] buildActionResults called for action ID 88
+[19:58:28.539] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.01072
+[19:58:28.540] [debug] Sending final action results for action ID 88
+[19:58:28.540] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:28.540] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:28.540] [debug] Packet sent for action ID 88
+[19:58:28.840] [info] [TaskMgr] ActionIntegrityTask: ResultId#75, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:31.345] [debug] buildActionResults called for action ID 7
+[19:58:31.346] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 1.94439
+[19:58:31.346] [debug] Sending final action results for action ID 7
+[19:58:31.347] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:31.347] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:31.347] [debug] Packet sent for action ID 7
+[19:58:31.661] [info] [TaskMgr] ActionIntegrityTask: ResultId#76, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:32.589] [debug] buildActionResults called for action ID 89
+[19:58:32.589] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 0.980378
+[19:58:32.590] [debug] Sending final action results for action ID 89
+[19:58:32.590] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:32.590] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:32.590] [debug] Packet sent for action ID 89
+[19:58:32.891] [info] [TaskMgr] ActionIntegrityTask: ResultId#77, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:34.771] [debug] buildActionResults called for action ID 90
+[19:58:34.771] [debug] dmg: pot: 1.2 (120) wd: 2 (1) ap: 0.96 det: 1  = 2.08161
+[19:58:34.772] [debug] Sending final action results for action ID 90
+[19:58:34.772] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:34.772] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:34.772] [debug] Packet sent for action ID 90
+[19:58:35.072] [info] [TaskMgr] ActionIntegrityTask: ResultId#78, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:36.637] [debug] buildActionResults called for action ID 91
+[19:58:36.638] [debug] dmg: pot: 1.7 (170) wd: 2 (1) ap: 0.96 det: 1  = 3.11059
+[19:58:36.639] [debug] Sending final action results for action ID 91
+[19:58:36.639] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:36.639] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:36.639] [debug] Packet sent for action ID 91
+[19:58:36.940] [info] [TaskMgr] ActionIntegrityTask: ResultId#79, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:38.821] [debug] buildActionResults called for action ID 92
+[19:58:38.822] [debug] dmg: pot: 2 (200) wd: 2 (1) ap: 0.96 det: 1  = 3.00329
+[19:58:38.823] [debug] Sending final action results for action ID 92
+[19:58:38.823] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:38.823] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:38.823] [debug] Packet sent for action ID 92
+[19:58:39.124] [info] [TaskMgr] ActionIntegrityTask: ResultId#80, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:40.685] [debug] buildActionResults called for action ID 81
+[19:58:40.686] [debug] dmg: pot: 1.8 (180) wd: 2 (1) ap: 0.96 det: 1  = 2.87293
+[19:58:40.687] [debug] Sending final action results for action ID 81
+[19:58:40.687] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:40.687] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:40.687] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:40.687] [debug] Packet sent for action ID 81
+[19:58:41.002] [info] [TaskMgr] ActionIntegrityTask: ResultId#81, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:41.002] [info] [TaskMgr] ActionIntegrityTask: ResultId#81, TargetId#1343029254, ElapsedTimeMs: 300
+[19:58:42.552] [debug] buildActionResults called for action ID 82
+[19:58:42.552] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 1.92094
+[19:58:42.553] [debug] Sending final action results for action ID 82
+[19:58:42.553] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:42.553] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:42.553] [debug] Packet sent for action ID 82
+[19:58:42.862] [debug] buildActionResults called for action ID 88
+[19:58:42.862] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 0.96793
+[19:58:42.863] [debug] Sending final action results for action ID 88
+[19:58:42.863] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:42.864] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:42.864] [debug] Packet sent for action ID 88
+[19:58:42.871] [info] [TaskMgr] ActionIntegrityTask: ResultId#82, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:43.178] [info] [TaskMgr] ActionIntegrityTask: ResultId#83, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:45.664] [debug] buildActionResults called for action ID 7
+[19:58:45.664] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 1.99756
+[19:58:45.665] [debug] Sending final action results for action ID 7
+[19:58:45.665] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:45.665] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:45.665] [debug] Packet sent for action ID 7
+[19:58:45.966] [info] [TaskMgr] ActionIntegrityTask: ResultId#84, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:46.913] [debug] buildActionResults called for action ID 89
+[19:58:46.913] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 0.975907
+[19:58:46.914] [debug] Sending final action results for action ID 89
+[19:58:46.914] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:46.914] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:46.914] [debug] Packet sent for action ID 89
+[19:58:47.230] [info] [TaskMgr] ActionIntegrityTask: ResultId#85, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:49.094] [debug] buildActionResults called for action ID 90
+[19:58:49.095] [debug] dmg: pot: 1.2 (120) wd: 2 (1) ap: 0.96 det: 1  = 2.03912
+[19:58:49.096] [debug] Sending final action results for action ID 90
+[19:58:49.096] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:49.096] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:49.096] [debug] Packet sent for action ID 90
+[19:58:49.398] [info] [TaskMgr] ActionIntegrityTask: ResultId#86, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:50.968] [debug] buildActionResults called for action ID 91
+[19:58:50.968] [debug] dmg: pot: 1.7 (170) wd: 2 (1) ap: 0.96 det: 1  = 2.98995
+[19:58:50.969] [debug] Sending final action results for action ID 91
+[19:58:50.969] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:50.969] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:50.969] [debug] Packet sent for action ID 91
+[19:58:51.269] [info] [TaskMgr] ActionIntegrityTask: ResultId#87, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:53.146] [debug] buildActionResults called for action ID 92
+[19:58:53.146] [debug] dmg: pot: 2 (200) wd: 2 (1) ap: 0.96 det: 1  = 3.13562
+[19:58:53.147] [debug] Sending final action results for action ID 92
+[19:58:53.147] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:53.147] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:53.147] [debug] Packet sent for action ID 92
+[19:58:53.461] [info] [TaskMgr] ActionIntegrityTask: ResultId#88, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:55.016] [debug] buildActionResults called for action ID 81
+[19:58:55.016] [debug] dmg: pot: 1.8 (180) wd: 2 (1) ap: 0.96 det: 1  = 3.14391
+[19:58:55.017] [debug] Sending final action results for action ID 81
+[19:58:55.018] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:55.018] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:55.018] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:55.018] [debug] Packet sent for action ID 81
+[19:58:55.320] [info] [TaskMgr] ActionIntegrityTask: ResultId#89, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:55.320] [info] [TaskMgr] ActionIntegrityTask: ResultId#89, TargetId#1343029254, ElapsedTimeMs: 300
+[19:58:56.886] [debug] buildActionResults called for action ID 82
+[19:58:56.886] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 1.94892
+[19:58:56.887] [debug] Sending final action results for action ID 82
+[19:58:56.887] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:56.887] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:56.887] [debug] Packet sent for action ID 82
+[19:58:57.189] [info] [TaskMgr] ActionIntegrityTask: ResultId#90, TargetId#2097154, ElapsedTimeMs: 300
+[19:58:57.198] [debug] buildActionResults called for action ID 88
+[19:58:57.198] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 0.972453
+[19:58:57.199] [debug] Sending final action results for action ID 88
+[19:58:57.199] [debug] sendActionResults called. Targets afflicted: 1
+[19:58:57.199] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:58:57.199] [debug] Packet sent for action ID 88
+[19:58:57.500] [info] [TaskMgr] ActionIntegrityTask: ResultId#91, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:00.002] [debug] buildActionResults called for action ID 7
+[19:59:00.003] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 2.06806
+[19:59:00.003] [debug] Sending final action results for action ID 7
+[19:59:00.003] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:00.003] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:00.003] [debug] Packet sent for action ID 7
+[19:59:00.306] [info] [TaskMgr] ActionIntegrityTask: ResultId#92, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:01.250] [debug] buildActionResults called for action ID 89
+[19:59:01.250] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.00178
+[19:59:01.251] [debug] Sending final action results for action ID 89
+[19:59:01.251] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:01.251] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:01.251] [debug] Packet sent for action ID 89
+[19:59:01.554] [info] [TaskMgr] ActionIntegrityTask: ResultId#93, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:03.416] [debug] buildActionResults called for action ID 90
+[19:59:03.416] [debug] dmg: pot: 1.2 (120) wd: 2 (1) ap: 0.96 det: 1  = 2.0158
+[19:59:03.417] [debug] Sending final action results for action ID 90
+[19:59:03.417] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:03.417] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:03.417] [debug] Packet sent for action ID 90
+[19:59:03.721] [info] [TaskMgr] ActionIntegrityTask: ResultId#94, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:05.286] [debug] buildActionResults called for action ID 91
+[19:59:05.287] [debug] dmg: pot: 1.7 (170) wd: 2 (1) ap: 0.96 det: 1  = 3.02392
+[19:59:05.287] [debug] Sending final action results for action ID 91
+[19:59:05.287] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:05.287] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:05.287] [debug] Packet sent for action ID 91
+[19:59:05.590] [info] [TaskMgr] ActionIntegrityTask: ResultId#95, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:07.469] [debug] buildActionResults called for action ID 92
+[19:59:07.469] [debug] dmg: pot: 2 (200) wd: 2 (1) ap: 0.96 det: 1  = 2.96509
+[19:59:07.470] [debug] Sending final action results for action ID 92
+[19:59:07.470] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:07.470] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:07.470] [debug] Packet sent for action ID 92
+[19:59:07.772] [info] [TaskMgr] ActionIntegrityTask: ResultId#96, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:09.339] [debug] buildActionResults called for action ID 81
+[19:59:09.340] [debug] dmg: pot: 1.8 (180) wd: 2 (1) ap: 0.96 det: 1  = 3.08643
+[19:59:09.340] [debug] Sending final action results for action ID 81
+[19:59:09.341] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:09.341] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:09.341] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:09.341] [debug] Packet sent for action ID 81
+[19:59:09.654] [info] [TaskMgr] ActionIntegrityTask: ResultId#97, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:09.654] [info] [TaskMgr] ActionIntegrityTask: ResultId#97, TargetId#1343029254, ElapsedTimeMs: 300
+[19:59:11.209] [debug] buildActionResults called for action ID 82
+[19:59:11.209] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 1.9514
+[19:59:11.209] [debug] Sending final action results for action ID 82
+[19:59:11.210] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:11.210] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:11.210] [debug] Packet sent for action ID 82
+[19:59:11.510] [info] [TaskMgr] ActionIntegrityTask: ResultId#98, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:11.519] [debug] buildActionResults called for action ID 88
+[19:59:11.519] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.04603
+[19:59:11.520] [debug] Sending final action results for action ID 88
+[19:59:11.520] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:11.520] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:11.520] [debug] Packet sent for action ID 88
+[19:59:11.825] [info] [TaskMgr] ActionIntegrityTask: ResultId#99, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:14.331] [debug] buildActionResults called for action ID 7
+[19:59:14.332] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 2.07159
+[19:59:14.333] [debug] Sending final action results for action ID 7
+[19:59:14.333] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:14.333] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:14.333] [debug] Packet sent for action ID 7
+[19:59:14.633] [info] [TaskMgr] ActionIntegrityTask: ResultId#100, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:15.577] [debug] buildActionResults called for action ID 89
+[19:59:15.577] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 0.991546
+[19:59:15.579] [debug] Sending final action results for action ID 89
+[19:59:15.579] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:15.579] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:15.579] [debug] Packet sent for action ID 89
+[19:59:15.879] [info] [TaskMgr] ActionIntegrityTask: ResultId#101, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:17.754] [debug] buildActionResults called for action ID 90
+[19:59:17.755] [debug] dmg: pot: 1.2 (120) wd: 2 (1) ap: 0.96 det: 1  = 2.0466
+[19:59:17.756] [debug] Sending final action results for action ID 90
+[19:59:17.756] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:17.756] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:17.756] [debug] Packet sent for action ID 90
+[19:59:18.056] [info] [TaskMgr] ActionIntegrityTask: ResultId#102, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:19.623] [debug] buildActionResults called for action ID 91
+[19:59:19.624] [debug] dmg: pot: 1.7 (170) wd: 2 (1) ap: 0.96 det: 1  = 3.10653
+[19:59:19.625] [debug] Sending final action results for action ID 91
+[19:59:19.625] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:19.625] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:19.625] [debug] Packet sent for action ID 91
+[19:59:19.927] [info] [TaskMgr] ActionIntegrityTask: ResultId#103, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:21.808] [debug] buildActionResults called for action ID 92
+[19:59:21.808] [debug] dmg: pot: 2 (200) wd: 2 (1) ap: 0.96 det: 1  = 2.87306
+[19:59:21.809] [debug] Sending final action results for action ID 92
+[19:59:21.810] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:21.810] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:21.810] [debug] Packet sent for action ID 92
+[19:59:22.110] [info] [TaskMgr] ActionIntegrityTask: ResultId#104, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:23.672] [debug] buildActionResults called for action ID 81
+[19:59:23.672] [debug] dmg: pot: 1.8 (180) wd: 2 (1) ap: 0.96 det: 1  = 3.09756
+[19:59:23.673] [debug] Sending final action results for action ID 81
+[19:59:23.673] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:23.673] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:23.673] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:23.673] [debug] Packet sent for action ID 81
+[19:59:23.973] [info] [TaskMgr] ActionIntegrityTask: ResultId#105, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:23.973] [info] [TaskMgr] ActionIntegrityTask: ResultId#105, TargetId#1343029254, ElapsedTimeMs: 300
+[19:59:25.544] [debug] buildActionResults called for action ID 82
+[19:59:25.545] [debug] dmg: pot: 1.3 (130) wd: 2 (1) ap: 0.96 det: 1  = 1.93637
+[19:59:25.545] [debug] Sending final action results for action ID 82
+[19:59:25.545] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:25.545] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:25.545] [debug] Packet sent for action ID 82
+[19:59:25.848] [info] [TaskMgr] ActionIntegrityTask: ResultId#106, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:25.857] [debug] buildActionResults called for action ID 88
+[19:59:25.857] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.00445
+[19:59:25.858] [debug] Sending final action results for action ID 88
+[19:59:25.858] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:25.858] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:25.858] [debug] Packet sent for action ID 88
+[19:59:26.161] [info] [TaskMgr] ActionIntegrityTask: ResultId#107, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:28.664] [debug] buildActionResults called for action ID 7
+[19:59:28.664] [debug] dmg: pot: 1.1 (110) wd: 2 (1) ap: 0.96 det: 1  = 1.99953
+[19:59:28.665] [debug] Sending final action results for action ID 7
+[19:59:28.665] [debug] sendActionResults called. Targets afflicted: 1
+[19:59:28.665] [debug] Sapphire::World::ActionIntegrityTask::onQueue
+[19:59:28.665] [debug] Packet sent for action ID 7
+[19:59:28.966] [info] [TaskMgr] ActionIntegrityTask: ResultId#108, TargetId#2097154, ElapsedTimeMs: 300
+[19:59:29.910] [debug] buildActionResults called for action ID 89
+[19:59:29.910] [debug] dmg: pot: 1 (100) wd: 2 (1) ap: 0.96 det: 1  = 1.01415
+[19:59:29.912] [debug] Sending final action results for action ID 89

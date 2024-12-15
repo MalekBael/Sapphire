@@ -1,5 +1,5 @@
 cmake_policy( SET CMP0014 NEW )
-cmake_minimum_required( VERSION 3.0.2 )
+cmake_minimum_required(VERSION 3.10)
 project( Sapphire )
 
 set( EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/tools )
