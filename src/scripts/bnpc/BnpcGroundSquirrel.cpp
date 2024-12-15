@@ -20,8 +20,6 @@
 #include <AI/Fsm/StateRoam.h>
 
 #include "../src/world/Actor/GameObject.h"
-
-// Include ScriptObject.h for EXPOSE_SCRIPT macro
 #include "../src/scripts/ScriptObject.h"
 
 using namespace Sapphire::World;
@@ -37,13 +35,13 @@ public:
   {
     auto gambitPack = std::make_shared< AI::GambitTimeLinePack >( -1 );
 
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 2 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 4 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 6 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 8 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 10 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 12 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 14 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 101, 0 ), 2 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 162, 0 ), 4 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 163, 0 ), 6 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 7, 0 ), 8 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 7, 0 ), 10 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 7, 0 ), 12 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 7, 0 ), 14 );
 
     m_gambitPack = gambitPack;
 
@@ -52,8 +50,7 @@ public:
   }
 
 private:
-  std::shared_ptr< AI::GambitPack > m_gambitPack;// Member variable to store GambitPack
+  std::shared_ptr< AI::GambitPack > m_gambitPack;
 };
 
-// Expose the script to the scripting engine
 EXPOSE_SCRIPT( BnpcGroundSquirrel );

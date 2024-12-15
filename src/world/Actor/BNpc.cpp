@@ -917,16 +917,12 @@ uint32_t BNpc::getLayoutId() const
   return m_layoutId;
 }
 
+
 void BNpc::init()
 {
-  // Initialize health
   m_maxHp = Math::CalcStats::calculateMaxHp( *getAsChara() );
   m_hp = m_maxHp;
-
-  // Initialize roam target time
   m_lastRoamTargetReachedTime = Common::Util::getTimeSeconds();
-
-  // Access the Script Manager and NativeScriptMgr
   auto& scriptMgr = Common::Service< ScriptMgr >::ref();
   NativeScriptMgr& nativeScriptMgr = scriptMgr.getNativeScriptHandler();
 
@@ -936,7 +932,7 @@ void BNpc::init()
   if( bnpcScript )
   {
     // Log the script ID or name
-    Logger::debug( "---------------------------BNpc script found for BNpcBaseId: {}", m_bNpcBaseId );
+    Logger::debug( "BNpc Instance {:p}: ---------------------------BNpc script found for BNpcBaseId: {}", m_bNpcBaseId );
 
     // Initialize the BNpc with the specific script
     bnpcScript->onInit( *this );
@@ -944,7 +940,7 @@ void BNpc::init()
   else
   {
     // Log that no script was found
-    Logger::debug( "---------------------------No BNpc script found for BNpcBaseId: {}", m_bNpcBaseId );
+    Logger::debug( "BNpc Instance {:p}: ---------------------------No BNpc script found for BNpcBaseId: {}", m_bNpcBaseId );
 
     // Use a generic gambit pack if no script is found
     auto gambitPack = AI::make_GambitTimeLinePack( -1 );
@@ -958,7 +954,6 @@ void BNpc::init()
     m_pGambitPack = gambitPack;
   }
 
-  // Initialize Finite State Machine (FSM)
   using namespace AI::Fsm;
   m_fsm = make_StateMachine();
   auto stateIdle = make_StateIdle();

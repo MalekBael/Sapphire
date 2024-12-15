@@ -146,3 +146,11 @@ doxygen/*.tmp
 config/*.ini
 !config/config.ini.default
 /CMakeSettings.json
+
+# Ignore specific project root files
+/fix_enum.py
+/game_log.txt
+/notes.txt
+/battlelog.txt
+/boost log.txt
+/console log.txt
