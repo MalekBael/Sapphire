@@ -18,7 +18,7 @@ endif()
 ##############################
 #add_subdirectory( "exd_common_gen" )
 #add_subdirectory( "exd_struct_gen" )
-#add_subdirectory( "exd_struct_test" )
+add_subdirectory( "exd_struct_test" )
 add_subdirectory( "quest_parser" )
 add_subdirectory( "custom_talk_parser" )
 #add_subdirectory( "discovery_parser" )

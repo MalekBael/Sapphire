@@ -164,12 +164,6 @@ namespace Sapphire::Entity
     const Common::FFXIVARR_POSITION3& getRoamTargetPos() const;
     const Common::FFXIVARR_POSITION3& getSpawnPos() const;
 
-    // Add a public setter for m_pGambitPack
-    void setGambitPack( std::shared_ptr< World::AI::GambitPack > gambitPack )
-    {
-      m_pGambitPack = gambitPack;
-    }
-
   private:
     uint32_t m_bNpcBaseId;
     uint32_t m_bNpcNameId;

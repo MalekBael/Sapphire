@@ -154,3 +154,5 @@ config/*.ini
 /battlelog.txt
 /boost log.txt
 /console log.txt
+/notes/
+/sheets/

@@ -1,9 +1,0 @@
-Common.h
-Action.cpp
-CommonAction.h
-PacketUtil.h
-Chara.cpp
-Chara.h
-PacketUtil.cpp
-EffectPacket.h
-HudParamPacket.h

@@ -44,6 +44,7 @@
 #include <Task/ActionIntegrityTask.h>
 #include <Service.h>
 
+#include <Action/Action.h>
 #include <AI/GambitRule.h>
 #include <AI/GambitPack.h>
 #include <AI/GambitTargetCondition.h>
@@ -55,20 +56,10 @@
 #include <AI/Fsm/StateRetreat.h>
 #include <AI/Fsm/StateDead.h>
 
-#include "../src/world/Script/NativeScriptApi.h"
-// for bnpc scripting
-#include <Actor/Common.BNpc.h>
-
-#include "Script/NativeScriptMgr.h"
-
-
-
-
 using namespace Sapphire;
 using namespace Sapphire::World;
 using namespace Sapphire::Common;
 using namespace Sapphire::Entity;
-using namespace Sapphire::Scripting;
 using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::Network::ActorControl;
@@ -843,8 +834,7 @@ void BNpc::autoAttack( CharaPtr pTarget )
 
   uint64_t tick = Common::Util::getTimeMs();
 
-  // todo: this needs to use the
-  // delay for the equipped weapon
+  // todo: this needs to use the auto attack delay for the equipped weapon
   if( ( tick - m_lastAttack ) > 2500 )
   {
     pTarget->onActionHostile( getAsChara() );
@@ -917,49 +907,38 @@ uint32_t BNpc::getLayoutId() const
   return m_layoutId;
 }
 
-
 void BNpc::init()
 {
   m_maxHp = Math::CalcStats::calculateMaxHp( *getAsChara() );
   m_hp = m_maxHp;
+
   m_lastRoamTargetReachedTime = Common::Util::getTimeSeconds();
-  auto& scriptMgr = Common::Service< ScriptMgr >::ref();
-  NativeScriptMgr& nativeScriptMgr = scriptMgr.getNativeScriptHandler();
 
-  // Retrieve the BNpcScript using the BNpcBaseId
-  Sapphire::ScriptAPI::BNpcScript* bnpcScript = nativeScriptMgr.getScript< Sapphire::ScriptAPI::BNpcScript >( m_bNpcBaseId );
+  //setup a test gambit
+  auto testGambitRule = AI::make_GambitRule( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 5000 );
+  auto testGambitRule1 = AI::make_GambitRule( AI::make_HPSelfPctLessThanTargetCondition( 50 ), Action::make_Action( getAsChara(), 120, 0 ), 5000 );
+/*
+  auto gambitPack = AI::make_GambitRuleSetPack();
+  gambitPack->addRule( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 5000 );
+  gambitPack->addRule( AI::make_HPSelfPctLessThanTargetCondition( 50 ), Action::make_Action( getAsChara(), 120, 0 ), 10000 );
+  m_pGambitPack = gambitPack;
+*/
 
-  if( bnpcScript )
-  {
-    // Log the script ID or name
-    Logger::debug( "BNpc Instance {:p}: ---------------------------BNpc script found for BNpcBaseId: {}", m_bNpcBaseId );
-
-    // Initialize the BNpc with the specific script
-    bnpcScript->onInit( *this );
-  }
-  else
-  {
-    // Log that no script was found
-    Logger::debug( "BNpc Instance {:p}: ---------------------------No BNpc script found for BNpcBaseId: {}", m_bNpcBaseId );
-
-    // Use a generic gambit pack if no script is found
-    auto gambitPack = AI::make_GambitTimeLinePack( -1 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 2 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 89, 0 ), 4 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 90, 0 ), 6 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 91, 0 ), 8 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 92, 0 ), 10 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 81, 0 ), 12 );
-    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 82, 0 ), 14 );
-    m_pGambitPack = gambitPack;
-  }
+  auto gambitPack = AI::make_GambitTimeLinePack( -1 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 2 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 89, 0 ), 4 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 90, 0 ), 6 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 91, 0 ), 8 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 92, 0 ), 10 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 81, 0 ), 12 );
+  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 82, 0 ), 14 );
+  m_pGambitPack = gambitPack;
 
   using namespace AI::Fsm;
   m_fsm = make_StateMachine();
   auto stateIdle = make_StateIdle();
   auto stateCombat = make_StateCombat();
   auto stateDead = make_StateDead();
-
   if( !hasFlag( Immobile ) )
   {
     auto stateRoam = make_StateRoam();
@@ -969,23 +948,20 @@ void BNpc::init()
     stateRoam->addTransition( stateDead, make_IsDeadCondition() );
     m_fsm->addState( stateRoam );
   }
-
   stateIdle->addTransition( stateCombat, make_HateListHasEntriesCondition() );
   stateCombat->addTransition( stateIdle, make_HateListEmptyCondition() );
   stateIdle->addTransition( stateDead, make_IsDeadCondition() );
   stateCombat->addTransition( stateDead, make_IsDeadCondition() );
   m_fsm->addState( stateIdle );
-
   if( !hasFlag( NoDeaggro ) )
   {
     auto stateRetreat = make_StateRetreat();
     stateCombat->addTransition( stateRetreat, make_SpawnPointDistanceGtMaxDistanceCondition() );
     stateRetreat->addTransition( stateIdle, make_RoamTargetReachedCondition() );
-    m_fsm->addState( stateRetreat );
   }
-
   m_fsm->setCurrentState( stateIdle );
 }
+
 void BNpc::processGambits( uint64_t tickCount )
 {
   m_tp = 1000;

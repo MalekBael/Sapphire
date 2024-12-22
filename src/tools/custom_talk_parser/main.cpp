@@ -26,7 +26,7 @@ namespace fs = std::filesystem;
 using namespace Sapphire;
 
 std::string javaPath("C:\\java.exe " );
-std::string gamePath( "F:\\Client3.3\\game\\sqpack" );
+std::string gamePath( "C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
 
 const std::string onWithinRangeStr(
   "  void onWithinRange( World::Quest& quest, Entity::Player& player, uint64_t eRangeId, float x, float y, float z ) override\n"

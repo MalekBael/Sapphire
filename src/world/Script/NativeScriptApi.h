@@ -1,5 +1,3 @@
-// NativeScriptApi.h
-
 #ifndef NATIVE_SCRIPT_API
 #define NATIVE_SCRIPT_API
 
@@ -14,9 +12,6 @@
 #include "Exd/ExdData.h"
 #include "Territory/InstanceObjectCache.h"
 #include "Service.h"
-
-#include <../src/world/Actor/BNpc.h>
-#include <../src/scripts/ScriptObject.h>
 
 #ifdef _MSC_VER
 #define EXPORT __declspec( dllexport )
@@ -127,38 +122,6 @@ namespace Sapphire::ScriptAPI
     * @param actor The actor that died
     */
     virtual void onPlayerDeath( Sapphire::Entity::Chara& actor );
-  };
-
-  class BNpcScript : public ScriptObject
-  {
-  public:
-    BNpcScript( uint32_t BNpcId );
-
-    virtual void onInit( Sapphire::Entity::BNpc& bnpc ) = 0;
-    virtual void onTick( Sapphire::Entity::BNpc& bnpc, uint64_t tickCount );
-
-    /*!
-        * @brief Provides access to the associated Chara instance
-        * @return Shared pointer to the Chara instance
-        */
-    Sapphire::Entity::CharaPtr getAsChara() const
-    {
-      if( m_bnpc )
-        return m_bnpc->getAsChara();
-      return nullptr;
-    }
-
-  protected:
-    Sapphire::Entity::BNpc* m_bnpc; /*!< Pointer to the associated BNpc instance */
-
-    /*!
-        * @brief Sets the BNpc instance reference
-        * @param bnpc Reference to the BNpc instance
-        */
-    void setBnpc( Sapphire::Entity::BNpc& bnpc )
-    {
-      m_bnpc = &bnpc;
-    }
   };
 
 

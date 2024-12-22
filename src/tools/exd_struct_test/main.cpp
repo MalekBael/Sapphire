@@ -16,7 +16,7 @@ using namespace Sapphire;
 namespace fs = std::filesystem;
 
 //const std::string datLocation( "/opt/sapphire_3_15_0/bin/sqpack" );
-const std::string datLocation( "/mnt/d/ffxiv/v2.28/game/sqpack" );
+const std::string datLocation( "C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
 
 int main( int argc, char* argv[] )
 {

@@ -28,7 +28,7 @@ using namespace Sapphire;
 Sapphire::Data::ExdData g_exdDataGen;
 
 //std::string datLocation( "F:\\client3.0\\game\\sqpack" );
-std::string datLocation( "C:\\Data\\Dev\\ffxiv3.01\\game\\sqpack" );
+std::string datLocation( "C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
 //const std::string datLocation( "/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY XIV Online/game/sqpack" );
 
 struct StatusModifier
