@@ -1,5 +1,3 @@
-// File: src/scripts/battlenpc/BnpcWaterSprite.cpp
-
 #include "../src/scripts/ScriptObject.h"
 #include "../src/world/Action/CommonAction.h"
 #include "../src/world/Actor/GameObject.h"
@@ -22,29 +20,23 @@ using namespace Sapphire::World;
 using namespace Sapphire::ScriptAPI;
 using namespace Sapphire::World::AI;
 
-class BnpcWaterSprite : public BattleNpcScript
+class BnpcLittleLadybug : public BattleNpcScript
 {
 public:
-  // Constructor initializing the base class with npcId 56
-  BnpcWaterSprite() : BattleNpcScript( 56 ) {}
+  BnpcLittleLadybug() : BattleNpcScript( 49 ) {}
 
-  // Overriding the onInit method to set up the GambitPack
   void onInit( Sapphire::Entity::BNpc& bnpc ) override
   {
-
-    //std::cout << "Initializing WaterSprite script for BNpc ID: " << bnpc.getBNpcBaseId() << std::endl;
-    // Create a new GambitTimeLinePack with default parameter
     auto gambitPack = std::make_shared< AI::GambitTimeLinePack >( -1 );
 
-    // Adding timelines with specific actions and conditions
     gambitPack->addTimeLine(
             AI::make_TopHateTargetCondition(),
-            Action::make_Action( bnpc.getAsChara(), 142, 0 ),
+            Action::make_Action( bnpc.getAsChara(), 7, 0 ),
             2 );
 
     gambitPack->addTimeLine(
             AI::make_TopHateTargetCondition(),
-            Action::make_Action( bnpc.getAsChara(), 142, 0 ),
+            Action::make_Action( bnpc.getAsChara(), 7, 0 ),
             6 );
 
     // Additional timelines can be uncommented and customized as needed
@@ -76,10 +68,8 @@ public:
         );
         */
 
-    // Assign the GambitPack to the member variable
     m_gambitPack = gambitPack;
 
-    // Associate the GambitPack with the BNpc instance
     bnpc.setGambitPack( m_gambitPack );
   }
 
@@ -87,5 +77,4 @@ private:
   std::shared_ptr< AI::GambitPack > m_gambitPack;
 };
 
-// Macro to expose the script to the scripting system
-EXPOSE_SCRIPT( BnpcWaterSprite );
+EXPOSE_SCRIPT( BnpcLittleLadybug );
