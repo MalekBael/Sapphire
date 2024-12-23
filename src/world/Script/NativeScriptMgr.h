@@ -1,10 +1,10 @@
 #ifndef NATIVE_SCRIPT_MGR_H
 #define NATIVE_SCRIPT_MGR_H
 
-#include <unordered_map>
-#include <set>
-#include <queue>
 #include <mutex>
+#include <queue>
+#include <set>
+#include <unordered_map>
 
 #include "ScriptLoader.h"
 
@@ -128,6 +128,6 @@ namespace Sapphire::Scripting
    * @return a std::shared_ptr to NativeScriptMgr
    */
   std::shared_ptr< NativeScriptMgr > createNativeScriptMgr();
-}
+}// namespace Sapphire::Scripting
 
 #endif

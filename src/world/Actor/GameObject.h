@@ -4,9 +4,9 @@
 #include <memory>
 
 #include "ForwardsZone.h"
-#include <set>
 #include <map>
 #include <queue>
+#include <set>
 
 namespace Sapphire::Entity
 {
@@ -131,7 +131,6 @@ namespace Sapphire::Entity
     Common::CellId getCellId() const;
     // set the current cell
     void setCellId( Common::CellId cellId );
-
   };
 
-}
+}// namespace Sapphire::Entity

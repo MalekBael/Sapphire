@@ -1,9 +1,9 @@
-#include <Util/Util.h>
-#include <Util/UtilMath.h>
 #include <Exd/ExdData.h>
-#include <utility>
 #include <Network/CommonActorControl.h>
 #include <Service.h>
+#include <Util/Util.h>
+#include <Util/UtilMath.h>
+#include <utility>
 
 #include "Forwards.h"
 
@@ -17,15 +17,15 @@
 #include "Network/Util/PacketUtil.h"
 
 #include "Action/Action.h"
-#include "WorldServer.h"
-#include "Session.h"
-#include "Math/CalcStats.h"
 #include "Chara.h"
-#include "Player.h"
-#include "Manager/TerritoryMgr.h"
+#include "Common.h"
 #include "Manager/MgrUtil.h"
 #include "Manager/PlayerMgr.h"
-#include "Common.h"
+#include "Manager/TerritoryMgr.h"
+#include "Math/CalcStats.h"
+#include "Player.h"
+#include "Session.h"
+#include "WorldServer.h"
 
 using namespace Sapphire;
 using namespace Sapphire::Common;
@@ -36,12 +36,11 @@ using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::Network::ActorControl;
 
-Chara::Chara( ObjKind type ) :
-  GameObject( type ),
-  m_pose( 0 ),
-  m_targetId( INVALID_GAME_OBJECT_ID64 ),
-  m_directorId( 0 ),
-  m_radius( 1.f )
+Chara::Chara( ObjKind type ) : GameObject( type ),
+                               m_pose( 0 ),
+                               m_targetId( INVALID_GAME_OBJECT_ID64 ),
+                               m_directorId( 0 ),
+                               m_radius( 1.f )
 {
 
   m_lastTickTime = 0;
@@ -340,7 +339,6 @@ bool Chara::checkAction()
     m_pCurrentAction.reset();
 
   return true;
-
 }
 
 void Chara::update( uint64_t tickCount )
@@ -652,7 +650,8 @@ void Chara::sendStatusEffectUpdate()
   for( const auto& effectIt : m_statusEffectMap )
   {
     float timeLeft = static_cast< float >( effectIt.second->getDuration() -
-                                           ( currentTimeMs - effectIt.second->getStartTimeMs() ) ) / 1000;
+                                           ( currentTimeMs - effectIt.second->getStartTimeMs() ) ) /
+                     1000;
     statusEffectList->data().effect[ slot ].Time = timeLeft;
     statusEffectList->data().effect[ slot ].Id = effectIt.second->getId();
     statusEffectList->data().effect[ slot ].Source = effectIt.second->getSrcActorId();
@@ -814,7 +813,8 @@ float Chara::getModifier( Common::ParamModifier paramModifier ) const
 }
 
 // Compute forward direction based on rotation angle (assuming rotation around Z axis)
-FFXIVARR_POSITION3 Chara::getForwardVector() const {
+FFXIVARR_POSITION3 Chara::getForwardVector() const
+{
   return Common::Util::normalize( FFXIVARR_POSITION3{ std::sin( getRot() ), 0, std::cos( getRot() ) } );
 }
 
@@ -824,9 +824,9 @@ bool Chara::isFacingTarget( const Chara& other, float threshold )
   auto toActor = Common::Util::normalize( Common::Util::projectY( other.getPos() - getPos() ) );
 
   auto forward = getForwardVector();
-  
+
   float dot = Common::Util::dot( forward, toActor );
-  
+
   // The threshold is used to determine how closely the actors need to be facing each other
   // 1.0 means they need to be perfectly facing each other
   // Lower values allow for some deviation

@@ -1,22 +1,22 @@
 #ifndef NATIVE_SCRIPT_API
 #define NATIVE_SCRIPT_API
 
-#include <string>
-#include "ForwardsZone.h"
 #include "Event/EventHandler.h"
+#include "Exd/ExdData.h"
+#include "ForwardsZone.h"
 #include "Manager/EventMgr.h"
 #include "Manager/LinkshellMgr.h"
 #include "Manager/PlayerMgr.h"
 #include "Manager/TerritoryMgr.h"
 #include "Manager/WarpMgr.h"
-#include "Exd/ExdData.h"
-#include "Territory/InstanceObjectCache.h"
 #include "Service.h"
+#include "Territory/InstanceObjectCache.h"
+#include <string>
 
 #ifdef _MSC_VER
 #define EXPORT __declspec( dllexport )
 #else
-#define EXPORT __attribute__((visibility("default")))
+#define EXPORT __attribute__( ( visibility( "default" ) ) )
 #endif
 
 namespace Sapphire
@@ -128,7 +128,7 @@ namespace Sapphire::ScriptAPI
   /*!
   * @brief The base class for any scripts that implement behaviour related to actions
   */
-  class ActionScript :  public ScriptObject
+  class ActionScript : public ScriptObject
   {
   public:
     explicit ActionScript( uint32_t actionId );
@@ -241,7 +241,7 @@ namespace Sapphire::ScriptAPI
 
     template< typename Ret, class Obj >
     inline std::function< void( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result ) >
-      bindSceneReturn( Ret ( Obj::*f )( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result ) )
+    bindSceneReturn( Ret ( Obj::*f )( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result ) )
     {
       return std::bind( f, static_cast< Obj* >( this ), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 );
     }
@@ -329,6 +329,44 @@ namespace Sapphire::ScriptAPI
   {
   public:
     explicit BattleNpcScript( uint32_t npcId );
+
+    virtual void onInit( Sapphire::Entity::BNpc& bnpc );
+
+    virtual void onUpdate( Sapphire::Entity::BNpc& bnpc, uint64_t tickCount );
+
+    virtual void onDeath( Sapphire::Entity::BNpc& bnpc );
+
+    virtual void onAggro( Sapphire::Entity::BNpc& bnpc, Sapphire::Entity::Chara& target );
+
+    virtual void onDeaggro( Sapphire::Entity::BNpc& bnpc, Sapphire::Entity::Chara& target );
+
+    virtual void onAction( Sapphire::Entity::BNpc& bnpc, Sapphire::Entity::Chara& target, uint32_t actionId );
+
+    virtual void onMove( Sapphire::Entity::BNpc& bnpc, const Common::FFXIVARR_POSITION3& position );
+
+    virtual void onSpawn( Sapphire::Entity::BNpc& bnpc );
+
+    virtual void onDespawn( Sapphire::Entity::BNpc& bnpc );
+
+    World::Manager::EventMgr& eventMgr()
+    {
+      return Common::Service< World::Manager::EventMgr >::ref();
+    }
+
+    World::Manager::PlayerMgr& playerMgr()
+    {
+      return Common::Service< World::Manager::PlayerMgr >::ref();
+    }
+
+    World::Manager::TerritoryMgr& teriMgr()
+    {
+      return Common::Service< World::Manager::TerritoryMgr >::ref();
+    }
+
+    World::Manager::WarpMgr& warpMgr()
+    {
+      return Common::Service< World::Manager::WarpMgr >::ref();
+    }
   };
 
   /*!
@@ -406,6 +444,6 @@ namespace Sapphire::ScriptAPI
     }
   };
 
-}
+}// namespace Sapphire::ScriptAPI
 
 #endif

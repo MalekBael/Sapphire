@@ -4,16 +4,16 @@
 
 #include <Common.h>
 #include <Util/SpawnIndexAllocator.h>
-#include <spdlog/fmt/fmt.h>
 #include <optional>
+#include <spdlog/fmt/fmt.h>
 
 #include "Chara.h"
-#include "Quest/Quest.h"
 #include "Event/EventHandler.h"
+#include "Quest/Quest.h"
 
+#include <array>
 #include <map>
 #include <queue>
-#include <array>
 
 namespace Sapphire::Entity
 {
@@ -193,7 +193,7 @@ namespace Sapphire::Entity
 
     void addSoldItem( uint32_t itemId, uint8_t stackSize );
 
-    std::deque< std::pair< uint32_t, uint8_t > > *getSoldItems();
+    std::deque< std::pair< uint32_t, uint8_t > >* getSoldItems();
 
     void clearSoldItems();
 
@@ -816,7 +816,7 @@ namespace Sapphire::Entity
 
     bool m_bIsLogin;
 
-    uint64_t m_characterId; // This id will be the name of the folder for character settings in "My Games"
+    uint64_t m_characterId;// This id will be the name of the folder for character settings in "My Games"
 
     uint8_t m_mode{};
 
@@ -858,18 +858,17 @@ namespace Sapphire::Entity
     uint8_t m_birthDay{};
     uint8_t m_birthMonth{};
 
-    struct RetainerInfo
-    {
+    struct RetainerInfo {
       uint32_t retainerId;
-      char retainerName[32];
+      char retainerName[ 32 ];
       uint32_t createUnixTime;
       bool isActive;
       bool isRename;
       uint8_t status;
-    } m_retainerInfo[8]{};
+    } m_retainerInfo[ 8 ]{};
 
     AchievementData m_achievementData{};
-    
+
     uint16_t m_activeTitle{};
     TitleList m_titleList{};
     HowToList m_howTo{};
@@ -891,12 +890,12 @@ namespace Sapphire::Entity
     uint16_t m_townWarpFstFlags;
 
     uint32_t m_playTime;
-    uint8_t m_openingSequence{0};
+    uint8_t m_openingSequence{ 0 };
 
-    uint16_t m_itemLevel{0};
+    uint16_t m_itemLevel{ 0 };
     std::map< uint32_t, Event::EventHandlerPtr > m_eventHandlerMap;
 
-    std::queue< uint8_t > m_freeHateSlotQueue; // queue with "hate slots" free to be assigned
+    std::queue< uint8_t > m_freeHateSlotQueue;// queue with "hate slots" free to be assigned
     std::map< uint32_t, uint8_t > m_actorIdTohateSlotMap;
 
     std::array< World::Quest, 30 > m_quests;
@@ -904,7 +903,7 @@ namespace Sapphire::Entity
 
 
     uint8_t m_gmRank{};
-    bool m_gmInvis{false};
+    bool m_gmInvis{ false };
 
     uint8_t m_configFlags{};
 
@@ -919,18 +918,17 @@ namespace Sapphire::Entity
     uint64_t m_onlineStatusCustom;
 
     // search info
-    char m_searchMessage[193]{}; // searchmessage to show in profile
-    uint8_t m_searchSelectRegion{}; // regions selected to show up in profile
+    char m_searchMessage[ 193 ]{}; // searchmessage to show in profile
+    uint8_t m_searchSelectRegion{};// regions selected to show up in profile
     uint8_t m_searchSelectClass{}; // class selected to show up in profile
 
     // shop info
     std::deque< std::pair< uint32_t, uint8_t > > m_soldItems;
 
     // housing info
-    Common::CharaLandData m_charaLandData[2]{};
+    Common::CharaLandData m_charaLandData[ 2 ]{};
 
   private:
-
     Common::ActiveLand m_activeLand{};
 
     // gc info
@@ -938,7 +936,7 @@ namespace Sapphire::Entity
     std::array< uint8_t, 3 > m_gcRank{};
 
     // content finder info
-    uint32_t m_cfPenaltyUntil{}; // unix time
+    uint32_t m_cfPenaltyUntil{};// unix time
 
     uint8_t m_companionId{};
     uint32_t m_mount;
@@ -946,16 +944,14 @@ namespace Sapphire::Entity
 
     Common::PlayerTeleportQuery m_teleportQuery{};
 
-    struct PlayerDyeingInfo
-    {
+    struct PlayerDyeingInfo {
       uint32_t itemToDyeContainer;
       uint32_t itemToDyeSlot;
       uint32_t dyeBagContainer;
       uint32_t dyeBagSlot;
     } m_dyeingInfo{};
 
-    struct PlayerGlamouringInfo
-    {
+    struct PlayerGlamouringInfo {
       uint32_t itemToGlamourContainer;
       uint32_t itemToGlamourSlot;
       uint32_t glamourBagContainer;
@@ -989,4 +985,4 @@ namespace Sapphire::Entity
     bool performResting();
   };
 
-}
+}// namespace Sapphire::Entity

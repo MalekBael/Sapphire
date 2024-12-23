@@ -1,8 +1,8 @@
 #include "NativeScriptMgr.h"
 
+#include "WorldServer.h"
 #include <Crypt/md5.h>
 #include <Service.h>
-#include "WorldServer.h"
 
 namespace Sapphire::Scripting
 {
@@ -146,5 +146,4 @@ namespace Sapphire::Scripting
   {
     return std::make_shared< NativeScriptMgr >();
   }
-}
-
+}// namespace Sapphire::Scripting

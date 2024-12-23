@@ -63,7 +63,7 @@ namespace Sapphire::Scripting
     std::vector< Sapphire::ScriptAPI::ScriptObject* > scripts;
   };
 
-}
+}// namespace Sapphire::Scripting
 
 
-#endif //SAPPHIRE_SCRIPTINFO_H
+#endif//SAPPHIRE_SCRIPTINFO_H

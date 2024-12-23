@@ -1,20 +1,20 @@
 #include "EventObject.h"
 
-#include "Territory/InstanceContent.h"
 #include "Actor/Player.h"
+#include "Territory/InstanceContent.h"
 
 #include <Logging/Logger.h>
-#include <Network/PacketDef/Zone/ServerZoneDef.h>
 #include <Network/CommonActorControl.h>
+#include <Network/PacketDef/Zone/ServerZoneDef.h>
 #include <Network/Util/PacketUtil.h>
 #include <Util/UtilMath.h>
 
 #include <Service.h>
 
-#include <utility>
-#include "WorldServer.h"
-#include "Session.h"
 #include "Manager/MgrUtil.h"
+#include "Session.h"
+#include "WorldServer.h"
+#include <utility>
 
 using namespace Sapphire;
 using namespace Sapphire::Common;
@@ -25,16 +25,15 @@ using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::Network::ActorControl;
 
 EventObject::EventObject( uint32_t actorId, uint32_t objectId, uint32_t gimmickId, uint32_t instanceId, uint8_t initialState,
-                          FFXIVARR_POSITION3 pos, float rotation, const std::string& givenName, uint8_t permissionInv ) :
-  GameObject( ObjKind::EventObj ),
-  m_gimmickId( gimmickId ),
-  m_instanceId( instanceId ),
-  m_state( initialState ),
-  m_objectId( objectId ),
-  m_name( givenName ),
-  m_housingLink( 0 ),
-  m_permissionInvisibility( permissionInv ),
-  m_ownerId( INVALID_GAME_OBJECT_ID )
+                          FFXIVARR_POSITION3 pos, float rotation, const std::string& givenName, uint8_t permissionInv ) : GameObject( ObjKind::EventObj ),
+                                                                                                                          m_gimmickId( gimmickId ),
+                                                                                                                          m_instanceId( instanceId ),
+                                                                                                                          m_state( initialState ),
+                                                                                                                          m_objectId( objectId ),
+                                                                                                                          m_name( givenName ),
+                                                                                                                          m_housingLink( 0 ),
+                                                                                                                          m_permissionInvisibility( permissionInv ),
+                                                                                                                          m_ownerId( INVALID_GAME_OBJECT_ID )
 {
   m_id = actorId;
   m_pos.x = pos.x;
@@ -138,7 +137,7 @@ void EventObject::spawn( PlayerPtr pTarget )
   eobjStatePacket->data().OwnerId = getOwnerId();
   eobjStatePacket->data().PermissionInvisibility = getPermissionInvisibility();
   eobjStatePacket->data().Args = 0xE0;
-  eobjStatePacket->data().Args2 = 0; // initial animation state
+  eobjStatePacket->data().Args2 = 0;// initial animation state
   eobjStatePacket->data().Args3 = getHousingLink();
 
   server.queueForPlayer( pTarget->getCharacterId(), eobjStatePacket );

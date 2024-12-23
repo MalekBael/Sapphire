@@ -2,21 +2,21 @@
 
 #include <Network/PacketContainer.h>
 
+#include <Service.h>
 #include <Util/UtilMath.h>
 #include <utility>
-#include <Service.h>
 
 #include "Territory/Territory.h"
 
 #include "Network/GameConnection.h"
 
+#include "BNpc.h"
 #include "Chara.h"
 #include "EventObject.h"
 #include "Player.h"
-#include "BNpc.h"
 
-#include "WorldServer.h"
 #include "Session.h"
+#include "WorldServer.h"
 
 #include "Manager/TerritoryMgr.h"
 
@@ -27,10 +27,8 @@ using namespace Sapphire::Entity;
 using namespace Sapphire::Network::Packets;
 //using namespace Sapphire::Network::Packets::Server;
 
-GameObject::GameObject( ObjKind type ) :
-  m_objKind( type )
+GameObject::GameObject( ObjKind type ) : m_objKind( type )
 {
-
 }
 
 uint32_t GameObject::getId() const
@@ -70,7 +68,6 @@ void GameObject::setPos( float x, float y, float z, bool broadcastUpdate )
     auto pZone = teriMgr.getTerritoryByGuId( getTerritoryId() );
     pZone->updateActorPosition( *this );
   }
-
 }
 
 void GameObject::setPos( const FFXIVARR_POSITION3& pos, bool broadcastUpdate )
@@ -247,7 +244,6 @@ void GameObject::removeFromInRange()
   {
     pCurAct->removeInRangeActor( *this );
   }
-
 }
 
 /*!

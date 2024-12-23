@@ -1,18 +1,18 @@
-#include <Logging/Logger.h>
 #include <Exd/ExdData.h>
+#include <Logging/Logger.h>
 
-#include <watchdog/Watchdog.h>
 #include <Service.h>
+#include <watchdog/Watchdog.h>
 
-#include "Territory/Territory.h"
+#include "Action/Action.h"
+#include "Actor/BNpc.h"
+#include "Actor/EventObject.h"
+#include "Actor/Player.h"
+#include "Event/EventHandler.h"
 #include "Territory/InstanceContent.h"
 #include "Territory/QuestBattle.h"
-#include "Actor/Player.h"
-#include "Actor/EventObject.h"
-#include "Actor/BNpc.h"
+#include "Territory/Territory.h"
 #include "WorldServer.h"
-#include "Event/EventHandler.h"
-#include "Action/Action.h"
 
 #include "Manager/EventMgr.h"
 #include "Manager/PlayerMgr.h"
@@ -35,8 +35,7 @@ using namespace Sapphire::World::Manager;
 
 namespace fs = std::filesystem;
 
-Sapphire::Scripting::ScriptMgr::ScriptMgr() :
-  m_firstScriptChangeNotificiation( false )
+Sapphire::Scripting::ScriptMgr::ScriptMgr() : m_firstScriptChangeNotificiation( false )
 {
   m_nativeScriptMgr = createNativeScriptMgr();
 }
@@ -92,9 +91,8 @@ void Sapphire::Scripting::ScriptMgr::watchDirectories()
     return;
 
   Watchdog::watchMany( server.getConfig().scripts.path + "*" +
-                       m_nativeScriptMgr->getModuleExtension(),
-                       [ this ]( const std::vector< ci::fs::path >& paths )
-                       {
+                               m_nativeScriptMgr->getModuleExtension(),
+                       [ this ]( const std::vector< ci::fs::path >& paths ) {
                          if( !m_firstScriptChangeNotificiation )
                          {
                            // for whatever reason, the first time this runs, it detects every file as changed
@@ -154,14 +152,14 @@ bool Sapphire::Scripting::ScriptMgr::loadDir( const std::string& dirname, std::s
 
 void Sapphire::Scripting::ScriptMgr::onPlayerFirstEnterWorld( Entity::Player& player )
 {
-//   try
-//   {
-//      std::string test = m_onFirstEnterWorld( player );
-//   }
-//   catch( const std::exception &e )
-//   {
-//      std::string what = e.what();
-//   }
+  //   try
+  //   {
+  //      std::string test = m_onFirstEnterWorld( player );
+  //   }
+  //   catch( const std::exception &e )
+  //   {
+  //      std::string what = e.what();
+  //   }
 }
 
 bool Sapphire::Scripting::ScriptMgr::onTalk( Entity::Player& player, uint64_t actorId, uint32_t eventId )
@@ -562,7 +560,7 @@ bool Sapphire::Scripting::ScriptMgr::onEObjHit( Sapphire::Entity::Player& player
 
   for( size_t i = 0; i < 30; i++ )
   {
-    auto quest = player.getQuestByIndex( static_cast< uint16_t >( i ));
+    auto quest = player.getQuestByIndex( static_cast< uint16_t >( i ) );
     if( quest.getId() == 0 )
       continue;
 
@@ -797,8 +795,7 @@ Sapphire::Scripting::NativeScriptMgr& Sapphire::Scripting::ScriptMgr::getNativeS
   return *m_nativeScriptMgr;
 }
 
-bool
-Sapphire::Scripting::ScriptMgr::onDutyComplete( QuestBattle& instance, Sapphire::Entity::Player& player )
+bool Sapphire::Scripting::ScriptMgr::onDutyComplete( QuestBattle& instance, Sapphire::Entity::Player& player )
 {
   auto script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestBattleScript >( instance.getDirectorId() );
   if( script )

@@ -1,15 +1,15 @@
 #pragma once
 
-#include <Common.h>
 #include "Action/ActionLut.h"
+#include <Common.h>
 
 #include "Forwards.h"
 #include "GameObject.h"
-#include <set>
-#include <map>
-#include <queue>
 #include <array>
+#include <map>
 #include <numeric>
+#include <queue>
+#include <set>
 
 namespace Sapphire::Entity
 {
@@ -26,14 +26,13 @@ namespace Sapphire::Entity
     constexpr static uint32_t STAT_ARRAY_SIZE = 80;
 
   public:
-
     using ActorStatsArray = std::array< uint32_t, STAT_ARRAY_SIZE >;
 
     ActorStatsArray m_baseStats{ 0 };
     ActorStatsArray m_bonusStats{ 0 };
 
   protected:
-    char m_name[34];
+    char m_name[ 34 ];
     /*! Last tick time for the actor  ( in ms ) */
     int64_t m_lastTickTime;
     /*! Last time the actor performed an autoAttack ( in ms ) */
@@ -57,9 +56,9 @@ namespace Sapphire::Entity
     /*! Current GP of the actor */
     uint16_t m_gp;
     /*! Additional look info of the actor */
-    uint8_t m_customize[26];
+    uint8_t m_customize[ 26 ];
     /*! Additional model info */
-    uint32_t m_modelEquip[10];
+    uint32_t m_modelEquip[ 10 ];
     /*! Current class of the actor */
     Common::ClassJob m_class;
     /*! Id of the currently selected target actor */
@@ -269,7 +268,6 @@ namespace Sapphire::Entity
     float getRadius() const;
 
     Common::BaseParam getPrimaryStat() const;
-
   };
 
-}
+}// namespace Sapphire::Entity

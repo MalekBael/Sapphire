@@ -1,8 +1,8 @@
 #ifndef CORE_SCRIPTLOADER_H
 #define CORE_SCRIPTLOADER_H
 
-#include <unordered_map>
 #include <set>
+#include <unordered_map>
 
 #include "NativeScriptApi.h"
 #include "ScriptInfo.h"
@@ -38,7 +38,6 @@ namespace Sapphire::Scripting
     std::string m_cachePath;
 
   protected:
-
     /*!
      * @brief Unload a loaded module from it's ModuleHandle
      *
@@ -124,7 +123,7 @@ namespace Sapphire::Scripting
     void setCachePath( const std::string& m_cachePath );
   };
 
-}
+}// namespace Sapphire::Scripting
 
 
-#endif // CORE_SCRIPTLOADER_H
+#endif// CORE_SCRIPTLOADER_H

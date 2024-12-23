@@ -1,6 +1,6 @@
 #include "ConfigMgr.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include <filesystem>
 namespace fs = std::filesystem;

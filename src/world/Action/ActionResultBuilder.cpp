@@ -1,4 +1,4 @@
-  #include "ActionResultBuilder.h"
+#include "ActionResultBuilder.h"
 #include "ActionResult.h"
 
 #include <Actor/Player.h>
@@ -8,13 +8,13 @@
 
 #include <Territory/Territory.h>
 
+#include <Exd/ExdData.h>
 #include <Util/Util.h>
 #include <Util/UtilMath.h>
-#include <Exd/ExdData.h>
 
 #include <Logging/Logger.h>
-#include <Manager/TerritoryMgr.h>
 #include <Manager/MgrUtil.h>
+#include <Manager/TerritoryMgr.h>
 #include <Service.h>
 
 #include <Manager/TaskMgr.h>
@@ -26,13 +26,11 @@ using namespace Sapphire::World::Manager;
 using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 
-ActionResultBuilder::ActionResultBuilder( Entity::CharaPtr source, uint32_t actionId, uint32_t resultId, uint16_t requestId ) :
-  m_sourceChara( std::move( source ) ),
-  m_actionId( actionId ),
-  m_resultId( resultId ),
-  m_requestId( requestId )
+ActionResultBuilder::ActionResultBuilder( Entity::CharaPtr source, uint32_t actionId, uint32_t resultId, uint16_t requestId ) : m_sourceChara( std::move( source ) ),
+                                                                                                                                m_actionId( actionId ),
+                                                                                                                                m_resultId( resultId ),
+                                                                                                                                m_requestId( requestId )
 {
-
 }
 
 void ActionResultBuilder::addResultToActor( Entity::CharaPtr& chara, ActionResultPtr result )
@@ -58,7 +56,7 @@ void ActionResultBuilder::heal( Entity::CharaPtr& effectTarget, Entity::CharaPtr
 
 void ActionResultBuilder::restoreMP( Entity::CharaPtr& target, Entity::CharaPtr& restoringTarget, uint32_t amount, Common::ActionResultFlag flag )
 {
-  ActionResultPtr nextResult = make_ActionResult( restoringTarget ); // restore mp source actor
+  ActionResultPtr nextResult = make_ActionResult( restoringTarget );// restore mp source actor
   nextResult->restoreMP( amount, flag );
   addResultToActor( target, nextResult );
 }
@@ -125,14 +123,13 @@ void ActionResultBuilder::mount( Entity::CharaPtr& target, uint16_t mountId )
 
 void ActionResultBuilder::sendActionResults( const std::vector< Entity::CharaPtr >& targetList )
 {
-  Logger::debug( "sendActionResults called. Targets afflicted: {}", targetList.size() );
+  Logger::debug( "EffectBuilder result: " );
+  Logger::debug( "Targets afflicted: {}", targetList.size() );
 
-  do
+  do// we want to send at least one packet even nothing is hit so other players can see
   {
     auto packet = createActionResultPacket( targetList );
     server().queueForPlayers( m_sourceChara->getInRangePlayerIds( true ), packet );
-    Logger::debug( "Packet sent for action ID {}", m_actionId );
-    m_actorResultsMap.clear();
   } while( !m_actorResultsMap.empty() );
 }
 
@@ -143,7 +140,7 @@ std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket
   auto& teriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
   auto zone = teriMgr.getTerritoryByGuId( m_sourceChara->getTerritoryId() );
 
-  if( targetCount > 1 ) // use AoeEffect packets
+  if( targetCount > 1 )// use AoeEffect packets
   {
     auto actionResult = makeEffectPacket( m_sourceChara->getId(), targetList[ 0 ]->getId(), m_actionId );
     actionResult->setRotation( Common::Util::floatToUInt16Rot( m_sourceChara->getRot() ) );
@@ -174,7 +171,7 @@ std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket
     m_actorResultsMap.clear();
     return actionResult;
   }
-  else  // use Effect for single target
+  else// use Effect for single target
   {
     uint32_t mainTargetId = targetList.empty() ? m_sourceChara->getId() : targetList[ 0 ]->getId();
     auto actionResult = makeEffectPacket1( m_sourceChara->getId(), mainTargetId, m_actionId );

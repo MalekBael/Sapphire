@@ -1,0 +1,1526 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/connection.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "41b6d599763bfb0697cced6dc10c4a87d4f1e0d3861ab09419f7447d39d3368a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/connection.h"
+          },
+          "hashes": {
+            "sha-256": "2a73764743d0b9af2a9d492bd0fbc7818c68bb2fb2b89a8d5720a35ade83c5fc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlcommon.h"
+          },
+          "hashes": {
+            "sha-256": "a3941a4275220c7a9573e48f32629553ec7efa0a11875fa05ccf9f79c31c3a22"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlbase.h"
+          },
+          "hashes": {
+            "sha-256": "e1b44f80278e86e6f25df3aa1d29650af08318cbff34889b394fdd3a4ccadeec"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.h"
+          },
+          "hashes": {
+            "sha-256": "439cbe53caae2ec9ec1f99918efc4168e2090bcbb3298d3df97f9d1ee5244f85"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.h"
+          },
+          "hashes": {
+            "sha-256": "8f391a8240397528b0f9b6fccb1e70bdde2446c045a4080957f666165177a398"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlbase.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "6ad0f1c31c286069ab4d0410ba948174265f9758c2054fc5f9e71d916c544b34"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlbase.h"
+          },
+          "hashes": {
+            "sha-256": "e1b44f80278e86e6f25df3aa1d29650af08318cbff34889b394fdd3a4ccadeec"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlcommon.h"
+          },
+          "hashes": {
+            "sha-256": "a3941a4275220c7a9573e48f32629553ec7efa0a11875fa05ccf9f79c31c3a22"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/connection.h"
+          },
+          "hashes": {
+            "sha-256": "2a73764743d0b9af2a9d492bd0fbc7818c68bb2fb2b89a8d5720a35ade83c5fc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::PreparedResultSet::m_lastQueriedColumn' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedresultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 46,
+                  "startColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::PreparedResultSet::{ctor}",
+                  "decoratedName": "??0PreparedResultSet@Mysql@@QEAA@AEAV?$shared_ptr@VResultBind@Mysql@@@std@@V?$shared_ptr@VPreparedStatement@Mysql@@@3@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::PreparedResultSet::m_lastQueriedColumn"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::PreparedResultSet::m_rowPosition' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedresultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 46,
+                  "startColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::PreparedResultSet::{ctor}",
+                  "decoratedName": "??0PreparedResultSet@Mysql@@QEAA@AEAV?$shared_ptr@VResultBind@Mysql@@@std@@V?$shared_ptr@VPreparedStatement@Mysql@@@3@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::PreparedResultSet::m_rowPosition"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::PreparedResultSet::is_valid' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedresultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 46,
+                  "startColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::PreparedResultSet::{ctor}",
+                  "decoratedName": "??0PreparedResultSet@Mysql@@QEAA@AEAV?$shared_ptr@VResultBind@Mysql@@@std@@V?$shared_ptr@VPreparedStatement@Mysql@@@3@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::PreparedResultSet::is_valid"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedresultset.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "6c83f85f88ddd5b8faeafd9764ae5f2f01c3917465f21d102852e5967666fb9c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedresultset.h"
+          },
+          "hashes": {
+            "sha-256": "a28b7bc414a35747881dcffbadca2d0458287c46741cd8e90959ed4c90375217"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.h"
+          },
+          "hashes": {
+            "sha-256": "b4a049148e056c7e2376c555f6e89c068c3856ac748034ac143595d21985cc4e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultsetbase.h"
+          },
+          "hashes": {
+            "sha-256": "0c225a4622b00381bb633949ebbec3287e9be23c75176005d46fb5de4b2d15c7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultbind.h"
+          },
+          "hashes": {
+            "sha-256": "65355d7625367e8b48774f000b91f73a48d507a80409d2c914d6f308a3d50a72"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.h"
+          },
+          "hashes": {
+            "sha-256": "dfec58e1ca80349bfe7bbf1aa866c173bf6c547802334270595af13a9e6d5411"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.h"
+          },
+          "hashes": {
+            "sha-256": "8f391a8240397528b0f9b6fccb1e70bdde2446c045a4080957f666165177a398"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.h"
+          },
+          "hashes": {
+            "sha-256": "439cbe53caae2ec9ec1f99918efc4168e2090bcbb3298d3df97f9d1ee5244f85"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/datatype.h"
+          },
+          "hashes": {
+            "sha-256": "9764fb39d8d7f8663941bbf8c605ec3458b205b513ec910dc15249d248a267ea"
+          }
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::LongDataSender::m_pStmt' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedStatement.cpp"
+                },
+                "region": {
+                  "startLine": 21,
+                  "startColumn": 4
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::LongDataSender::{ctor}",
+                  "decoratedName": "??0LongDataSender@Mysql@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::LongDataSender::m_pStmt"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::LongDataSender::position' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedStatement.cpp"
+                },
+                "region": {
+                  "startLine": 21,
+                  "startColumn": 4
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::LongDataSender::{ctor}",
+                  "decoratedName": "??0LongDataSender@Mysql@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::LongDataSender::position"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::PreparedStatement::warningsCount' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedStatement.cpp"
+                },
+                "region": {
+                  "startLine": 309,
+                  "startColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::PreparedStatement::{ctor}",
+                  "decoratedName": "??0PreparedStatement@Mysql@@QEAA@PEAUst_mysql_stmt@@V?$shared_ptr@VConnection@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::PreparedStatement::warningsCount"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::PreparedStatement::resultSetConcurrency' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedStatement.cpp"
+                },
+                "region": {
+                  "startLine": 309,
+                  "startColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::PreparedStatement::{ctor}",
+                  "decoratedName": "??0PreparedStatement@Mysql@@QEAA@PEAUst_mysql_stmt@@V?$shared_ptr@VConnection@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::PreparedStatement::resultSetConcurrency"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::PreparedStatement::resultSetType' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/PreparedStatement.cpp"
+                },
+                "region": {
+                  "startLine": 309,
+                  "startColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::PreparedStatement::{ctor}",
+                  "decoratedName": "??0PreparedStatement@Mysql@@QEAA@PEAUst_mysql_stmt@@V?$shared_ptr@VConnection@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::PreparedStatement::resultSetType"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "56725ed0f219fdad81428492fcc218bf63e5106fbd48793a2e09dc6727ae360e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.h"
+          },
+          "hashes": {
+            "sha-256": "8f391a8240397528b0f9b6fccb1e70bdde2446c045a4080957f666165177a398"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.h"
+          },
+          "hashes": {
+            "sha-256": "439cbe53caae2ec9ec1f99918efc4168e2090bcbb3298d3df97f9d1ee5244f85"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedresultset.h"
+          },
+          "hashes": {
+            "sha-256": "a28b7bc414a35747881dcffbadca2d0458287c46741cd8e90959ed4c90375217"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.h"
+          },
+          "hashes": {
+            "sha-256": "b4a049148e056c7e2376c555f6e89c068c3856ac748034ac143595d21985cc4e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultsetbase.h"
+          },
+          "hashes": {
+            "sha-256": "0c225a4622b00381bb633949ebbec3287e9be23c75176005d46fb5de4b2d15c7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/connection.h"
+          },
+          "hashes": {
+            "sha-256": "2a73764743d0b9af2a9d492bd0fbc7818c68bb2fb2b89a8d5720a35ade83c5fc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlcommon.h"
+          },
+          "hashes": {
+            "sha-256": "a3941a4275220c7a9573e48f32629553ec7efa0a11875fa05ccf9f79c31c3a22"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultbind.h"
+          },
+          "hashes": {
+            "sha-256": "65355d7625367e8b48774f000b91f73a48d507a80409d2c914d6f308a3d50a72"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.h"
+          },
+          "hashes": {
+            "sha-256": "dfec58e1ca80349bfe7bbf1aa866c173bf6c547802334270595af13a9e6d5411"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/errmsg.h"
+          },
+          "hashes": {
+            "sha-256": "1dcd496fe09c3eb0524eeedf788c9c4e7dc5e1edcce183d26ac4b6d213eb9848"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultbind.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "ff59323bc6a124561aaf7489f2eeb275ff3b68b1736108c24cbcbe148c86b9bf"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultbind.h"
+          },
+          "hashes": {
+            "sha-256": "65355d7625367e8b48774f000b91f73a48d507a80409d2c914d6f308a3d50a72"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.h"
+          },
+          "hashes": {
+            "sha-256": "dfec58e1ca80349bfe7bbf1aa866c173bf6c547802334270595af13a9e6d5411"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/preparedstatement.h"
+          },
+          "hashes": {
+            "sha-256": "8f391a8240397528b0f9b6fccb1e70bdde2446c045a4080957f666165177a398"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.h"
+          },
+          "hashes": {
+            "sha-256": "439cbe53caae2ec9ec1f99918efc4168e2090bcbb3298d3df97f9d1ee5244f85"
+          }
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_row' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_row"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_numFields' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_numFields"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_numRows' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_numRows"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_rowPosition' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_rowPosition"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_wasNull' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_wasNull"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_lastQueriedColumn' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_lastQueriedColumn"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::ResultSet::m_pRes' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/ResultSet.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::ResultSet::{ctor}",
+                  "decoratedName": "??0ResultSet@Mysql@@QEAA@PEAUst_mysql_res@@V?$shared_ptr@VStatement@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::ResultSet::m_pRes"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "02d2a4ee4b18acfc798bf76ffbb565731a8f0cefac4915ea0990dfb1f8c3d0e9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.h"
+          },
+          "hashes": {
+            "sha-256": "b4a049148e056c7e2376c555f6e89c068c3856ac748034ac143595d21985cc4e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultsetbase.h"
+          },
+          "hashes": {
+            "sha-256": "0c225a4622b00381bb633949ebbec3287e9be23c75176005d46fb5de4b2d15c7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/connection.h"
+          },
+          "hashes": {
+            "sha-256": "2a73764743d0b9af2a9d492bd0fbc7818c68bb2fb2b89a8d5720a35ade83c5fc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlcommon.h"
+          },
+          "hashes": {
+            "sha-256": "a3941a4275220c7a9573e48f32629553ec7efa0a11875fa05ccf9f79c31c3a22"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.h"
+          },
+          "hashes": {
+            "sha-256": "439cbe53caae2ec9ec1f99918efc4168e2090bcbb3298d3df97f9d1ee5244f85"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.h"
+          },
+          "hashes": {
+            "sha-256": "dfec58e1ca80349bfe7bbf1aa866c173bf6c547802334270595af13a9e6d5411"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::Statement::m_warningsCount' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/Statement.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::Statement::{ctor}",
+                  "decoratedName": "??0Statement@Mysql@@QEAA@V?$shared_ptr@VConnection@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::Statement::m_warningsCount"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Mysql::Statement::m_lastUpdateCount' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/mysqlConnector/Statement.cpp"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Mysql::Statement::{ctor}",
+                  "decoratedName": "??0Statement@Mysql@@QEAA@V?$shared_ptr@VConnection@Mysql@@@std@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Mysql::Statement::m_lastUpdateCount"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "0aac99c890a38d9bc5891d57bc06beea36c091f9def60ed1068d21215f03306a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/statement.h"
+          },
+          "hashes": {
+            "sha-256": "439cbe53caae2ec9ec1f99918efc4168e2090bcbb3298d3df97f9d1ee5244f85"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/connection.h"
+          },
+          "hashes": {
+            "sha-256": "2a73764743d0b9af2a9d492bd0fbc7818c68bb2fb2b89a8d5720a35ade83c5fc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysqlcommon.h"
+          },
+          "hashes": {
+            "sha-256": "a3941a4275220c7a9573e48f32629553ec7efa0a11875fa05ccf9f79c31c3a22"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultset.h"
+          },
+          "hashes": {
+            "sha-256": "b4a049148e056c7e2376c555f6e89c068c3856ac748034ac143595d21985cc4e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/resultsetbase.h"
+          },
+          "hashes": {
+            "sha-256": "0c225a4622b00381bb633949ebbec3287e9be23c75176005d46fb5de4b2d15c7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.h"
+          },
+          "hashes": {
+            "sha-256": "dfec58e1ca80349bfe7bbf1aa866c173bf6c547802334270595af13a9e6d5411"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "91365502ca27e80c3866d3a02137bee37ea2cb914b38bbe60e8d0b2a79b69f06"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/mysql_util.h"
+          },
+          "hashes": {
+            "sha-256": "dfec58e1ca80349bfe7bbf1aa866c173bf6c547802334270595af13a9e6d5411"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mysql.h"
+          },
+          "hashes": {
+            "sha-256": "55e918635b83b4c44656b29a81aba4c1b7b8fb9c5fd49773f9996c41874720d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_com.h"
+          },
+          "hashes": {
+            "sha-256": "2395ecdd87c94621c748f0ad17df26210dd22bb6f2dbdb5522b8b99e8eb32d18"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_version.h"
+          },
+          "hashes": {
+            "sha-256": "f2ea6510a5e03fc9b35d921bb6f493e1f1cdde2bc6575603f00e652762273360"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/ma_list.h"
+          },
+          "hashes": {
+            "sha-256": "1c9879386ce6add983f7d8dd307e3189bbeb9f3f861a9da36208085d43aa2e51"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_ctype.h"
+          },
+          "hashes": {
+            "sha-256": "2dc9d416a719c4b1d4c92c6d346ac5e225338f547e35ac0fe999d722dca73fc0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/program files/mariadb 10.7/include/mysql/mariadb_stmt.h"
+          },
+          "hashes": {
+            "sha-256": "cef7d937ea88c4b0b0c5bf4500a2c8752b08df97f5e02048ec985adc6607ecf5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/mysqlconnector/datatype.h"
+          },
+          "hashes": {
+            "sha-256": "9764fb39d8d7f8663941bbf8c605ec3458b205b513ec910dc15249d248a267ea"
+          }
+        }
+      ]
+    }
+  ]
+}

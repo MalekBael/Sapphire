@@ -66,7 +66,5 @@ namespace Sapphire::Entity
     std::string m_name;
     TerritoryPtr m_parentInstance;
     OnTalkEventHandler m_onTalkEventHandler;
-
-
   };
-}
+}// namespace Sapphire::Entity

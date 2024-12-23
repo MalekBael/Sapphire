@@ -1,0 +1,989 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/dat.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "6bf9139eff62ccdbcb1d8474b719e98926f511e11da20655d93088d0cd859f39"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/dat.h"
+          },
+          "hashes": {
+            "sha-256": "1461bcd5f918f6d7b1378380565bb379d31b31b94b3267a148bb2fea5e8b2607"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/sqpack.h"
+          },
+          "hashes": {
+            "sha-256": "81a0c75a1fc19ff6da8fbe4f2094c66f53840429dbbabd9d0ff68774deaf14e5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/zlib.h"
+          },
+          "hashes": {
+            "sha-256": "108486b01fd1e0b4465e3187cfd9ae576a81cfe1344aec01680b25ea3ed2722f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/datcat.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "87de970e0da8ea1b059e24755d03e31d5a62a37e3cdabe3012984d02e50d705d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/datcat.h"
+          },
+          "hashes": {
+            "sha-256": "5d77c716e8babfbf8db80e800269a8af9ed4953c1f7f23468c1236687029fbba"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/index.h"
+          },
+          "hashes": {
+            "sha-256": "09d386aff64b9187a0076469793f352b039cb7aceadb37f8e8def9b58afb7b83"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/sqpack.h"
+          },
+          "hashes": {
+            "sha-256": "81a0c75a1fc19ff6da8fbe4f2094c66f53840429dbbabd9d0ff68774deaf14e5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/dat.h"
+          },
+          "hashes": {
+            "sha-256": "1461bcd5f918f6d7b1378380565bb379d31b31b94b3267a148bb2fea5e8b2607"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/gamedata.h"
+          },
+          "hashes": {
+            "sha-256": "59f695802977e845f6b2860f434a4f58bf778db0cea6a444fd519466459f5eb2"
+          }
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'xivps3::exd::ExdCacheEntry::offset' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/datReaderPs3/Exd.h"
+                },
+                "region": {
+                  "startLine": 38,
+                  "startColumn": 3
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "xivps3::exd::ExdCacheEntry::{ctor}",
+                  "decoratedName": "??0ExdCacheEntry@exd@xivps3@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "xivps3::exd::ExdCacheEntry::offset"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "419749355999e0b18e16a42d300d0d739bd4f51d28e063035d56473a9503a97b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/kevin/source/repos/sapphire/deps/datReaderPs3/Exd.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "937eb3230b6b6c57fc96fd124ebc86ba332a2ad08a0733cebf82b0a64cef6abb"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd/common.h"
+          },
+          "hashes": {
+            "sha-256": "ceca7b58bee6cd813060261d6ac13b9414698cec7572bd425e4dcbdfd9a08849"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd/structs.h"
+          },
+          "hashes": {
+            "sha-256": "6d9913faae7a9c543a18ebfa339d82cfefeb6c3bb5f18cc0fc09e36a86c6452d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/stream.h"
+          },
+          "hashes": {
+            "sha-256": "7607e4f76cd6328d1a649276d994c35d6af430a349938ff0240d35c9135b600a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exh.h"
+          },
+          "hashes": {
+            "sha-256": "56ce232dfe9c6fea633af843ed1a92b1c7f1c6d87061fe1dde1039de61103339"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exdcat.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "af51950edf5b97e6a17e6cbeeb3db1c429a0954df7357b5ea11457834c82132b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exdcat.h"
+          },
+          "hashes": {
+            "sha-256": "f9e8f2c84fbdf38d6513b269daace4c16c210da69243f1b9d7903b1f8ec6019d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd.h"
+          },
+          "hashes": {
+            "sha-256": "937eb3230b6b6c57fc96fd124ebc86ba332a2ad08a0733cebf82b0a64cef6abb"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd/common.h"
+          },
+          "hashes": {
+            "sha-256": "ceca7b58bee6cd813060261d6ac13b9414698cec7572bd425e4dcbdfd9a08849"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd/structs.h"
+          },
+          "hashes": {
+            "sha-256": "6d9913faae7a9c543a18ebfa339d82cfefeb6c3bb5f18cc0fc09e36a86c6452d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/stream.h"
+          },
+          "hashes": {
+            "sha-256": "7607e4f76cd6328d1a649276d994c35d6af430a349938ff0240d35c9135b600a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exh.h"
+          },
+          "hashes": {
+            "sha-256": "56ce232dfe9c6fea633af843ed1a92b1c7f1c6d87061fe1dde1039de61103339"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/gamedata.h"
+          },
+          "hashes": {
+            "sha-256": "59f695802977e845f6b2860f434a4f58bf778db0cea6a444fd519466459f5eb2"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exddata.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "929eff9f7b592833fd0f8df135f99f0b9be7deebcb4cb384782a5d76732756b7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exddata.h"
+          },
+          "hashes": {
+            "sha-256": "c1f133851f3987bbe678ee468ec20a7cef6f7d24033da8f18eca8dae3b69bb06"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/stream.h"
+          },
+          "hashes": {
+            "sha-256": "7607e4f76cd6328d1a649276d994c35d6af430a349938ff0240d35c9135b600a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/gamedata.h"
+          },
+          "hashes": {
+            "sha-256": "59f695802977e845f6b2860f434a4f58bf778db0cea6a444fd519466459f5eb2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exdcat.h"
+          },
+          "hashes": {
+            "sha-256": "f9e8f2c84fbdf38d6513b269daace4c16c210da69243f1b9d7903b1f8ec6019d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd.h"
+          },
+          "hashes": {
+            "sha-256": "937eb3230b6b6c57fc96fd124ebc86ba332a2ad08a0733cebf82b0a64cef6abb"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd/common.h"
+          },
+          "hashes": {
+            "sha-256": "ceca7b58bee6cd813060261d6ac13b9414698cec7572bd425e4dcbdfd9a08849"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exd/structs.h"
+          },
+          "hashes": {
+            "sha-256": "6d9913faae7a9c543a18ebfa339d82cfefeb6c3bb5f18cc0fc09e36a86c6452d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exh.h"
+          },
+          "hashes": {
+            "sha-256": "56ce232dfe9c6fea633af843ed1a92b1c7f1c6d87061fe1dde1039de61103339"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exh.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "ad0682a26b09f4e8d3a9b1ff7cd6282550bc2f4b6df859a7aa6f94f40c65785d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/exh.h"
+          },
+          "hashes": {
+            "sha-256": "56ce232dfe9c6fea633af843ed1a92b1c7f1c6d87061fe1dde1039de61103339"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/stream.h"
+          },
+          "hashes": {
+            "sha-256": "7607e4f76cd6328d1a649276d994c35d6af430a349938ff0240d35c9135b600a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "6abb13daf029c4770cb201fa94dcd41926cb534767fdb2758e21b90d82d214c4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/gamedata.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "93aed18a0f2b47648ed22cb6b10affc1f620067820f420a67368e8a1ece94b9b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/gamedata.h"
+          },
+          "hashes": {
+            "sha-256": "59f695802977e845f6b2860f434a4f58bf778db0cea6a444fd519466459f5eb2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/zlib/zlib.h"
+          },
+          "hashes": {
+            "sha-256": "730562db847f07242943019760733ac65e01d2885143399f67f48c42a1730d65"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/zlib/zconf.h"
+          },
+          "hashes": {
+            "sha-256": "5327366dd8be4bc12108997ad8bef658d54f32507b2ffcdf2613c07fd9b44507"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/datcat.h"
+          },
+          "hashes": {
+            "sha-256": "5d77c716e8babfbf8db80e800269a8af9ed4953c1f7f23468c1236687029fbba"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/file.h"
+          },
+          "hashes": {
+            "sha-256": "be960da6f55109884970aababbb9e642f6f80f8cecc6972618b0a363125e79f2"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/index.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "8b1d0b6f6f9848729542aa0b31da5dfbba7cf4a3744ee4b19e01c414d4badd07"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/index.h"
+          },
+          "hashes": {
+            "sha-256": "09d386aff64b9187a0076469793f352b039cb7aceadb37f8e8def9b58afb7b83"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/sqpack.h"
+          },
+          "hashes": {
+            "sha-256": "81a0c75a1fc19ff6da8fbe4f2094c66f53840429dbbabd9d0ff68774deaf14e5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/sqpack.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "1c31b7e3fe4d66c08abef54ee0b8f5f5fbd5dc0bfcd7a422faacd4863199810b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/sqpack.h"
+          },
+          "hashes": {
+            "sha-256": "81a0c75a1fc19ff6da8fbe4f2094c66f53840429dbbabd9d0ff68774deaf14e5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "9adf99887260d7670f9b2120c41a08691bf7357265da48906a0f25cba7005b9f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/bparse.h"
+          },
+          "hashes": {
+            "sha-256": "37788b4ec8b92bdddd5828093a7fbfcd7ef202560998c64178a97f3aa42f766e"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/conv.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "735e5a7b69775d5d1824f4789a9f1f0fa55d9bd8912a3f4c661f4f7959a2aad0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/conv.h"
+          },
+          "hashes": {
+            "sha-256": "d14670e722c9f5737b22dc4699feb40cba483f94e12f7c2d10edc88f1276b029"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/crc32.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "c4939224192efb6178e5ea5eb1e3271a5bbe8bdcc9e9576ec3ab583a8ed330a8"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/crc32.h"
+          },
+          "hashes": {
+            "sha-256": "3d0dcd3ecef2e886f1ccbce966352772be8eb6418bf58ca403ad2c3384483f5c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/zlib/zlib.h"
+          },
+          "hashes": {
+            "sha-256": "730562db847f07242943019760733ac65e01d2885143399f67f48c42a1730d65"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/zlib/zconf.h"
+          },
+          "hashes": {
+            "sha-256": "5327366dd8be4bc12108997ad8bef658d54f32507b2ffcdf2613c07fd9b44507"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/stream.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "b8c4c48bf120f0f82c3b4df5cc70becb1369ec3dc0b7172554413692238e13ed"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/stream.h"
+          },
+          "hashes": {
+            "sha-256": "7607e4f76cd6328d1a649276d994c35d6af430a349938ff0240d35c9135b600a"
+          }
+        }
+      ]
+    },
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.43.34618.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/zlib.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "9b8ed0f410175d817480d4b63fb9e54506471f2b1fa61137e83c1bfc7cd230ab"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/datreaderps3/zlib.h"
+          },
+          "hashes": {
+            "sha-256": "108486b01fd1e0b4465e3187cfd9ae576a81cfe1344aec01680b25ea3ed2722f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/zlib/zlib.h"
+          },
+          "hashes": {
+            "sha-256": "730562db847f07242943019760733ac65e01d2885143399f67f48c42a1730d65"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/kevin/source/repos/sapphire/deps/zlib/zconf.h"
+          },
+          "hashes": {
+            "sha-256": "5327366dd8be4bc12108997ad8bef658d54f32507b2ffcdf2613c07fd9b44507"
+          }
+        }
+      ]
+    }
+  ]
+}

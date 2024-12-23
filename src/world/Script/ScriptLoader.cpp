@@ -1,9 +1,9 @@
 #include "ScriptLoader.h"
 
-#include <Logging/Logger.h>
-#include <Config/ConfigMgr.h>
-#include <Util/Util.h>
 #include "WorldServer.h"
+#include <Config/ConfigMgr.h>
+#include <Logging/Logger.h>
+#include <Util/Util.h>
 
 #ifdef _WIN32
 #include <Service.h>
@@ -20,12 +20,12 @@ namespace Sapphire::World::Manager
   class TerritoryMgr;
   class RNGMgr;
   class FreeCompanyMgr;
-}
+}// namespace Sapphire::World::Manager
 #endif
 
-#include <filesystem>
 #include <Manager/TerritoryMgr.h>
 #include <Manager/WarpMgr.h>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -83,8 +83,7 @@ Sapphire::Scripting::ScriptInfo* Sapphire::Scripting::ScriptLoader::loadModule( 
   try
   {
     fs::copy_file( f, dest, fs::copy_options::overwrite_existing );
-  }
-  catch( const fs::filesystem_error& err )
+  } catch( const fs::filesystem_error& err )
   {
     Logger::error( "Error copying file to cache: {0}", err.code().message() );
 
@@ -105,7 +104,7 @@ Sapphire::Scripting::ScriptInfo* Sapphire::Scripting::ScriptLoader::loadModule( 
     return nullptr;
   }
 
-  Logger::debug( "Loaded module: {0}",  f.filename().string() );
+  Logger::debug( "Loaded module: {0}", f.filename().string() );
 
   auto info = new ScriptInfo;
   info->handle = handle;
@@ -119,20 +118,20 @@ Sapphire::Scripting::ScriptInfo* Sapphire::Scripting::ScriptLoader::loadModule( 
 
 Sapphire::ScriptAPI::ScriptObject** Sapphire::Scripting::ScriptLoader::getScripts( ModuleHandle handle )
 {
-  using getScripts = Sapphire::ScriptAPI::ScriptObject** ( * )();
+  using getScripts = Sapphire::ScriptAPI::ScriptObject** ( * ) ();
 
 #ifdef _WIN32
   auto func = reinterpret_cast< getScripts >( GetProcAddress( handle, "getScripts" ) );
 
-  using win32initFunc = void(*)( std::shared_ptr< Sapphire::Data::ExdData > );
-  using win32initFuncTeri = void(*)( std::shared_ptr< Sapphire::World::Manager::TerritoryMgr > );
-  using win32initFuncLinkshell = void(*)( std::shared_ptr< Sapphire::World::Manager::LinkshellMgr > );
-  using win32initFuncWarpMgr = void(*)( std::shared_ptr< Sapphire::World::Manager::WarpMgr > );
-  using win32initIObjectCache = void(*)( std::shared_ptr< Sapphire::InstanceObjectCache > );
-  using win32initRngMgr = void(*)( std::shared_ptr< Sapphire::World::Manager::RNGMgr > );
-  using win32initHouMgr = void(*)( std::shared_ptr< Sapphire::World::Manager::HousingMgr > );
-  using win32initServerMgr = void(*)( std::shared_ptr< Sapphire::World::WorldServer > );
-  using win32initFuncFc = void(*)( std::shared_ptr< Sapphire::World::Manager::FreeCompanyMgr > );
+  using win32initFunc = void ( * )( std::shared_ptr< Sapphire::Data::ExdData > );
+  using win32initFuncTeri = void ( * )( std::shared_ptr< Sapphire::World::Manager::TerritoryMgr > );
+  using win32initFuncLinkshell = void ( * )( std::shared_ptr< Sapphire::World::Manager::LinkshellMgr > );
+  using win32initFuncWarpMgr = void ( * )( std::shared_ptr< Sapphire::World::Manager::WarpMgr > );
+  using win32initIObjectCache = void ( * )( std::shared_ptr< Sapphire::InstanceObjectCache > );
+  using win32initRngMgr = void ( * )( std::shared_ptr< Sapphire::World::Manager::RNGMgr > );
+  using win32initHouMgr = void ( * )( std::shared_ptr< Sapphire::World::Manager::HousingMgr > );
+  using win32initServerMgr = void ( * )( std::shared_ptr< Sapphire::World::WorldServer > );
+  using win32initFuncFc = void ( * )( std::shared_ptr< Sapphire::World::Manager::FreeCompanyMgr > );
 
   auto win32init = reinterpret_cast< win32initFunc >( GetProcAddress( handle, "win32initExd" ) );
   auto win32initTeri = reinterpret_cast< win32initFuncTeri >( GetProcAddress( handle, "win32initTeri" ) );
@@ -193,7 +192,6 @@ Sapphire::ScriptAPI::ScriptObject** Sapphire::Scripting::ScriptLoader::getScript
     auto exdData = Common::Service< Sapphire::Data::ExdData >::get();
     auto ptr = exdData.lock();
     win32init( ptr );
-
   }
   else
   {

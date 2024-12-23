@@ -1,23 +1,22 @@
-#include <string>
-#include <typeinfo>
-#include <typeindex>
-#include <Event/EventHandler.h>
 #include "NativeScriptApi.h"
+#include <Event/EventHandler.h>
 #include <cassert>
+#include <string>
+#include <typeindex>
+#include <typeinfo>
 
 #ifdef _MSC_VER
 #define EXPORT __declspec( dllexport )
 #else
-#define EXPORT __attribute__((visibility("default")))
+#define EXPORT __attribute__( ( visibility( "default" ) ) )
 #endif
 
 using namespace Sapphire;
 
 namespace Sapphire::ScriptAPI
 {
-  ScriptObject::ScriptObject( uint32_t id, std::size_t type ) :
-    m_id( id ),
-    m_type( type )
+  ScriptObject::ScriptObject( uint32_t id, std::size_t type ) : m_id( id ),
+                                                                m_type( type )
   {
   }
 
@@ -33,8 +32,7 @@ namespace Sapphire::ScriptAPI
 
   ///////////////////////////////////////////////////////////////////
 
-  StatusEffectScript::StatusEffectScript( uint32_t effectId ) :
-    ScriptObject( effectId, typeid( StatusEffectScript ).hash_code() )
+  StatusEffectScript::StatusEffectScript( uint32_t effectId ) : ScriptObject( effectId, typeid( StatusEffectScript ).hash_code() )
   {
   }
 
@@ -72,8 +70,7 @@ namespace Sapphire::ScriptAPI
 
   ///////////////////////////////////////////////////////////////////
 
-  ActionScript::ActionScript( uint32_t actionId ) :
-    ScriptObject( actionId, typeid( ActionScript ).hash_code() )
+  ActionScript::ActionScript( uint32_t actionId ) : ScriptObject( actionId, typeid( ActionScript ).hash_code() )
   {
   }
 
@@ -124,7 +121,7 @@ namespace Sapphire::ScriptAPI
   //}
 
   void EventScript::onEventHandlerTradeReturn( Entity::Player& player, uint32_t eventId, uint16_t subEvent, uint16_t param,
-                                              uint32_t catalogId )
+                                               uint32_t catalogId )
   {
   }
 
@@ -208,15 +205,57 @@ namespace Sapphire::ScriptAPI
 
   ///////////////////////////////////////////////////////////////////
 
-  BattleNpcScript::BattleNpcScript( uint32_t npcId ) :
-    ScriptObject( npcId, typeid( BattleNpcScript ).hash_code() )
+  BattleNpcScript::BattleNpcScript( uint32_t npcId ) : ScriptObject( npcId, typeid( BattleNpcScript ).hash_code() )
   {
   }
 
-  ///////////////////////////////////////////////////////////////////
+  void BattleNpcScript::onInit( Entity::BNpc& bnpc )
+  {
+    // Initialize the BNpc with specific logic
+  }
 
-  ZoneScript::ZoneScript( uint32_t zoneId ) :
-    ScriptObject( zoneId, typeid( ZoneScript ).hash_code() )
+  void BattleNpcScript::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
+  {
+    // Update the BNpc with specific logic
+  }
+
+  void BattleNpcScript::onDeath( Entity::BNpc& bnpc )
+  {
+    // Handle BNpc death logic
+  }
+
+  void BattleNpcScript::onAggro( Entity::BNpc& bnpc, Entity::Chara& target )
+  {
+    // Handle BNpc aggro logic
+  }
+
+  void BattleNpcScript::onDeaggro( Entity::BNpc& bnpc, Entity::Chara& target )
+  {
+    // Handle BNpc deaggro logic
+  }
+
+  void BattleNpcScript::onAction( Entity::BNpc& bnpc, Entity::Chara& target, uint32_t actionId )
+  {
+    // Handle BNpc action logic
+  }
+
+  void BattleNpcScript::onMove( Entity::BNpc& bnpc, const Common::FFXIVARR_POSITION3& position )
+  {
+    // Handle BNpc move logic
+  }
+
+  void BattleNpcScript::onSpawn( Entity::BNpc& bnpc )
+  {
+    // Handle BNpc spawn logic
+  }
+
+  void BattleNpcScript::onDespawn( Entity::BNpc& bnpc )
+  {
+    // Handle BNpc despawn logic
+  }
+
+  ///////////////////////////////////////////////////////////////////
+  ZoneScript::ZoneScript( uint32_t zoneId ) : ScriptObject( zoneId, typeid( ZoneScript ).hash_code() )
   {
   }
 
@@ -226,8 +265,7 @@ namespace Sapphire::ScriptAPI
 
   ///////////////////////////////////////////////////////////////////
 
-  InstanceContentScript::InstanceContentScript( uint32_t instanceContentId ) :
-    ScriptObject( uint32_t{ 0x8003 } << 16 | instanceContentId, typeid( InstanceContentScript ).hash_code() )
+  InstanceContentScript::InstanceContentScript( uint32_t instanceContentId ) : ScriptObject( uint32_t{ 0x8003 } << 16 | instanceContentId, typeid( InstanceContentScript ).hash_code() )
   {
   }
 
@@ -235,12 +273,12 @@ namespace Sapphire::ScriptAPI
   {
   }
 
-  void InstanceContentScript::onTalk( Sapphire::InstanceContent& instance, Sapphire::Entity::Player& player, Sapphire::Entity::EventObject& eobj, 
+  void InstanceContentScript::onTalk( Sapphire::InstanceContent& instance, Sapphire::Entity::Player& player, Sapphire::Entity::EventObject& eobj,
                                       uint32_t eventId )
   {
   }
 
-  void InstanceContentScript::onTalk( Sapphire::InstanceContent& instance, Sapphire::Entity::Player& player, uint32_t eventId, 
+  void InstanceContentScript::onTalk( Sapphire::InstanceContent& instance, Sapphire::Entity::Player& player, uint32_t eventId,
                                       uint64_t actorId )
   {
   }
@@ -260,14 +298,12 @@ namespace Sapphire::ScriptAPI
 
   ///////////////////////////////////////////////////////////////////
 
-  QuestBattleScript::QuestBattleScript( uint32_t questBattleId ) :
-    ScriptObject( uint32_t{ 0x8006 } << 16 | questBattleId, typeid( QuestBattleScript ).hash_code() )
+  QuestBattleScript::QuestBattleScript( uint32_t questBattleId ) : ScriptObject( uint32_t{ 0x8006 } << 16 | questBattleId, typeid( QuestBattleScript ).hash_code() )
   {
   }
 
   void QuestBattleScript::onDutyComplete( Sapphire::QuestBattle& instance, Entity::Player& player )
   {
-
   }
 
   void QuestBattleScript::onPlayerSetup( Sapphire::QuestBattle& instance, Entity::Player& player )
@@ -291,5 +327,4 @@ namespace Sapphire::ScriptAPI
   {
   }
 
-}
-
+}// namespace Sapphire::ScriptAPI
