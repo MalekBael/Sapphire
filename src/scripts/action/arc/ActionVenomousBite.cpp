@@ -1,19 +1,15 @@
-#include "spdlog/spdlog.h"
 #include <Action/Action.h>
 #include <Action/CommonAction.h>
 #include <Actor/Chara.h>
 #include <Script/NativeScriptApi.h>
 #include <ScriptObject.h>
-#include <algorithm>
-#include <iostream>
 #include <memory>
-#include <vector>
+#include <random>
 
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 using namespace Sapphire::Entity;
 
-// Action ID 100 corresponds to Venomous Bite
 class ActionVenomousBite : public Sapphire::ScriptAPI::ActionScript
 {
 public:
@@ -28,7 +24,7 @@ public:
     auto pSource = action.getSourceChara();
     auto pTarget = action.getHitChara();
 
-    if( !pSource->isPlayer() )
+    if( !pSource || !pTarget )
       return;
 
     auto dmg = action.calcDamage( Potency );
@@ -42,8 +38,8 @@ public:
 
     pTarget->replaceSingleStatusEffectById( Venomous_Bite );
 
-    // Apply Venomous Bite status effect to the target
     action.getActionResultBuilder()->applyStatusEffect( pTarget, Venomous_Bite, 45000, 0 );
   }
 };
+
 EXPOSE_SCRIPT( ActionVenomousBite );

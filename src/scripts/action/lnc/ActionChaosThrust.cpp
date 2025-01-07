@@ -1,23 +1,23 @@
-#include <ScriptObject.h>
 #include <Action/Action.h>
+#include <Action/CommonAction.h>
 #include <Actor/Chara.h>
 #include <Script/NativeScriptApi.h>
+#include <ScriptObject.h>
 #include <memory>
 #include <random>
-#include <Action/CommonAction.h>
 
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 using namespace Sapphire::Entity;
 
-class ActionStraightShot : public Sapphire::ScriptAPI::ActionScript
+class ActionChaosThrust : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionStraightShot() : Sapphire::ScriptAPI::ActionScript( 98 )
+  ActionChaosThrust() : Sapphire::ScriptAPI::ActionScript( 88 )
   {
   }
 
-  static constexpr auto Potency = 140;
+  static constexpr auto Potency = 30;
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
@@ -28,15 +28,18 @@ public:
       return;
 
     auto dmg = action.calcDamage( Potency );
-    action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
-    pSource->removeSingleStatusEffectById( StraighterShot );
-
 
     if( dmg.first > 0 )
     {
       pTarget->onActionHostile( pSource );
     }
+
+    action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
+
+    pTarget->replaceSingleStatusEffectById( Chaos_Thrust );
+
+    action.getActionResultBuilder()->applyStatusEffect( pTarget, Chaos_Thrust, 30000, 0 );
   }
 };
 
-EXPOSE_SCRIPT( ActionStraightShot );
+EXPOSE_SCRIPT( ActionChaosThrust );

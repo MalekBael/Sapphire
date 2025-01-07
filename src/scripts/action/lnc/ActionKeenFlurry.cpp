@@ -10,14 +10,12 @@ using namespace Sapphire;
 using namespace Sapphire::World::Action;
 using namespace Sapphire::Entity;
 
-class ActionRagingStrikes : public Sapphire::ScriptAPI::ActionScript
+class ActionKeenFlurry : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionRagingStrikes() : Sapphire::ScriptAPI::ActionScript( 101 )
+  ActionKeenFlurry() : Sapphire::ScriptAPI::ActionScript( 77 )
   {
   }
-
-  static constexpr uint32_t Raging_Strikes = 125;
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
@@ -27,9 +25,9 @@ public:
     if( !pSource->isPlayer() )
       return;
 
-    pSource->replaceSingleStatusEffectById( Raging_Strikes );
-    action.getActionResultBuilder()->applyStatusEffectSelf( Raging_Strikes, 20000, 0 );
+    pSource->replaceSingleStatusEffectById( Keen_Flurry );
+    action.getActionResultBuilder()->applyStatusEffectSelf( Keen_Flurry, 20000, 0 );
   }
 };
 
-EXPOSE_SCRIPT( ActionRagingStrikes );
+EXPOSE_SCRIPT( ActionKeenFlurry );

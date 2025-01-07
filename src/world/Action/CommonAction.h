@@ -18,6 +18,18 @@ namespace Sapphire::World::Action
     StraightShot = 98,
     VenomousBite = 100,
     RagingStrikes = 101,
+    // LNC
+    Feint = 76,
+    KeenFlurry = 77,
+    HeavyThrust = 79,
+    LegSweep = 82,
+    LifeSurge = 83,
+    BloodForBlood = 85,
+    ChaosThrust = 88,
+    Phlebotomize = 91,
+    PowerSurge = 93,
+    ElusiveJump = 94,
+    SpineshatterDive = 95,
   };
 
   enum ActionStatus
@@ -35,5 +47,17 @@ namespace Sapphire::World::Action
     StraighterShot = 122,
     Venomous_Bite = 124,
     Raging_Strikes = 125,
+    // LNC
+    Heavy_Thrust = 115,
+    Keen_Flurry = 114,
+    Life_Surge = 116,
+    Blood_For_Blood = 117,
+    Chaos_Thrust = 118,
+    Status_Phlebotomize = 119,
+    Power_Surge = 120,
+    Disembowel = 121,
+    // Ailments
+    Stun = 149,
+    Slow = 561,
   };
 }

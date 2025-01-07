@@ -10,14 +10,14 @@ using namespace Sapphire;
 using namespace Sapphire::World::Action;
 using namespace Sapphire::Entity;
 
-class ActionStraightShot : public Sapphire::ScriptAPI::ActionScript
+class ActionFeint : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionStraightShot() : Sapphire::ScriptAPI::ActionScript( 98 )
+  ActionFeint() : Sapphire::ScriptAPI::ActionScript( 76 )
   {
   }
 
-  static constexpr auto Potency = 140;
+  static constexpr auto Potency = 120;
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
@@ -29,14 +29,19 @@ public:
 
     auto dmg = action.calcDamage( Potency );
     action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
-    pSource->removeSingleStatusEffectById( StraighterShot );
-
 
     if( dmg.first > 0 )
     {
       pTarget->onActionHostile( pSource );
     }
+
+    action.getActionResultBuilder()->damage( pSource, pTarget, dmg.first, dmg.second );
+
+    pTarget->replaceSingleStatusEffectById( Slow );
+
+    // Apply Slow - need to research the duration
+    action.getActionResultBuilder()->applyStatusEffect( pTarget, Slow, 6000, 0 );
   }
 };
 
-EXPOSE_SCRIPT( ActionStraightShot );
+EXPOSE_SCRIPT( ActionFeint );
