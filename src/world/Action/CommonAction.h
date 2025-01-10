@@ -13,6 +13,9 @@ namespace Sapphire::World::Action
     StormsPath = 42,
     StormsEye = 45,
     ButchersBlock = 47,
+    // GLA
+    Rampart = 10,
+    FastBlade = 9,
     // ARC
     HeavyShot = 97,
     StraightShot = 98,
@@ -30,6 +33,8 @@ namespace Sapphire::World::Action
     PowerSurge = 93,
     ElusiveJump = 94,
     SpineshatterDive = 95,
+    // Buffs
+    Celeris = 404,
   };
 
   enum ActionStatus
@@ -43,6 +48,8 @@ namespace Sapphire::World::Action
     Infuriated = 97,
     InnerBeast = 411,
     Deliverance = 729,
+    // GLA
+    Status_Rampart = 71,
     // ARC
     StraighterShot = 122,
     Venomous_Bite = 124,
@@ -59,5 +66,7 @@ namespace Sapphire::World::Action
     // Ailments
     Stun = 149,
     Slow = 561,
+    // Buffs
+    Haste = 651,
   };
 }

@@ -4,8 +4,8 @@
 #include <Service.h>
 
 #include <Manager/TerritoryMgr.h>
-#include <Territory/Territory.h>
 #include <Navi/NaviProvider.h>
+#include <Territory/Territory.h>
 
 using namespace Sapphire::World;
 
@@ -15,6 +15,8 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( bnpc.getTerritoryId() );
   auto pNaviProvider = pZone->getNaviProvider();
+
+  bool hasQueuedAction = bnpc.checkAction();
 
   auto pHatedActor = bnpc.hateListGetHighest();
   if( !pHatedActor )
@@ -37,32 +39,32 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   if( !bnpc.hasFlag( Entity::NoDeaggro ) )
   {
-
   }
 
-  if( !bnpc.hasFlag( Entity::Immobile ) && distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+  if( !hasQueuedAction && !bnpc.hasFlag( Entity::Immobile ) && distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
   {
+
     if( pNaviProvider )
       pNaviProvider->setMoveTarget( bnpc, pHatedActor->getPos() );
 
     bnpc.moveTo( *pHatedActor );
   }
 
-  if( pNaviProvider->syncPosToChara( bnpc ) )
-    bnpc.sendPositionUpdate();
+  pNaviProvider->syncPosToChara( bnpc );
 
-  if( distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+  if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
   {
-    if( !bnpc.hasFlag( Entity::TurningDisabled ) && bnpc.face( pHatedActor->getPos() ) )
-      bnpc.sendPositionUpdate();
+    // todo: dont turn if facing
+    if( !bnpc.hasFlag( Entity::TurningDisabled ) )
+      bnpc.face( pHatedActor->getPos() );
 
-    if( !bnpc.checkAction() )
+    if( !hasQueuedAction )
       bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
-    bnpc.autoAttack( pHatedActor );
+    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) )
+      bnpc.autoAttack( pHatedActor );
   }
-
 }
 
 void AI::Fsm::StateCombat::onEnter( Entity::BNpc& bnpc )
@@ -76,4 +78,3 @@ void AI::Fsm::StateCombat::onExit( Entity::BNpc& bnpc )
   bnpc.setStance( Common::Stance::Passive );
   bnpc.setOwner( nullptr );
 }
-

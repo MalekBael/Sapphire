@@ -57,10 +57,9 @@
 
 #include <spdlog/spdlog.h>
 
-
 #include "../src/world/Script/NativeScriptApi.h"
 // for bnpc scripting
-#include <Actor/Common.BNpc.h>
+// #include <Actor/Common.BNpc.h>
 
 #include "Script/NativeScriptMgr.h"
 
@@ -124,7 +123,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, co
   m_enemyType = bNpcBaseData->data().Battalion;
 
   if( pInfo->WanderingRange == 0 || pInfo->BoundInstanceID != 0 || m_enemyType == 0 )
-    setFlag( Immobile );
+    setFlag( NoRoam | Immobile );
 
   m_class = ClassJob::Gladiator;
 
@@ -837,6 +836,16 @@ bool BNpc::hasFlag( uint32_t flag ) const
 void BNpc::setFlag( uint32_t flag )
 {
   m_flags |= flag;
+}
+
+void BNpc::removeFlag( uint32_t flag )
+{
+  m_flags &= ~flag;
+}
+
+void BNpc::clearFlags()
+{
+  m_flags = 0;
 }
 
 void BNpc::autoAttack( CharaPtr pTarget )

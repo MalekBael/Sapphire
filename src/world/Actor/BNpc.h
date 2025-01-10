@@ -30,15 +30,19 @@ namespace Sapphire::Entity
     };
 
     enum BNpcFlag
-    {
-        None = 0,
-        Immobile = 1,
-        TurningDisabled = 2,
-        Invincible = 4,
-        InvincibleRefill = 8,
-        NoDeaggro = 16,
-        Untargetable = 32,
-    };
+      {
+        Immobile = 0x001,
+        TurningDisabled = 0x002,
+        Invincible = 0x004,
+        StayAlive = 0x008,
+        NoDeaggro = 0x010,
+        Untargetable = 0x020,
+        AutoAttackDisabled = 0x040,
+        Invisible = 0x080,
+        NoRoam = 0x100,
+
+        Intermission = 0x77// for transition phases to ensure boss only moves/acts when scripted
+      };
 
     const std::array<uint32_t, 50> BnpcBaseHp =
     {
@@ -57,6 +61,17 @@ namespace Sapphire::Entity
 
         BNpc(uint32_t id, std::shared_ptr<Common::BNPCInstanceObject> pInfo, const Territory& zone);
         BNpc(uint32_t id, std::shared_ptr<Common::BNPCInstanceObject> pInfo, const Territory& zone, uint32_t hp, Common::BNpcType type);
+
+        // Add public setter methods
+       void setBNpcBaseId(uint32_t baseId)
+       {
+           m_bNpcBaseId = baseId;
+       }
+
+       void setBNpcNameId(uint32_t nameId)
+       {
+           m_bNpcNameId = nameId;
+       }
 
         virtual ~BNpc() override;
 
@@ -130,6 +145,8 @@ namespace Sapphire::Entity
 
         bool hasFlag(uint32_t flag) const;
         void setFlag(uint32_t flags);
+        void removeFlag( uint32_t flag );
+        void clearFlags();
 
         void calculateStats() override;
 
