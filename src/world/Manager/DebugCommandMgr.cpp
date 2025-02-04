@@ -247,10 +247,9 @@ void DebugCommandMgr::set( char* data, Entity::Player& player, std::shared_ptr< 
     if( player.getLevelForClass( static_cast< Common::ClassJob > ( id ) ) == 0 )
     {
       player.setLevelForClass( 1, static_cast< Common::ClassJob > ( id ) );
-      player.setClassJob( static_cast< Common::ClassJob > ( id ) );
     }
-    else
-      player.setClassJob( static_cast< Common::ClassJob > ( id ) );
+
+    playerMgr.onClassJobChanged( player, static_cast< Common::ClassJob > ( id ) );
   }
   else if( subCommand == "cfpenalty" )
   {
@@ -923,7 +922,7 @@ void DebugCommandMgr::instance( char* data, Entity::Player& player, std::shared_
   }
   else if( subCommand == "return" || subCommand == "ret" )
   {
-    player.exitInstance();
+    playerMgr().onExitInstance( player );
   }
   else if( subCommand == "stringendomode" || subCommand == "sm" )
   {
@@ -1165,7 +1164,7 @@ void DebugCommandMgr::questBattle( char* data, Entity::Player& player, std::shar
   }
   else if( subCommand == "return" || subCommand == "ret" )
   {
-    player.exitInstance();
+    playerMgr().onExitInstance( player );
   }
   else if( subCommand == "set" )
   {
