@@ -23,6 +23,9 @@ src/tools/[Bb]in/exd_struct_gen
 # decompiled scripts
 src/tools/bin/generated/*
 
+* python files
+src/scripts/*.py
+
 # Build Directories
 build/
 build-*/

@@ -1,0 +1,64 @@
+{
+  "sprites": {
+    "WaterSprite": {
+      "baseId": 59,
+      "nameId": 56,
+      "gambitPack": {
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 1120,
+            "actionParam": 0,
+            "timing": 0
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 1120,
+            "actionParam": 0,
+            "timing": 2
+          }
+        ]
+      }
+    },
+    "FireSprite": {
+      "baseId": 134,
+      "nameId": 116,
+      "gambitPack": {
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 141,
+            "actionParam": 0,
+            "timing": 0
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 141,
+            "actionParam": 0,
+            "timing": 2
+          }
+        ]
+      }
+    },
+    "EarthSprite": {
+      "baseId": 131,
+      "nameId": 113,
+      "gambitPack": {
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 119,
+            "actionParam": 0,
+            "timing": 0
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 119,
+            "actionParam": 0,
+            "timing": 2
+          }
+        ]
+      }
+    }
+  }
+}

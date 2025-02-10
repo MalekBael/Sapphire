@@ -62,6 +62,11 @@ namespace Sapphire::Entity
         BNpc(uint32_t id, std::shared_ptr<Common::BNPCInstanceObject> pInfo, const Territory& zone);
         BNpc(uint32_t id, std::shared_ptr<Common::BNPCInstanceObject> pInfo, const Territory& zone, uint32_t hp, Common::BNpcType type);
 
+        void setIsRanged( bool isRanged ) { m_isRanged = isRanged; }
+        bool isRanged() const { return m_isRanged; }
+        void setAttackRange( float range ) { m_attackRange = range; }
+        float getAttackRange() const { return m_attackRange; }
+
         // Add public setter methods
        void setBNpcBaseId(uint32_t baseId)
        {
@@ -200,6 +205,10 @@ namespace Sapphire::Entity
         Common::BNpcType m_bnpcType;
 
         float m_naviTargetReachedDistance;
+        bool m_isRanged = false;
+        float m_attackRange = 3.0f;
+
+
 
         std::shared_ptr<Common::BNPCInstanceObject> m_pInfo;
 

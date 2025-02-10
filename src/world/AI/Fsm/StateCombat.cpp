@@ -11,7 +11,6 @@ using namespace Sapphire::World;
 
 void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 {
-
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( bnpc.getTerritoryId() );
   auto pNaviProvider = pZone->getNaviProvider();
@@ -36,23 +35,47 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     return;
 
   auto distance = Common::Util::distance( bnpc.getPos(), pHatedActor->getPos() );
+  float combatRange = bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius();
+
+  // For ranged BNPCs, use their attack range instead
+  if( bnpc.isRanged() )
+    combatRange = bnpc.getAttackRange();
 
   if( !bnpc.hasFlag( Entity::NoDeaggro ) )
   {
   }
 
-  if( !hasQueuedAction && !bnpc.hasFlag( Entity::Immobile ) && distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+  // Adjust movement logic for ranged BNPCs
+  if( !hasQueuedAction && !bnpc.hasFlag( Entity::Immobile ) )
   {
+    if( bnpc.isRanged() )
+    {
+      // Only move if the target is beyond maximum attack range
+      if( distance > bnpc.getAttackRange() )
+      {
+        if( pNaviProvider )
+          pNaviProvider->setMoveTarget( bnpc, pHatedActor->getPos() );
 
-    if( pNaviProvider )
-      pNaviProvider->setMoveTarget( bnpc, pHatedActor->getPos() );
+        bnpc.moveTo( *pHatedActor );
+      }
+    }
+    else
+    {
+      // Melee BNPCs move when outside of melee range
+      if( distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+      {
+        if( pNaviProvider )
+          pNaviProvider->setMoveTarget( bnpc, pHatedActor->getPos() );
 
-    bnpc.moveTo( *pHatedActor );
+        bnpc.moveTo( *pHatedActor );
+      }
+    }
   }
 
   pNaviProvider->syncPosToChara( bnpc );
 
-  if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+  // Process actions when in combat range (adjusted for ranged BNPCs)
+  if( !hasQueuedAction && distance < combatRange )
   {
     // todo: dont turn if facing
     if( !bnpc.hasFlag( Entity::TurningDisabled ) )

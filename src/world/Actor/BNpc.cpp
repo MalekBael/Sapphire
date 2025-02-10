@@ -410,10 +410,8 @@ bool BNpc::moveTo( const FFXIVARR_POSITION3& pos )
 
 bool BNpc::moveTo( const Chara& targetChara )
 {
-
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( getTerritoryId() );
-
   auto pNaviProvider = pZone->getNaviProvider();
 
   if( !pNaviProvider )
@@ -425,17 +423,70 @@ bool BNpc::moveTo( const Chara& targetChara )
   auto pos1 = pNaviProvider->getMovePos( *this );
   auto distance = Common::Util::distance( pos1, targetChara.getPos() );
 
-  if( distance <= ( getNaviTargetReachedDistance() + targetChara.getRadius() ) )
+  // For ranged attackers, maintain optimal distance
+  if( m_isRanged )
   {
-    // Reached destination
-    face( targetChara.getPos() );
-    setPos( pos1 );
-    sendPositionUpdate();
-    pNaviProvider->resetMoveTarget( *this );
-    pNaviProvider->updateAgentPosition( *this );
-    return true;
+    const float minRange = m_attackRange * 0.5f;// Minimum range for ranged attackers
+    const float maxRange = m_attackRange * 0.9f;// Optimal range slightly less than max
+
+    if( distance < minRange )
+    {
+      // Too close - move away from target
+      auto directionVector = pos1 - targetChara.getPos();
+      auto length = std::sqrt( directionVector.x * directionVector.x + directionVector.z * directionVector.z );
+      if( length > 0 )
+      {
+        directionVector.x /= length;
+        directionVector.z /= length;
+        auto retreatPos = targetChara.getPos();
+        retreatPos.x += directionVector.x * maxRange;
+        retreatPos.z += directionVector.z * maxRange;
+
+        face( retreatPos );
+        setPos( pos1 );
+        sendPositionUpdate();
+        return false;
+      }
+    }
+    else if( distance > m_attackRange )
+    {
+      // Too far - move closer but maintain optimal range
+      if( distance <= ( maxRange + targetChara.getRadius() ) )
+      {
+        face( targetChara.getPos() );
+        setPos( pos1 );
+        sendPositionUpdate();
+        pNaviProvider->resetMoveTarget( *this );
+        pNaviProvider->updateAgentPosition( *this );
+        return true;
+      }
+    }
+    else
+    {
+      // In optimal range - stop and face target
+      face( targetChara.getPos() );
+      setPos( pos1 );
+      sendPositionUpdate();
+      pNaviProvider->resetMoveTarget( *this );
+      pNaviProvider->updateAgentPosition( *this );
+      return true;
+    }
+  }
+  else
+  {
+    // Original melee behavior
+    if( distance <= ( getNaviTargetReachedDistance() + targetChara.getRadius() ) )
+    {
+      face( targetChara.getPos() );
+      setPos( pos1 );
+      sendPositionUpdate();
+      pNaviProvider->resetMoveTarget( *this );
+      pNaviProvider->updateAgentPosition( *this );
+      return true;
+    }
   }
 
+  // Continue moving
   pZone->updateActorPosition( *this );
   if( distance > 2.0f )
     face( { ( pos1.x - getPos().x ) + pos1.x, 1.0f, ( pos1.z - getPos().z ) + pos1.z } );
@@ -445,6 +496,7 @@ bool BNpc::moveTo( const Chara& targetChara )
   sendPositionUpdate();
   return false;
 }
+
 
 void BNpc::sendPositionUpdate()
 {
