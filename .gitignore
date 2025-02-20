@@ -20,6 +20,11 @@ src/tools/[Bb]in/exd_struct_gen
 # TODO: Sperate script directory from bin
 !bin/scripts/**/*
 
+# editor
+/editor/
+/editor/node_modules
+/editor/output
+
 # decompiled scripts
 src/tools/bin/generated/*
 
