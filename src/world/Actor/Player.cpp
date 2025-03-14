@@ -514,7 +514,7 @@ void Player::setBorrowAction( uint8_t slot, uint32_t action )
 Player::BorrowAction& Player::getBorrowAction()
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast<uint8_t>( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().ExpArrayIndex;
   return m_borrowActions[ classJobIndex ];
 }
 
@@ -554,7 +554,7 @@ bool Player::hasMount( uint32_t mountId ) const
 uint8_t Player::getLevel() const
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().ExpArrayIndex;
   return static_cast< uint8_t >( m_classArray[ classJobIndex ] );
 }
 
@@ -567,7 +567,7 @@ uint8_t Player::getLevelSync() const
 uint8_t Player::getLevelForClass( Common::ClassJob classJobId ) const
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( classJobId ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( classJobId ) )->data().ExpArrayIndex;
   return static_cast< uint8_t >( m_classArray[ classJobIndex ] );
 }
 
@@ -585,14 +585,14 @@ bool Player::isClassJobUnlocked( Common::ClassJob classJob ) const
 uint32_t Player::getCurrentExp() const
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().ExpArrayIndex;
   return m_expArray[ classJobIndex ];
 }
 
 void Player::setCurrentExp( uint32_t amount )
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().ExpArrayIndex;
   m_expArray[ classJobIndex ] = amount;
 }
 
@@ -615,14 +615,14 @@ void Player::setClassJob( Common::ClassJob classJob )
 void Player::setLevel( uint8_t level )
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().ExpArrayIndex;
   m_classArray[ classJobIndex ] = level;
 }
 
 void Player::setLevelForClass( uint8_t level, Common::ClassJob classjob )
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( classjob ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( classjob ) )->data().ExpArrayIndex;
 
   if( m_classArray[ classJobIndex ] == 0 )
     insertDbClass( classJobIndex, level );

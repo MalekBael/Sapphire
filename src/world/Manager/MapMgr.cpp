@@ -509,6 +509,10 @@ bool MapMgr::isQuestVisible( Entity::Player& player, uint32_t questId, Excel::Qu
 
   // TODO: I think this changed in 3.x to be for all relics, more research is needed.
   // todo: fix this inner j loop
+
+  /*
+  Commented for now, this was in ClasJob previously, but it's not in the same place in 3.x
+
   for( auto i = 0; i < Common::CLASSJOB_TOTAL; ++i )
   {
     auto classJob = exdData.getRow< Excel::ClassJob >( i );
@@ -519,6 +523,8 @@ bool MapMgr::isQuestVisible( Entity::Player& player, uint32_t questId, Excel::Qu
         return false;
     }
   }
+
+  */
 
   if( quest.BeastTribe )
     return false;

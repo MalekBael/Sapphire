@@ -109,16 +109,23 @@ std::string PlayerMgr::getPlayerNameFromDb( uint64_t characterId, bool forceDbLo
 
 Sapphire::Entity::PlayerPtr PlayerMgr::addPlayer( uint64_t characterId )
 {
-  auto pPlayer = Entity::make_Player();
+  try
+  {
+    auto pPlayer = Entity::make_Player();
 
-  if( !pPlayer->loadFromDb( characterId ) )
+    if( !pPlayer->loadFromDb( characterId ) )
+      return nullptr;
+
+    m_playerMapById[ pPlayer->getId() ] = pPlayer;
+    m_playerMapByCharacterId[ pPlayer->getCharacterId() ] = pPlayer;
+    m_playerMapByName[ pPlayer->getName() ] = pPlayer;
+
+    return pPlayer;
+  } catch( const std::exception& ex )
+  {
+    Logger::error( "addPlayer: Exception while adding player {0}: {1}", characterId, ex.what() );
     return nullptr;
-
-  m_playerMapById[ pPlayer->getId() ] = pPlayer;
-  m_playerMapByCharacterId[ pPlayer->getCharacterId() ] = pPlayer;
-  m_playerMapByName[ pPlayer->getName() ] = pPlayer;
-
-  return pPlayer;
+  }
 }
 
 Sapphire::Entity::PlayerPtr PlayerMgr::loadPlayer( uint32_t entityId )
@@ -155,15 +162,18 @@ bool PlayerMgr::loadPlayers()
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
   auto res = db.query( "SELECT CharacterId FROM charainfo" );
 
-  // no players or failed
+  bool success = true;
   while( res->next() )
   {
     uint64_t characterId = res->getUInt64( 1 );
     if( !addPlayer( characterId ) )
-      return false;
+    {
+      Logger::error( "loadPlayers: Failed to add player with characterId {0}", characterId );
+      success = false;
+    }
   }
 
-  return true;
+  return success;
 }
 
 Sapphire::Entity::PlayerPtr PlayerMgr::syncPlayer( uint64_t characterId )

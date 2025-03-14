@@ -1,101 +1,108 @@
 
-#include <GameData.h>
-#include <File.h>
 #include <DatCat.h>
-#include <ExdData.h>
-#include <ExdCat.h>
 #include <Exd.h>
+#include <ExdCat.h>
+#include <ExdData.h>
 #include <Exh.h>
-#include <iostream>
+#include <File.h>
+#include <GameData.h>
+#include <Logging/Logger.h>
 #include <cctype>
+#include <filesystem>
+#include <iostream>
 #include <set>
-#include <common/Exd/ExdData.h>
-#include <common/Logging/Logger.h>
-#include <boost/range/algorithm/remove_if.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/lexical_cast.hpp>
 
+#include <nlohmann/json.hpp>
+
+#include <algorithm>
 #include <fstream>
-#include <streambuf>
 #include <regex>
+#include <streambuf>
 
+#include "Exd/ExdData.h"
 
-Core::Logger g_log;
-Core::Data::ExdData g_exdData;
+using namespace Sapphire;
+
+namespace fs = std::filesystem;
+
+Sapphire::Data::ExdData g_exdData;
 bool skipUnmapped = true;
 
-//const std::string datLocation( "/opt/sapphire_3_15_0/bin/sqpack" );
-const std::string datLocation( "C:\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack\\ffxiv" );
+std::shared_ptr< xiv::dat::GameData > m_data;
+std::shared_ptr< xiv::exd::ExdData > m_exd_data;
+
+std::map< char, std::string > numberToStringMap{
+        { '0', "zero" },
+        { '1', "one" },
+        { '2', "two" },
+        { '3', "three" },
+        { '4', "four" },
+        { '5', "five" },
+        { '6', "six" },
+        { '7', "seven" },
+        { '8', "eight" },
+        { '9', "nine" },
+};
+
+std::vector< std::string > reservedWords{
+        "new",
+        "class",
+        "long",
+        "short" };
+
+//std::string datLocation( "/home/mordred/sqpack" );
+std::string datLocation( "C:/Program Files (x86)/SquareEnix/FINAL FANTASY XIV - A Realm Reborn/game/sqpack" );
 std::map< uint8_t, std::string > g_typeMap;
 
 
-std::string generateDatAccessDecl( const std::string &exd )
+std::string generateDatAccessDecl( const std::string& exd )
 {
-   return "     xiv::exd::Exd m_" + exd + "Dat;\n";
+  return "     xiv::exd::Exd m_" + exd + "Dat;\n";
 }
 
-std::string generateIdListDecl( const std::string &exd )
+std::string generateIdListDecl( const std::string& exd )
 {
-   return "     std::set< uint32_t > m_" + exd + "IdList;\n";
+  return "     std::set< uint32_t > m_" + exd + "IdList;\n";
 }
 
 std::string generateDirectGetters( const std::string& exd )
 {
-   return "     boost::shared_ptr< " + exd + " > get" + exd + "( uint32_t " + exd + "Id );\n";
+  return "     using " + exd + "Ptr = std::shared_ptr< " + exd + " >;\n";
 }
 
-std::string generateIdListGetter( const std::string &exd )
+std::string generateIdListGetter( const std::string& exd )
 {
-   std::string IdListGetter = "const std::set< uint32_t >& get" + exd + "IdList()\n"
-                              "{\n"
-                              "   if( m_" + exd + "IdList.size() == 0 )\n"
-                              "      loadIdList( m_" + exd + "Dat, m_" + exd + "IdList );\n"
-                              "   return m_" + exd + "IdList;\n"
-                              "}\n";
-   return IdListGetter;
+  std::string IdListGetter = "const std::set< uint32_t >& get" + exd + "IdList()\n"
+                                                                       "{\n"
+                                                                       "   if( m_" +
+                             exd + "IdList.size() == 0 )\n"
+                                   "      loadIdList( m_" +
+                             exd + "Dat, m_" + exd + "IdList );\n"
+                                                     "   return m_" +
+                             exd + "IdList;\n"
+                                   "}\n";
+  return IdListGetter;
 }
 
-std::string generateSetDatAccessCall( const std::string &exd )
+std::string generateSetDatAccessCall( const std::string& exd )
 {
-   auto& cat = g_exdData.m_exd_data->get_category( exd );
-   auto exh = cat.get_header();
+  auto& cat = m_exd_data->get_category( exd );
+  auto exh = cat.get_header();
 
-   std::string lang = "xiv::exd::Language::none";
-   auto langs = exh.get_languages();
-   if( langs.size() > 1 )
-      lang = "xiv::exd::Language::en";
+  std::string lang = "xiv::exd::Language::none";
+  auto langs = exh.get_languages();
+  if( langs.size() > 1 )
+    lang = "xiv::exd::Language::en";
 
-   return "      m_" + exd + "Dat = setupDatAccess( \"" + exd + "\", " + lang + " );\n";
+  return "    m_" + exd + "Dat = setupDatAccess( \"" + exd + "\", " + lang + " );\n";
 }
 
-std::string generateDirectGetterDef( const std::string& exd )
+std::string generateDirectGetterDef()
 {
-   std::string result = "";
-   result =
-      "boost::shared_ptr< Core::Data::" + exd + " >\n"
-      "   get" + exd + "( uint32_t " + exd + "Id )\n"
-      "{\n"
-      "   try\n"
-      "   {\n"
-      "      auto row = m_" + exd + "Dat.get_row( " + exd + "Id );\n"
-      "      auto info = boost::make_shared< " + exd + " >( " + exd + "Id, this );\n"
-      "      return info;\n"
-      "   }\n"
-      "   catch( ... )\n"
-      "   {\n"
-      "      return nullptr;\n"
-      "   }\n"
-      "   return nullptr;\n"
-      "}\n";
-   return result;
+  std::string result = "";
+  return result;
 }
+
 std::map< uint32_t, std::string > indexToNameMap;
 std::map< uint32_t, std::string > indexToTypeMap;
 std::map< uint32_t, std::string > indexToTarget;
@@ -104,266 +111,356 @@ std::map< uint32_t, uint32_t > indexCountMap;
 
 std::map< std::string, std::string > nameTaken;
 
-std::string generateStruct( const std::string &exd )
+std::string generateStruct( const std::string& exd )
 {
-   auto& cat = g_exdData.m_exd_data->get_category( exd );
-   auto exh = cat.get_header();
-   auto exhMem = exh.get_exh_members();
+  auto& cat = m_exd_data->get_category( exd );
+  auto exh = cat.get_header();
+  auto exhMem = exh.get_exh_members();
 
-   int count = 0;
+  int count = 0;
 
-   using boost::property_tree::ptree;
-   ptree m_propTree;
-   boost::property_tree::read_json( "ex.json", m_propTree );
+  auto path = fmt::format( "Definitions/{}.json", exd );
+  if( !fs::exists( path ) )
+  {
+    Logger::warn( "No definition for exd: {}", exd );
+    return "";
+  }
 
-   BOOST_FOREACH( boost::property_tree::ptree::value_type &sheet, m_propTree.get_child( "sheets" ) )
-   {
-      std::string name = sheet.second.get< std::string >( "sheet" );
-      if( name != exd )
-         continue;
+  auto sheet = nlohmann::json();
 
-      BOOST_FOREACH( boost::property_tree::ptree::value_type &show, sheet.second.get_child( "definitions" ) )
+  try
+  {
+    std::ifstream defJson( path );
+    defJson >> sheet;
+  } catch( const std::exception& ex )
+  {
+    Logger::error( "Failed parsing json definition, err: {}  file: {}", ex.what(), path );
+    return "";
+  }
+
+  // Keep track of field names to avoid duplicates
+  std::set< std::string > usedFieldNames;
+
+  for( auto& definition : sheet[ "definitions" ] )
+  {
+    uint32_t index;
+    std::string converterTarget = "";
+    bool isRepeat = false;
+    int num = 0;
+    try
+    {
+      index = definition.at( "index" );
+    } catch( ... )
+    {
+      index = 0;
+    }
+
+    try
+    {
+      std::string fieldName = std::string( definition.at( "name" ) );
+      indexToNameMap[ index ] = fieldName;
+    } catch( ... )
+    {
+    }
+
+    try
+    {
+      converterTarget = std::string( definition.at( "converter" ).at( "target" ) );
+      if( nameTaken.find( converterTarget ) != nameTaken.end() )
+        indexToTarget[ index ] = converterTarget;
+    } catch( ... )
+    {
+    }
+
+    try
+    {
+      num = definition.at( "count" );
+      isRepeat = true;
+      indexIsArrayMap[ index ] = true;
+      indexCountMap[ index ] = num;
+      std::string fName = definition.at( "definition" ).at( "name" );
+      indexToNameMap[ index ] = fName;
+    } catch( ... )
+    {
+    }
+  }
+
+  std::string result = "struct " + exd + "\n{\n";
+
+  for( auto member : exhMem )
+  {
+    auto typei = static_cast< uint8_t >( member.type );
+    auto it = g_typeMap.find( typei );
+
+    std::string type;
+    if( it != g_typeMap.end() )
+      type = it->second;
+    else
+      type = "bool";
+
+    std::string fieldName = "field" + std::to_string( count );
+    if( indexToNameMap.find( count ) == indexToNameMap.end() )
+    {
+      if( skipUnmapped )
       {
-         uint32_t index;
-         std::string converterTarget = "";
-         bool isRepeat = false;
-         int num = 0;
-         try
-         {
-            index = show.second.get< uint32_t >("index");
-         }
-         catch( ... )
-         {
-            index = 0;
-         }
-         try 
-         {
-            std::string fieldName = show.second.get< std::string >( "name" );
-            indexToNameMap[index] = fieldName;
-         }
-         catch( ... ) {}
-
-         try
-         {
-            converterTarget = show.second.get< std::string >( "converter.target" );
-            if( nameTaken.find( converterTarget ) != nameTaken.end() )
-               indexToTarget[index] = converterTarget;
-         }
-         catch( ... ) {}
-         
-         try
-         {
-            show.second.get< std::string >( "type" );
-            num = show.second.get< uint8_t >( "count" );
-            isRepeat = true;
-            indexIsArrayMap[index] = true;
-            indexCountMap[index] = num;
-            std::string fName = show.second.get< std::string >( "definition.name" );
-            indexToNameMap[index] = fName;
-         }
-         catch( ... ) {}
-
+        count++;
+        continue;
       }
-   }
+      indexToNameMap[ count ] = fieldName;
+    }
+    else
+    {
+      fieldName = indexToNameMap[ count ];
+    }
+    fieldName[ 0 ] = std::tolower( fieldName[ 0 ] );
 
-   std::string result = "struct " + exd +"\n{\n";
+    std::string badChars = ",-':![](){}/<>% \x02\x1f\x01\x03";
+    std::for_each( badChars.begin(), badChars.end(), [ &fieldName ]( const char c ) {
+      fieldName.erase( std::remove( fieldName.begin(), fieldName.end(), c ), fieldName.end() );
+    } );
 
-
-   for( auto member : exhMem )
-   {
-      auto typei = static_cast< uint8_t >( member.type );
-      auto it = g_typeMap.find( typei );
-
-      std::string type;
-      if( it != g_typeMap.end() )
-         type = it->second; 
-      else
-         type = "bool";
-
-      std::string fieldName = "field" + std::to_string( count );
-      if( indexToNameMap.find( count ) == indexToNameMap.end() )
+    for( auto entry : numberToStringMap )
+    {
+      if( fieldName[ 0 ] == entry.first )
       {
-         if( skipUnmapped )
-         {
-           count++;
-           continue;
-         }
-         indexToNameMap[count] = fieldName;
+        fieldName.erase( 0, 1 );
+        fieldName.insert( 0, entry.second );
       }
-      else
-      {
-         fieldName = indexToNameMap[count];
-      }
-      fieldName[0] = std::tolower( fieldName[0] );
-      fieldName.erase( boost::remove_if( fieldName, boost::is_any_of(",-':![](){}<>% \x02\x1f\x01\x03") ), fieldName.end() );   
-      indexToNameMap[count] = fieldName;
-      indexToTypeMap[count] = type;
-      if( indexToTarget.find( count ) != indexToTarget.end() )
-         result += "   boost::shared_ptr< " + indexToTarget[count] + "> " + fieldName + ";\n";
-      else
-      {
-         if( indexIsArrayMap.find( count ) != indexIsArrayMap.end() )
-         {
-            type = "std::vector< " + type + " >";
-         }
-         result += "   " + type + " " + fieldName + ";\n";
-        
-      }
-   
-      count++;
-   }
+    }
 
-   result += "\n   " + exd + "( uint32_t row_id, Core::Data::ExdDataGenerated* exdData );\n";
-   result += "};\n\n";
-   
-   return result;
+    for( std::string keyword : reservedWords )
+    {
+      if( fieldName == keyword )
+        fieldName = fmt::format( "_{}", fieldName );
+    }
+
+    // Ensure field name is unique by appending the index if it's already used
+    std::string originalFieldName = fieldName;
+    int suffix = 1;
+    while( usedFieldNames.find( fieldName ) != usedFieldNames.end() )
+    {
+      fieldName = originalFieldName + "_" + std::to_string( suffix++ );
+    }
+    usedFieldNames.insert( fieldName );
+
+    indexToNameMap[ count ] = fieldName;
+    indexToTypeMap[ count ] = type;
+    if( indexToTarget.find( count ) != indexToTarget.end() )
+      result += "  std::shared_ptr< " + indexToTarget[ count ] + "> " + fieldName + ";\n";
+    else
+    {
+      if( indexIsArrayMap.find( count ) != indexIsArrayMap.end() )
+      {
+        type = "std::vector< " + type + " >";
+        // Skip adding the array elements individually
+        count += indexCountMap[ count ] - 1;
+      }
+      result += "  " + type + " " + fieldName + ";\n";
+    }
+
+    count++;
+  }
+
+  auto exhHead = exh.get_header();
+  if( exhHead.variant == 2 )
+  {
+    result += "\n  " + exd + "( uint32_t row_id, uint32_t subRow, Sapphire::Data::ExdDataGenerated* exdData );\n";
+  }
+  else
+  {
+    result += "\n  " + exd + "( uint32_t row_id, Sapphire::Data::ExdDataGenerated* exdData );\n";
+  }
+  result += "};\n\n";
+
+  return result;
 }
 
 std::string generateConstructorsDecl( const std::string& exd )
 {
-   std::string result;
+  std::string result;
 
-   auto& cat = g_exdData.m_exd_data->get_category( exd );
-   auto exh = cat.get_header();
-   auto exhMem = exh.get_exh_members();
+  auto& cat = m_exd_data->get_category( exd );
+  auto exh = cat.get_header();
+  auto exhMem = exh.get_exh_members();
 
-   int count = 0;
+  int count = 0;
 
-
-   result += "\n      Core::Data::" + exd + "::" + exd + "( uint32_t row_id, Core::Data::ExdDataGenerated* exdData )\n";
-   result += "      {\n";
-   std::string indent = "         ";
-   result += indent + "auto row = exdData->m_" + exd + "Dat.get_row( row_id );\n";
-   for( auto member : exhMem )
-   {  
-      if( indexToNameMap.find( count ) == indexToNameMap.end() )
-      { count++; continue; }
-      if( indexToTarget.find( count ) != indexToTarget.end() )
-         result += indent + indexToNameMap[count] + " = boost::make_shared< " + indexToTarget[count] + ">( exdData->getField< " +
-                   indexToTypeMap[count] + " >( row, " + std::to_string( count ) + " ), exdData );\n";
+  std::string indent = "  ";
+  auto exhHead = exh.get_header();
+  if( exhHead.variant == 2 )
+  {
+    result += "\nSapphire::Data::" + exd + "::" + exd + "( uint32_t row_id, uint32_t subRow, Sapphire::Data::ExdDataGenerated* exdData )\n";
+    result += "{\n";
+    result += indent + "auto row = exdData->m_" + exd + "Dat.get_row( row_id, subRow );\n";
+  }
+  else
+  {
+    result += "\nSapphire::Data::" + exd + "::" + exd + "( uint32_t row_id, Sapphire::Data::ExdDataGenerated* exdData )\n";
+    result += "{\n";
+    result += indent + "auto row = exdData->m_" + exd + "Dat.get_row( row_id );\n";
+  }
+  for( auto member : exhMem )
+  {
+    if( indexToNameMap.find( count ) == indexToNameMap.end() )
+    {
+      count++;
+      continue;
+    }
+    if( indexToTarget.find( count ) != indexToTarget.end() )
+      result += indent + indexToNameMap[ count ] + " = std::make_shared< " + indexToTarget[ count ] +
+                ">( exdData->getField< " +
+                indexToTypeMap[ count ] + " >( row, " + std::to_string( count ) + " ), exdData );\n";
+    else
+    {
+      if( indexIsArrayMap.find( count ) == indexIsArrayMap.end() )
+        result += indent + indexToNameMap[ count ] + " = exdData->getField< " + indexToTypeMap[ count ] + " >( row, " +
+                  std::to_string( count ) + " );\n";
       else
       {
-         if( indexIsArrayMap.find( count ) == indexIsArrayMap.end() )
-            result += indent + indexToNameMap[count] + " = exdData->getField< " + indexToTypeMap[count] + " >( row, " + std::to_string( count ) + " );\n";
-         else
-         {
 
-            uint32_t amount = indexCountMap[count];
-            for( int i = 0; i < amount; i++ )
-            {
-            
-               result += indent + indexToNameMap[count] + ".push_back( exdData->getField< " + indexToTypeMap[count] + " >( row, " + std::to_string( count + i ) + " ) );\n";
- 
-            }
+        uint32_t amount = indexCountMap[ count ];
+        for( int i = 0; i < amount; i++ )
+        {
 
-
-         }
+          result += indent + indexToNameMap[ count ] + ".push_back( exdData->getField< " + indexToTypeMap[ count ] +
+                    " >( row, " + std::to_string( count + i ) + " ) );\n";
+        }
       }
-      count++;
-   }
-   result += "      }\n";
+    }
+    count++;
+  }
+  result += "}\n";
 
-   indexToNameMap.clear();
-   indexToTypeMap.clear();
-   indexToTarget.clear();
-   indexIsArrayMap.clear();
-   indexCountMap.clear();
-   return result;
+  indexToNameMap.clear();
+  indexToTypeMap.clear();
+  indexToTarget.clear();
+  indexIsArrayMap.clear();
+  indexCountMap.clear();
+  return result;
 }
 
-int main()
+int main( int argc, char** argv )
 {
-   g_typeMap[0] = "std::string";
-   g_typeMap[1] = "bool";
-   g_typeMap[2] = "int8_t";
-   g_typeMap[3] = "uint8_t";
-   g_typeMap[4] = "int16_t";
-   g_typeMap[5] = "uint16_t";
-   g_typeMap[6] = "int32_t";
-   g_typeMap[7] = "uint32_t";
-   g_typeMap[9] = "float";
-   g_typeMap[11] = "uint64_t";
-
-   std::ifstream t( "ExdData.h.tmpl" );
-   std::string exdH( ( std::istreambuf_iterator<char>( t ) ),
-                       std::istreambuf_iterator<char>() );
-
-   std::ifstream s( "ExdData.cpp.tmpl" );
-   std::string exdC( ( std::istreambuf_iterator<char>( s ) ),
-                       std::istreambuf_iterator<char>() );
+  Logger::init( "struct_gen" );
+  if( argc > 1 )
+  {
+    Logger::info( "using dat path: {0}", std::string( argv[ 1 ] ) );
+    datLocation = std::string( argv[ 1 ] );
+  }
 
 
-   using boost::property_tree::ptree;
-   ptree m_propTree;
-   boost::property_tree::read_json( "ex.json", m_propTree );
-   g_log.init();
+  g_typeMap[ 0 ] = "std::string";
+  g_typeMap[ 1 ] = "bool";
+  g_typeMap[ 2 ] = "int8_t";
+  g_typeMap[ 3 ] = "uint8_t";
+  g_typeMap[ 4 ] = "int16_t";
+  g_typeMap[ 5 ] = "uint16_t";
+  g_typeMap[ 6 ] = "int32_t";
+  g_typeMap[ 7 ] = "uint32_t";
+  g_typeMap[ 9 ] = "float";
+  g_typeMap[ 11 ] = "uint64_t";
 
-   g_log.info( "Setting up EXD data" );
-   if( !g_exdData.init( datLocation ) )
-   {
-      g_log.fatal( "Error setting up EXD data " );
-      return 0;
-   }
-   g_log.info( "Generating structs, this may take several minutes..." );
-   g_log.info( "Go grab a coffee..." );
-  
-   std::string structDefs;
-   std::string idListsDecl;
-   std::string dataDecl;
-   std::string getterDecl;
-   std::string datAccCall;
-   std::string getterDef;
-   std::string constructorDecl;
-   std::string forwards;
-   std::string idListGetters;
+  std::ifstream t( "ExdData.h.tmpl" );
+  std::string exdH( ( std::istreambuf_iterator< char >( t ) ),
+                    std::istreambuf_iterator< char >() );
 
-   //BOOST_FOREACH( boost::property_tree::ptree::value_type &sheet, m_propTree.get_child( "sheets" ) )
-   //{
-      //std::string name = sheet.second.get< std::string >( "sheet" );
-      //nameTaken[name] = "1";
-   //}
-
-   BOOST_FOREACH( boost::property_tree::ptree::value_type &sheet, m_propTree.get_child( "sheets" ) )
-   {
-      std::string name = sheet.second.get< std::string >( "sheet" );
-    
-      forwards += "struct " + name +";\n";
-      structDefs += generateStruct( name );
-      dataDecl += generateDatAccessDecl( name );
-      idListsDecl += generateIdListDecl( name );
-      getterDecl += generateDirectGetters( name );
-      datAccCall += generateSetDatAccessCall( name );
-      getterDef += generateDirectGetterDef( name );
-      constructorDecl += generateConstructorsDecl( name );
-      idListGetters += generateIdListGetter( name );
-   }
-
-   // for all sheets in the json i guess....
-
-   std::string result;
-   result = std::regex_replace( exdH, std::regex( "\\FORWARDS" ), forwards );
-   result = std::regex_replace( result, std::regex( "\\STRUCTS" ), structDefs );
-   result = std::regex_replace( result, std::regex( "\\DATACCESS" ), dataDecl );
-   result = std::regex_replace( result, std::regex( "\\IDLISTS" ), idListsDecl );
-   result = std::regex_replace( result, std::regex( "\\DIRECTGETTERS" ), getterDecl );
-   result = std::regex_replace( result, std::regex( "\\IDLISTGETTERS" ), idListGetters );
+  std::ifstream s( "ExdData.cpp.tmpl" );
+  std::string exdC( ( std::istreambuf_iterator< char >( s ) ),
+                    std::istreambuf_iterator< char >() );
 
 
-//   g_log.info( result );
+  Logger::info( "Setting up EXD data" );
 
-   std::ofstream outH("ExdDataGenerated.h");
-   outH << result;
-   outH.close();
+  m_data = std::make_shared< xiv::dat::GameData >( datLocation );
+  m_exd_data = std::make_shared< xiv::exd::ExdData >( *m_data );
 
-   result = std::regex_replace( exdC, std::regex( "\\SETUPDATACCESS" ), datAccCall );
-   result = std::regex_replace( result, std::regex( "\\DIRECTGETTERS" ), getterDef );
-   result = std::regex_replace( result, std::regex( "\\CONSTRUCTORS" ), constructorDecl );
-   
-   std::ofstream outC("ExdDataGenerated.cpp");
-   outC << result;
-   outC.close();
-   
-//   g_log.info( result );
+  Logger::info( "Generating structs, this may take several minutes..." );
+  Logger::info( "Go grab a coffee..." );
 
-   return 0;
+  std::string structDefs;
+  std::string idListsDecl;
+  std::string dataDecl;
+  std::string getterDecl;
+  std::string datAccCall;
+  std::string getterDef;
+  std::string constructorDecl;
+  std::string forwards;
+  std::string idListGetters;
+
+  //BOOST_FOREACH( boost::property_tree::ptree::value_type &sheet, m_propTree.get_child( "sheets" ) )
+  //{
+  //nameTaken[name] = "1";
+  //}
+  //
+
+  if( !fs::exists( "Definitions" ) )
+  {
+    Logger::error( "Missing definitions directory. Copy it from SaintCoinach to the working directory." );
+    return 1;
+  }
+
+  auto& cats = m_exd_data->get_cat_names();
+
+  uint32_t entryCount = 0;
+  for( auto& entry : fs::directory_iterator( "./Definitions/" ) )
+  {
+    auto& path = entry.path();
+
+    if( path.extension() != ".json" )
+      continue;
+
+    auto name = path.stem().string();
+
+    if( std::find( cats.begin(), cats.end(), name ) == cats.end() )
+    {
+      Logger::warn( "have definition for {} but the sheet doesn't exist", name );
+      continue;
+    }
+
+    forwards += "struct " + name + ";\n";
+    structDefs += generateStruct( name );
+    dataDecl += generateDatAccessDecl( name );
+    idListsDecl += generateIdListDecl( name );
+    getterDecl += generateDirectGetters( name );
+    datAccCall += generateSetDatAccessCall( name );
+    constructorDecl += generateConstructorsDecl( name );
+    idListGetters += generateIdListGetter( name );
+
+    entryCount++;
+  }
+
+  Logger::info( "Processed {} definition files, writing files...", entryCount );
+
+  getterDef += generateDirectGetterDef();
+
+  // for all sheets in the json i guess....
+
+  std::string result;
+  result = std::regex_replace( exdH, std::regex( "\\FORWARDS" ), forwards );
+  result = std::regex_replace( result, std::regex( "\\STRUCTS" ), structDefs );
+  result = std::regex_replace( result, std::regex( "\\DATACCESS" ), dataDecl );
+  result = std::regex_replace( result, std::regex( "\\IDLISTS" ), idListsDecl );
+  result = std::regex_replace( result, std::regex( "\\DIRECTGETTERS" ), getterDecl );
+  result = std::regex_replace( result, std::regex( "\\IDLISTGETTERS" ), idListGetters );
+
+
+  //   g_log.info( result );
+
+  std::ofstream outH( "ExdDataGenerated.h" );
+  outH << result;
+  outH.close();
+
+  result = std::regex_replace( exdC, std::regex( "\\SETUPDATACCESS" ), datAccCall );
+  result = std::regex_replace( result, std::regex( "\\DIRECTGETTERS" ), getterDef );
+  result = std::regex_replace( result, std::regex( "\\CONSTRUCTORS" ), constructorDecl );
+
+  std::ofstream outC( "ExdDataGenerated.cpp" );
+  outC << result;
+  outC.close();
+
+  //   g_log.info( result );
+
+  Logger::info( "done." );
+
+  return 0;
 }

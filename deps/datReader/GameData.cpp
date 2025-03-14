@@ -1,78 +1,78 @@
 #include "GameData.h"
 
-#include <string>
-#include <sstream>
 #include <algorithm>
+#include <sstream>
+#include <string>
 
 #include <map>
 #include <utility>
 #include <zlib/zlib.h>
 
-#include "bparse.h"
 #include "DatCat.h"
 #include "File.h"
+#include "bparse.h"
 
-namespace {
-// Relation between category number and category name
-// These names are taken straight from the exe, it helps resolve dispatching when getting files by path
+namespace
+{
+  // Relation between category number and category name
+  // These names are taken straight from the exe, it helps resolve dispatching when getting files by path
 
-std::unordered_map< std::string, uint32_t > categoryNameToIdMap =
-  { { "common",      0x00 },
-    { "bgcommon",    0x01 },
-    { "bg",          0x02 },
-    { "cut",         0x03 },
-    { "chara",       0x04 },
-    { "shader",      0x05 },
-    { "ui",          0x06 },
-    { "sound",       0x07 },
-    { "vfx",         0x08 },
-    { "ui_script",   0x09 },
-    { "exd",         0x0A },
-    { "game_script", 0x0B },
-    { "music",       0x0C }
-  };
+  std::unordered_map< std::string, uint32_t > categoryNameToIdMap =
+          { { "common", 0x00 },
+            { "bgcommon", 0x01 },
+            { "bg", 0x02 },
+            { "cut", 0x03 },
+            { "chara", 0x04 },
+            { "shader", 0x05 },
+            { "ui", 0x06 },
+            { "sound", 0x07 },
+            { "vfx", 0x08 },
+            { "ui_script", 0x09 },
+            { "exd", 0x0A },
+            { "game_script", 0x0B },
+            { "music", 0x0C } };
 
-std::unordered_map< uint32_t, std::string > categoryIdToNameMap =
-  { { 0x00, "common" },
-    { 0x01, "bgcommon" },
-    { 0x02, "bg" },
-    { 0x03, "cut" },
-    { 0x04, "chara" },
-    { 0x05, "shader" },
-    { 0x06, "ui" },
-    { 0x07, "sound" },
-    { 0x08, "vfx" },
-    { 0x09, "ui_script" },
-    { 0x0A, "exd" },
-    { 0x0B, "game_script" },
-    { 0x0C, "music" } };
-}
+  std::unordered_map< uint32_t, std::string > categoryIdToNameMap =
+          { { 0x00, "common" },
+            { 0x01, "bgcommon" },
+            { 0x02, "bg" },
+            { 0x03, "cut" },
+            { 0x04, "chara" },
+            { 0x05, "shader" },
+            { 0x06, "ui" },
+            { 0x07, "sound" },
+            { 0x08, "vfx" },
+            { 0x09, "ui_script" },
+            { 0x0A, "exd" },
+            { 0x0B, "game_script" },
+            { 0x0C, "music" } };
+}// namespace
 
 namespace xiv::dat
 {
-  GameData::GameData( std::filesystem::path path ) try :
-    m_path( std::move( path ) )
+  GameData::GameData( std::filesystem::path path )
+  try : m_path( std::move( path ) )
   {
     int maxExLevel = 0;
 
     // msvc has retarded stdlib implementation
-  #ifdef _WIN32
+#ifdef _WIN32
     static constexpr auto sep = "\\";
-  #else
+#else
     static constexpr auto sep = std::filesystem::path::preferred_separator;
-  #endif
+#endif
 
     // Determine which expansions are available
     while( std::filesystem::exists( std::filesystem::path(
-      m_path.string() + sep + "ex" + std::to_string( maxExLevel + 1 ) + sep + "ex" + std::to_string( maxExLevel + 1 ) +
-      ".ver" ) ) )
+            m_path.string() + sep + "ex" + std::to_string( maxExLevel + 1 ) + sep + "ex" + std::to_string( maxExLevel + 1 ) +
+            ".ver" ) ) )
     {
       maxExLevel++;
     }
 
 
     // Iterate over the files in path
-    for( auto it = std::filesystem::directory_iterator( m_path.string() + "//ffxiv" );
+    for( auto it = std::filesystem::directory_iterator( m_path / "ffxiv" );
          it != std::filesystem::directory_iterator(); ++it )
     {
       // Get the filename of the current element
@@ -98,7 +98,7 @@ namespace xiv::dat
         for( int exNum = 1; exNum <= maxExLevel; exNum++ )
         {
           const std::string path =
-            m_path.string() + sep + buildDatStr( "ex" + std::to_string( exNum ), cat_nb, exNum, 0, "win32", "index" );
+                  m_path.string() + sep + buildDatStr( "ex" + std::to_string( exNum ), cat_nb, exNum, 0, "win32", "index" );
 
           if( std::filesystem::exists( std::filesystem::path( path ) ) )
           {
@@ -115,14 +115,12 @@ namespace xiv::dat
                 chunkCount++;
               }
             }
-
           }
         }
       }
     }
 
-  }
-  catch( std::exception& e )
+  } catch( std::exception& e )
   {
     // In case of failure here, client is supposed to catch the exception because it is not recoverable on our side
     throw std::runtime_error( "GameData initialization failed: " + std::string( e.what() ) );
@@ -130,13 +128,12 @@ namespace xiv::dat
 
   GameData::~GameData()
   {
-
   }
 
   const std::string GameData::buildDatStr( const std::string folder, const int cat, const int exNum, const int chunk,
                                            const std::string platform, const std::string type )
   {
-    char dat[1024];
+    char dat[ 1024 ];
     sprintf( dat, "%s/%02x%02x%02x.%s.%s", folder.c_str(), cat, exNum, chunk, platform.c_str(), type.c_str() );
     return std::string( dat );
   }
@@ -317,10 +314,13 @@ namespace xiv::dat
         {
           // Actually creates the category
           m_exCats[ catNum ].exNumToChunkMap[ ex.first ].chunkToCatMap[ chunk.first ] = std::unique_ptr< Cat >(
-            new Cat( m_path, catNum, catName, ex.first, chunk.first ) );
+                  new Cat( m_path, catNum, catName, ex.first, chunk.first ) );
         }
       }
     }
   }
 
-}
+}// namespace xiv::dat
+
+// Initialize the GameData object with the specified path
+xiv::dat::GameData gameData( std::filesystem::path( "C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" ) );

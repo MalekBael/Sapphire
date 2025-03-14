@@ -25,6 +25,8 @@ src/tools/[Bb]in/exd_struct_gen
 /editor/node_modules
 /editor/output
 
+*.csv
+
 # decompiled scripts
 src/tools/bin/generated/*
 

@@ -122,6 +122,66 @@ public:
     instance.addEObj( "Unnaturalripples_2", 2000407, 3992449, 3741895, 4, { -338.036499f, 6.500000f, 300.206512f }, 0.991789f, 0.000048f, 0 );
     instance.addEObj( "Unnaturalripples_3", 2000408, 3992453, 3741897, 4, { -337.929596f, 6.500000f, 335.975311f }, 1.000000f, 0.000000f, 0 );
 
+    //bnpc test black bat
+    instance.createBNpcFromLayoutId( 3725425, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3725423, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3726787, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3725392, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3725388, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3725390, 300, Common::BNpcType::Enemy );
+
+    //bnpc test shallowtail Reaver
+    instance.createBNpcFromLayoutId( 4056170, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981843, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981864, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981865, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3988324, 300, Common::BNpcType::Enemy );
+
+    instance.createBNpcFromLayoutId( 3282344, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3978776, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3978797, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981888, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981887, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3978792, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981886, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3978791, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3981883, 300, Common::BNpcType::Enemy );
+
+    //bnpc test shallowclaw Reaver
+
+    instance.createBNpcFromLayoutId( 3796131, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3796115, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3796133, 300, Common::BNpcType::Enemy );
+
+    //bnpc test baleen guard
+
+    //instance.createBNpcFromLayoutId( 3978770, 300, Common::BNpcType::Enemy );
+    //instance.createBNpcFromLayoutId( 4064938, 300, Common::BNpcType::Enemy );
+    //instance.createBNpcFromLayoutId( 4064937, 300, Common::BNpcType::Enemy );
+    //instance.createBNpcFromLayoutId( 3978761, 300, Common::BNpcType::Enemy );
+
+
+    //bnpc test Denn the Orcatoothed
+
+    //instance.createBNpcFromLayoutId( 3978771, 300, Common::BNpcType::Enemy );
+
+    //bnpc test cave aurelia
+
+    instance.createBNpcFromLayoutId( 3725822, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3725818, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3796129, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 4217967, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 4217968, 300, Common::BNpcType::Enemy );
+    instance.createBNpcFromLayoutId( 3796117, 300, Common::BNpcType::Enemy );
+
+
+    //bnpc test fossilshell
+
+    instance.createBNpcFromLayoutId( 3796116, 300, Common::BNpcType::Enemy );
+
+    //bnpc test Sastasha orobon
+
+    instance.createBNpcFromLayoutId( 3796116, 300, Common::BNpcType::Enemy );
   }
 
   void onUpdate( InstanceContent& instance, uint64_t tickCount ) override

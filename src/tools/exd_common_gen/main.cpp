@@ -1,18 +1,17 @@
-
-#include <GameData.h>
-#include <File.h>
 #include <DatCat.h>
-#include <ExdData.h>
-#include <ExdCat.h>
 #include <Exd.h>
-#include <iostream>
-#include <cctype>
-#include <set>
 #include <Exd/ExdData.h>
+#include <ExdCat.h>
+#include <ExdData.h>
+#include <File.h>
+#include <GameData.h>
 #include <Logging/Logger.h>
-#include <algorithm>
 #include <Util/Util.h>
-
+#include <algorithm>
+#include <cctype>
+#include <iostream>
+#include <set>
+#include <variant>
 
 #include <fstream>
 
@@ -21,11 +20,10 @@ Sapphire::Data::ExdData g_exdData;
 using namespace Sapphire;
 
 //const std::string datLocation( "/opt/sapphire_3_15_0/bin/sqpack" );
-std::string datLocation( "C:\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
+std::string datLocation( "C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV - A Realm Reborn\\game\\sqpack" );
 
 std::string generateEnum( const std::string& exd, int8_t nameIndex, const std::string& type, bool useLang = true )
 {
-
   xiv::dat::GameData data( datLocation );
   xiv::exd::ExdData eData( data );
 
@@ -35,27 +33,47 @@ std::string generateEnum( const std::string& exd, int8_t nameIndex, const std::s
   result += "   //" + exd + ".exd\n";
   result += "   enum class " + exd + " : " + type + "\n";
   result += "   {\n";
-  auto lang = useLang ? xiv::exd::Language::en : xiv::exd::Language::none;
-  auto access = g_exdData.setupDatAccess( exd, lang );
-  auto rows = access.get_rows();
 
-  for( auto row : rows )
+  // Get the category directly from the exd data
+  auto& cat = eData.get_category( exd );
+  auto lang = useLang ? xiv::exd::Language::en : xiv::exd::Language::none;
+  auto sheet = cat.get_data( lang );
+  auto rows = sheet.get_rows();
+
+  for( auto& row : rows )
   {
-    auto& fields = row.second;
     uint32_t id = row.first;
+    auto& fields = row.second;
+
+    // Use field access with safety checks
+    if( nameIndex >= fields.size() )
+      continue;
 
     std::string value;
     try
     {
-      value = std::get< std::string >( fields.at( nameIndex ) );
-    }
-    catch( std::bad_variant_access& )
+      // Get the field directly
+      auto& field = fields.at( nameIndex );
+
+      // Since field is now a std::variant, check if it contains a string
+      if( std::holds_alternative< std::string >( field ) )
+      {
+        value = std::get< std::string >( field );
+      }
+      else
+      {
+        continue;
+      }
+    } catch( const std::exception& )
     {
       continue;
     }
 
     std::string remove = ",_-':!(){} \x02\x1f\x01\x03";
     Common::Util::eraseAllIn( value, remove );
+
+    if( value.empty() )
+      continue;
 
     value[ 0 ] = std::toupper( value[ 0 ] );
 
@@ -71,26 +89,16 @@ std::string generateEnum( const std::string& exd, int8_t nameIndex, const std::s
     }
 
     result += "      " + value + " = " + std::to_string( id ) + ",\n";
-
   }
-
-  /*
-  result +=
-          "      bool operator==( const " + exd + "& t, const " + type + "& g ) { return static_cast< " + type + " >( t ) == g; }\n"
-          "      bool operator==( const " + type + "& g, const " + exd + "& t ) { return static_cast< " + type + " >( t ) == g; }\n";
-  */
 
   result += "   };\n";
 
   return result;
-
 }
 
 int main( int argc, char** argv )
 {
-
   Logger::init( "commongen" );
-
 
   Logger::info( "Setting up EXD data" );
 
@@ -111,7 +119,7 @@ int main( int argc, char** argv )
   result += "\n#include <stdint.h>\n\n";
 
   result +=
-    "/* This file has been automatically generated.\n   Changes will be lost upon regeneration.\n   To change the content edit tools/exd_common_gen */\n";
+          "/* This file has been automatically generated.\n   Changes will be lost upon regeneration.\n   To change the content edit tools/exd_common_gen */\n";
 
 
   result += "namespace Sapphire::Common {\n";
@@ -134,6 +142,21 @@ int main( int argc, char** argv )
   result += generateEnum( "Weather", 1, "uint8_t" );
   result += generateEnum( "HousingAppeal", 0, "uint8_t" );
   result += "}\n#endif\n";
+
   Logger::info( result );
+
+  // Write to a file
+  std::ofstream outFile( "Common.h" );
+  if( outFile.is_open() )
+  {
+    outFile << result;
+    outFile.close();
+    Logger::info( "Generated Common.h successfully" );
+  }
+  else
+  {
+    Logger::error( "Failed to write to Common.h" );
+  }
+
   return 0;
 }

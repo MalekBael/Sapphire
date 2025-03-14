@@ -282,48 +282,41 @@ namespace Excel
     Excel::StringOffset NameFemale;
   };
 
-/* 63506
-
-Need to find element : classInfo->data().Element[0] ); player.cpp
-
-Need to find uint32_t ARRRelicQuestId; in MapMgr.cpp
-
-*/
   /* 63506 */
-  struct ClassJob {
-    ClassJobTextStruct Text;   // 12 bytes (3 StringOffsets)
-    Excel::StringOffset EnText;// 4 bytes (Name{English})
-    uint32_t ItemId;           // 4 bytes (Item{StartingWeapon})
-
-    uint16_t Hp;  // 2 bytes - Modifier{HitPoints}
-    uint16_t Mp;  // 2 bytes - Modifier{ManaPoints}
-    uint16_t STR; // 2 bytes - Modifier{Strength}
-    uint16_t VIT; // 2 bytes - Modifier{Vitality}
-    uint16_t DEX; // 2 bytes - Modifier{Dexterity}
-    uint16_t INT_;// 2 bytes - Modifier{Intelligence}
-    uint16_t MND; // 2 bytes - Modifier{Mind}
-    uint16_t PIE; // 2 bytes - Modifier{Piety}
-
-    uint16_t BattleClassIndex;// 2 bytes - Column 6
-    uint16_t Unknown1;        // 2 bytes - Column 7
-    uint16_t JobIndex;        // 2 bytes - Column 8
-    uint16_t DohDolJobIndex;  // 2 bytes - Column 9
-
-    uint16_t Element[ 6 ];// 12 bytes - Columns 18-23 (additional parameters in CSV)
-
-    uint8_t ExpArrayIndex;   // 1 byte - Column 5
-    uint8_t ClassJobCategory;// 1 byte - Column 4
-    uint8_t Role;            // 1 byte - Column 26
-    uint8_t StartingTown;    // 1 byte - Column 31
-    int8_t MonsterNote;      // 1 byte - Column 27
-    uint8_t PvPActionSortRow;// 1 byte - Column 25
-    uint8_t ClassJob;        // 1 byte - Column 29 (Parent)
-    uint8_t Modifier;        // 1 byte - Column 32
-
-    int8_t padding[ 8 ];// 8 bytes padding to reach 72 bytes
+  struct ClassJob
+  {
+    ClassJobTextStruct Text;
+    Excel::StringOffset EnText;
+    uint32_t JobCrystalItemId;
+    uint32_t ARRRelicQuestId;
+    uint32_t ARRFinalJobQuest;
+    uint32_t HWFinalJobQuest;
+    int32_t InitWeapon[2];
+    uint16_t Hp;
+    uint16_t Mp;
+    uint16_t STR;
+    uint16_t VIT;
+    uint16_t DEX;
+    uint16_t INT_;
+    uint16_t MND;
+    uint16_t PIE;
+    uint16_t Element[6];
+    uint16_t LimitBreakAction[3];
+    uint16_t PvpLimitBreakAction[3];
+    uint8_t Kind;
+    uint8_t UIPriority;
+    uint8_t Unknown6;
+    uint8_t MainClass;
+    uint8_t Role;
+    uint8_t Town;
+    int8_t MonsterNote;
+    int8_t StartingLevel;
+    uint8_t PartyBuff;
+    int8_t WorkIndex;
+    int8_t BattleClassIndex;
+    int8_t CraftingClassIndex;
+    int8_t Unknown7;
   };
-
-
 
   /* 63507 */
   struct TribeTextStruct

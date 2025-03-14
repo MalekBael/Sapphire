@@ -16,17 +16,20 @@ endif()
 ##############################
 #           Tools            #
 ##############################
-#add_subdirectory( "exd_common_gen" )
+add_subdirectory( "exd_common_gen" )
 #add_subdirectory( "exd_struct_gen" )
 add_subdirectory( "exd_struct_test" )
 add_subdirectory( "quest_parser" )
 add_subdirectory( "custom_talk_parser" )
-#add_subdirectory( "discovery_parser" )
+add_subdirectory( "discovery_parser" )
 #add_subdirectory( "mob_parse" )
 add_subdirectory( "pcb_reader" )
 add_subdirectory( "nav_export" )
-#add_subdirectory( "BattleNpcParserPs3" )
+add_subdirectory( "BattleNpcParserPs3" )
 add_subdirectory( "event_object_parser" )
 add_subdirectory( "action_parse" )
 add_subdirectory( "wiki_parse" )
 #add_subdirectory( "questbattle_bruteforce" )
+
+# Add CSV to struct generator tool
+add_subdirectory( "csv_struct_gen" )

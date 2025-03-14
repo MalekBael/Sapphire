@@ -43,7 +43,7 @@ namespace Sapphire::Common
   const uint8_t TOWN_COUNT = 6;
 
   /// Version value used in lobby encryption
-  const uint16_t FFXIV_ENC_VERSION = 3000;
+  const uint16_t FFXIV_ENC_VERSION = 2100;
 
   /// Default service ID name
   const std::string SERVICE_ACCOUNT_DEFAULT_NAME = "FINAL FANTASY XIV";

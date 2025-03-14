@@ -26,6 +26,9 @@ namespace Sapphire::Data
   class ExdData
   {
   public:
+
+    std::shared_ptr< xiv::exd::ExdData > getExdData() const { return m_exd_data; }
+
     bool init( const std::string& path );
 
     template< typename T >

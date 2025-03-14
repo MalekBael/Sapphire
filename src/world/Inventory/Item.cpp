@@ -1,24 +1,31 @@
 #include <Common.h>
-#include <Exd/ExdData.h>
 #include <CommonGen.h>
+#include <Exd/ExdData.h>
 #include <Service.h>
+#include <sstream>
+#include <stdexcept>
 
 #include "Item.h"
 
-Sapphire::Item::Item( uint64_t uId, uint32_t catalogId, bool isHq ) :
-  m_id( catalogId ),
-  m_uId( uId ),
-  m_isHq( isHq ),
-  m_stain( 0 ),
-  m_durability( 30000 ),
-  m_spiritBond( 0 ),
-  m_reservedFlag( 0 ),
-  m_pattern( 0 ),
-  m_glamModel1( 0 ),
-  m_glamModel2( 0 )
+Sapphire::Item::Item( uint64_t uId, uint32_t catalogId, bool isHq ) : m_id( catalogId ),
+                                                                      m_uId( uId ),
+                                                                      m_isHq( isHq ),
+                                                                      m_stain( 0 ),
+                                                                      m_durability( 30000 ),
+                                                                      m_spiritBond( 0 ),
+                                                                      m_reservedFlag( 0 ),
+                                                                      m_pattern( 0 ),
+                                                                      m_glamModel1( 0 ),
+                                                                      m_glamModel2( 0 )
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
   auto itemInfo = exdData.getRow< Excel::Item >( catalogId );
+  if( !itemInfo )
+  {
+    std::ostringstream oss;
+    oss << "Failed to load item info for catalogId: " << catalogId;
+    throw std::runtime_error( oss.str() );
+  }
 
   m_delayMs = itemInfo->data().AttackInterval;
   m_physicalDmg = itemInfo->data().Damage;
@@ -40,10 +47,11 @@ Sapphire::Item::Item( uint64_t uId, uint32_t catalogId, bool isHq ) :
 
   for( int i = 0; i < 6; ++i )
   {
-    m_baseParam[i].baseParam = itemInfo->data().BonusType[ i ];
-    m_baseParam[i].value = itemInfo->data().BonusValue[ i ];
+    m_baseParam[ i ].baseParam = itemInfo->data().BonusType[ i ];
+    m_baseParam[ i ].value = itemInfo->data().BonusValue[ i ];
   }
 }
+
 
 uint16_t Sapphire::Item::getDefense() const
 {
@@ -135,15 +143,24 @@ Sapphire::Common::ItemUICategory Sapphire::Item::getCategory() const
   return m_category;
 }
 
-void Sapphire::Item::setGlamModelIds()
+   void Sapphire::Item::setGlamModelIds()
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
 
   if( m_pattern != 0 )
   {
     auto itemInfo = exdData.getRow< Excel::Item >( m_pattern );
-    m_glamModel1 = itemInfo->data().ModelId;
-    m_glamModel2 = itemInfo->data().SubModelId;
+    if( itemInfo )
+    {
+      m_glamModel1 = itemInfo->data().ModelId;
+      m_glamModel2 = itemInfo->data().SubModelId;
+    }
+    else
+    {
+      // Handle missing row gracefully.
+      m_glamModel1 = 0;
+      m_glamModel2 = 0;
+    }
   }
   else
   {
@@ -151,6 +168,7 @@ void Sapphire::Item::setGlamModelIds()
     m_glamModel2 = 0;
   }
 }
+   
 
 void Sapphire::Item::setModelIds( uint64_t model1, uint64_t model2 )
 {
