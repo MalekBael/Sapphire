@@ -1,14 +1,10 @@
-#include "spdlog/spdlog.h"
 #include <Action/Action.h>
 #include <Action/CommonAction.h>
 #include <Actor/Chara.h>
 #include <Script/NativeScriptApi.h>
 #include <ScriptObject.h>
-#include <algorithm>
-#include <iostream>
 #include <memory>
 #include <random>
-#include <vector>
 
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
@@ -36,5 +32,4 @@ public:
   }
 };
 
-// Expose the script to the scripting engine
 EXPOSE_SCRIPT( ActionRagingStrikes );

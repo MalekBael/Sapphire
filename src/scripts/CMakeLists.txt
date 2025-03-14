@@ -81,3 +81,10 @@ foreach(_scriptDir ${children})
         unset(ScriptNames)
     endif()
 endforeach()
+
+# Copy ScriptLoader.cpp.in to ScriptLoader.cpp as the last step of CMake generation
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/battlenpc/ScriptLoader.cpp.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/battlenpc/ScriptLoader.cpp"
+    COPYONLY
+)

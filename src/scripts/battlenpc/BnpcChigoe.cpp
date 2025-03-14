@@ -1,20 +1,8 @@
-#include "../src/scripts/ScriptObject.h"
-#include "../src/world/Action/CommonAction.h"
-#include "../src/world/Actor/GameObject.h"
-#include "../src/world/Script/NativeScriptApi.h"
-#include "../src/world/Script/NativeScriptMgr.h"
-#include <AI/Fsm/Condition.h>
-#include <AI/Fsm/StateCombat.h>
-#include <AI/Fsm/StateDead.h>
-#include <AI/Fsm/StateIdle.h>
-#include <AI/Fsm/StateMachine.h>
-#include <AI/Fsm/StateRetreat.h>
-#include <AI/Fsm/StateRoam.h>
 #include <AI/GambitPack.h>
-#include <AI/GambitRule.h>
 #include <AI/GambitTargetCondition.h>
 #include <Action/Action.h>
 #include <Actor/BNpc.h>
+#include <ScriptObject.h>
 
 using namespace Sapphire::World;
 using namespace Sapphire::ScriptAPI;

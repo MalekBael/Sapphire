@@ -93,16 +93,38 @@ Sapphire::Scripting::ScriptInfo* Sapphire::Scripting::ScriptLoader::loadModule( 
 
 #ifdef _WIN32
   ModuleHandle handle = LoadLibrary( dest.string().c_str() );
-#else
-  ModuleHandle handle = dlopen( dest.c_str(), RTLD_LAZY );
-#endif
-
   if( !handle )
   {
-    Logger::error( "Failed to load module from: {0}", path );
+    DWORD errorCode = GetLastError();
+    LPVOID msgBuf;
+    FormatMessageA(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                    FORMAT_MESSAGE_FROM_SYSTEM |
+                    FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL,
+            errorCode,
+            MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+            ( LPSTR ) &msgBuf,
+            0,
+            NULL );
 
+    Logger::error( "Failed to load module from: {0}. Error code: {1}, Message: {2}",
+                   path, errorCode, static_cast< char* >( msgBuf ) );
+
+    LocalFree( msgBuf );
     return nullptr;
   }
+#else
+  ModuleHandle handle = dlopen( dest.c_str(), RTLD_LAZY );
+  if( !handle )
+  {
+    const char* error = dlerror();
+    Logger::error( "Failed to load module from: {0}. Error: {1}",
+                   path, error ? error : "Unknown error" );
+    return nullptr;
+  }
+#endif
+
 
   Logger::debug( "Loaded module: {0}", f.filename().string() );
 
