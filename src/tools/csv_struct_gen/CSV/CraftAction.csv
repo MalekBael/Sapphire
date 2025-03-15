@@ -1,0 +1,172 @@
+﻿key,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+#,Name,Description,Animation{Start},Animation{End},Icon,ClassJob,ClassJobCategory,ClassJobLevel,QuestRequirement,Specialist,,Cost,CRP,BSM,ARM,GSM,LTW
+int32,str,str,ActionTimeline,ActionTimeline,Image,ClassJob,ClassJobCategory,byte,Quest,int32,int32,int32,CraftAction,CraftAction,CraftAction,CraftAction,CraftAction
+100000,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100001,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2001,8,9,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100002,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2002,8,9,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100003,"Master's Mend","Restores item durability by 30.",242,249,2007,8,9,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100004,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2016,8,9,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100005,"Master's Mend II","Restores item durability by 60.",242,249,2020,8,9,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100006,"Brand of Wind","Increases progress. Progress doubles when recipe affinity is wind.
+<Color(52258)>Efficiency:</Color> 100% (200%)  <Color(52258)>Success Rate:</Color> 90%",239,246,2009,8,33,37,15,100006,100006,100006,100006,100006,100006,100006,100006
+100007,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2015,8,9,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100008,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2017,8,9,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100009,"Byregot's Blessing","Increases quality.
+<Color(52258)>Efficiency:</Color> 100% plus 20% for each bonus to control granted by Inner Quiet
+<Color(52258)>Success Rate:</Color> 90%",240,247,2021,8,33,50,24,100009,100009,100009,100009,100009,100009,100009,100009
+100010,"Observe","Do nothing for one step.",242,249,2018,8,9,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100011,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100012,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100013,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100014,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100015,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2101,9,10,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100016,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2102,9,10,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100017,"Master's Mend","Restores item durability by 30.",242,249,2107,9,10,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100018,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2116,9,10,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100019,"Master's Mend II","Restores item durability by 60.",242,249,2120,9,10,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100020,"Brand of Fire","Increases progress. Progress doubles when recipe affinity is fire.
+<Color(52258)>Efficiency:</Color> 100% (200%)  <Color(52258)>Success Rate:</Color> 90%",239,246,2109,9,33,37,15,100020,100020,100020,100020,100020,100020,100020,100020
+100021,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2115,9,10,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100022,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2117,9,10,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100023,"Observe","Do nothing for one step.",242,249,2118,9,10,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100024,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100025,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100026,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100027,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100028,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100029,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100030,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2201,10,11,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100031,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2202,10,11,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100032,"Master's Mend","Restores item durability by 30.",242,249,2207,10,11,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100033,"Rapid Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 250%  <Color(52258)>Success Rate:</Color> 50%",241,248,2219,10,33,15,0,100033,100033,100033,100033,100033,100033,100033,100033
+100034,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2216,10,11,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100035,"Master's Mend II","Restores item durability by 60.",242,249,2221,10,11,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100036,"Brand of Ice","Increases progress. Progress doubles when recipe affinity is ice.
+<Color(52258)>Efficiency:</Color> 100% (200%)  <Color(52258)>Success Rate:</Color> 90%",239,246,2209,10,33,37,15,100036,100036,100036,100036,100036,100036,100036,100036
+100037,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2215,10,11,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100038,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2217,10,11,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100039,"Piece by Piece","Increases remaining progress by 1/3.
+<Color(52258)>Success Rate:</Color> 90%",239,246,2222,10,33,50,15,100039,100039,100039,100039,100039,100039,100039,100039
+100040,"Observe","Do nothing for one step.",242,249,2218,10,11,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100041,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100042,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100043,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100044,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100045,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2401,12,13,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100046,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2402,12,13,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100047,"Master's Mend","Restores item durability by 30.",242,249,2407,12,13,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100048,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2416,12,13,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100049,"Master's Mend II","Restores item durability by 60.",242,249,2420,12,13,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100050,"Brand of Earth","Increases progress. Progress doubles when recipe affinity is earth.
+<Color(52258)>Efficiency:</Color> 100% (200%)  <Color(52258)>Success Rate:</Color> 90%",239,246,2409,12,33,37,15,100050,100050,100050,100050,100050,100050,100050,100050
+100051,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2415,12,13,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100052,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2417,12,13,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100053,"Observe","Do nothing for one step.",242,249,2418,12,13,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100054,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100055,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100056,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100057,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100058,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100059,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100060,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2501,13,14,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100061,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2502,13,14,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100062,"Master's Mend","Restores item durability by 30.",242,249,2507,13,14,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100063,"Careful Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 90%  <Color(52258)>Success Rate:</Color> 100%",240,247,2518,13,33,15,0,100063,100063,100063,100063,100063,100063,100063,100063
+100064,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2515,13,14,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100065,"Master's Mend II","Restores item durability by 60.",242,249,2520,13,14,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100066,"Brand of Lightning","Increases progress. Progress doubles when recipe affinity is lightning.
+<Color(52258)>Efficiency:</Color> 100% (200%)  <Color(52258)>Success Rate:</Color> 90%",239,246,2508,13,33,37,15,100066,100066,100066,100066,100066,100066,100066,100066
+100067,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2514,13,14,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100068,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2516,13,14,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100069,"Careful Synthesis II","Increases progress.
+<Color(52258)>Efficiency:</Color> 120%  <Color(52258)>Success Rate:</Color> 100%",240,247,2521,13,33,50,0,100069,100069,100069,100069,100069,100069,100069,100069
+100070,"Observe","Do nothing for one step.",242,249,2517,13,14,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100071,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100072,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100073,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100074,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100075,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2301,11,12,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100076,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2302,11,12,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100077,"Master's Mend","Restores item durability by 30.",242,249,2307,11,12,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100078,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2315,11,12,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100079,"Master's Mend II","Restores item durability by 60.",242,249,2320,11,12,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100080,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2314,11,12,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100081,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2316,11,12,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100082,"Observe","Do nothing for one step.",242,249,2317,11,12,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100083,"Flawless Synthesis","Increases progress by 40.
+<Color(52258)>Success Rate:</Color> 90%",239,246,2323,11,33,37,15,100083,100083,100083,100083,100083,100083,100083,100083
+100084,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100085,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100086,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100087,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100088,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100089,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100090,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2601,14,15,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100091,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2602,14,15,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100092,"Master's Mend","Restores item durability by 30.",242,249,2607,14,15,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100093,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2616,14,15,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100094,"Master's Mend II","Restores item durability by 60.",242,249,2621,14,15,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100095,"Brand of Water","Increases progress. Progress doubles when recipe affinity is water.
+<Color(52258)>Efficiency:</Color> 100% (200%)  <Color(52258)>Success Rate:</Color> 90%",239,246,2609,14,33,37,15,100095,100095,100095,100095,100095,100095,100095,100095
+100096,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2615,14,15,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100097,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2617,14,15,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100098,"Tricks of the Trade","Restores 20 CP. Can only be used when material condition is good.",242,249,2619,14,33,15,0,100098,100098,100098,100098,100098,100098,100098,100098
+100099,"Observe","Do nothing for one step.",242,249,2618,14,15,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100100,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100101,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100102,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100103,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100104,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0
+100105,"Basic Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 90%",239,246,2701,15,16,1,0,100001,100015,100030,100075,100045,100060,100090,100105
+100106,"Basic Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 70%",240,247,2702,15,16,5,18,100002,100016,100031,100076,100046,100061,100091,100106
+100107,"Master's Mend","Restores item durability by 30.",242,249,2707,15,16,7,92,100003,100017,100032,100077,100047,100062,100092,100107
+100108,"Hasty Touch","Increases quality and requires no CP.
+<Color(52258)>Efficiency:</Color> 100%  <Color(52258)>Success Rate:</Color> 50%",241,248,2718,15,33,15,0,100108,100108,100108,100108,100108,100108,100108,100108
+100109,"Standard Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 125%  <Color(52258)>Success Rate:</Color> 80%",240,247,2715,15,16,18,32,100004,100018,100034,100078,100048,100064,100093,100109
+100110,"Master's Mend II","Restores item durability by 60.",242,249,2720,15,16,25,160,100005,100019,100035,100079,100049,100065,100094,100110
+100111,"Standard Synthesis","Increases progress.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",239,246,2714,15,16,31,15,100007,100021,100037,100080,100051,100067,100096,100111
+100112,"Advanced Touch","Increases quality.
+<Color(52258)>Efficiency:</Color> 150%  <Color(52258)>Success Rate:</Color> 90%",240,247,2716,15,16,43,48,100008,100022,100038,100081,100052,100068,100097,100112
+100113,"Observe","Do nothing for one step.",242,249,2717,15,16,13,14,100010,100023,100040,100082,100053,100070,100099,100113
+100114,"","",0,0,1,-1,0,1,0,0,0,0,0,0,0,0,0

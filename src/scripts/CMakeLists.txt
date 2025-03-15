@@ -29,26 +29,73 @@ foreach(_scriptDir ${children})
 
         # build file list
         foreach(_script ${SCRIPT_FILES})
-            get_filename_component( _scriptname "${_script}" NAME_WE)
+            get_filename_component(_scriptname "${_script}" NAME_WE)
 
             if(NOT ${_scriptname} MATCHES "ScriptLoader")
-                if(ScriptIncludes)
-                    set(ScriptIncludes "${ScriptIncludes}\nextern Sapphire::ScriptAPI::ScriptObject* makeScript${_scriptname}();")
+                set(_fullpath "${_scriptDir}/${_script}")
+                
+                # Read the file contents
+                file(READ "${_fullpath}" _contents)
+                
+                # Define our variables outside the conditional
+                set(_has_multiple_scripts FALSE)
+                set(_exposed_classes "")
+                
+                # Look for class definitions directly from EXPOSE_SCRIPT
+                file(STRINGS "${_fullpath}" _lines)
+                
+                foreach(_line ${_lines})
+                    # Check for EXPOSE_SCRIPT and extract the class name
+                    if(_line MATCHES "EXPOSE_SCRIPT[ ]*\\([ ]*([A-Za-z0-9_]+)[ ]*\\)")
+                        string(REGEX MATCH "EXPOSE_SCRIPT[ ]*\\([ ]*([A-Za-z0-9_]+)[ ]*\\)" _match "${_line}")
+                        string(REGEX REPLACE "EXPOSE_SCRIPT[ ]*\\([ ]*([A-Za-z0-9_]+)[ ]*\\)" "\\1" _exposed_class "${_match}")
+                        
+                        # Add to our list of exposed classes
+                        if(_exposed_classes)
+                            set(_exposed_classes "${_exposed_classes};${_exposed_class}")
+                            set(_has_multiple_scripts TRUE)
+                        else()
+                            set(_exposed_classes "${_exposed_class}")
+                        endif()
+                    endif()
+                endforeach()
+                
+                # If we found exposed script classes, process them
+                if(_exposed_classes)
+                    # Split the string into a list
+                    string(REPLACE ";" " " _debug_classes "${_exposed_classes}")
+                    message(STATUS "Found exposed scripts in ${_scriptname}.cpp: ${_debug_classes}")
+                    
+                    # Process each exposed class
+                    foreach(_class ${_exposed_classes})
+                        if(ScriptIncludes)
+                            set(ScriptIncludes "${ScriptIncludes}\nextern Sapphire::ScriptAPI::ScriptObject* makeScript${_class}();")
+                        else()
+                            set(ScriptIncludes "extern Sapphire::ScriptAPI::ScriptObject* makeScript${_class}();")
+                        endif()
+       
+                        set(ScriptNames "${ScriptNames}   makeScript${_class}(),\n")
+                    endforeach()
                 else()
-                    set(ScriptIncludes "extern Sapphire::ScriptAPI::ScriptObject* makeScript${_scriptname}();")
+                    # Fall back to the filename-based approach
+                    if(ScriptIncludes)
+                        set(ScriptIncludes "${ScriptIncludes}\nextern Sapphire::ScriptAPI::ScriptObject* makeScript${_scriptname}();")
+                    else()
+                        set(ScriptIncludes "extern Sapphire::ScriptAPI::ScriptObject* makeScript${_scriptname}();")
+                    endif()
+                    
+                    set(ScriptNames "${ScriptNames}   makeScript${_scriptname}(),\n")
                 endif()
-
-                set(ScriptNames "${ScriptNames}   makeScript${_scriptname}(),\n")
             endif()
         endforeach()
 
-        add_library( "script_${_name}"
-                       MODULE 
-                         ${SCRIPT_BUILD_FILES} 
-                         "${SCRIPT_INCLUDE_FILES}"
-                         "${_scriptDir}/ScriptLoader.cpp" )
+        add_library("script_${_name}"
+                   MODULE 
+                     ${SCRIPT_BUILD_FILES} 
+                     "${SCRIPT_INCLUDE_FILES}"
+                     "${_scriptDir}/ScriptLoader.cpp")
 
-        target_link_libraries( "script_${_name}" world )
+        target_link_libraries("script_${_name}" world)
 
         target_include_directories("script_${_name}" PUBLIC "${CMAKE_SOURCE_DIR}/src/scripts")
         target_include_directories("script_${_name}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -57,6 +104,12 @@ foreach(_scriptDir ${children})
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/ScriptLoader.cpp.in" "${_scriptDir}/ScriptLoader.cpp")
 
         set(ScriptTargetName "script_${_name}")
+
+        configure_file(
+            ${CMAKE_SOURCE_DIR}/data/battlenpc/elementals/sprites.json 
+            ${CMAKE_CURRENT_BINARY_DIR}/data/battlenpc/elementals/sprites.json 
+            COPYONLY
+)
 
         # Copy the modules over once they're built. Prevent watchdog from trying to reload partially written files.
         if(MSVC)
@@ -81,10 +134,3 @@ foreach(_scriptDir ${children})
         unset(ScriptNames)
     endif()
 endforeach()
-
-# Copy ScriptLoader.cpp.in to ScriptLoader.cpp as the last step of CMake generation
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/battlenpc/ScriptLoader.cpp.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/battlenpc/ScriptLoader.cpp"
-    COPYONLY
-)

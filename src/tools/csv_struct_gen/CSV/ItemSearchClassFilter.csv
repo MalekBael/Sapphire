@@ -1,0 +1,32 @@
+﻿key,0,1
+#,,
+int32,str,sbyte
+0,"All",0
+1,"Gladiator",1
+2,"Pugilist",2
+3,"Marauder",3
+4,"Lancer",4
+5,"Archer",5
+6,"Conjurer",6
+7,"Thaumaturge",7
+8,"Arcanist",26
+9,"Carpenter",8
+10,"Blacksmith",9
+11,"Armorer",10
+12,"Goldsmith",11
+13,"Leatherworker",12
+14,"Weaver",13
+15,"Alchemist",14
+16,"Culinarian",15
+17,"Miner",16
+18,"Botanist",17
+19,"Fisher",18
+20,"Paladin",19
+21,"Monk",20
+22,"Warrior",21
+23,"Dragoon",22
+24,"Bard",23
+25,"White Mage",24
+26,"Black Mage",25
+27,"Summoner",27
+28,"Scholar",28

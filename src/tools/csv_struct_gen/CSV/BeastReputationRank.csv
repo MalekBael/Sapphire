@@ -1,0 +1,14 @@
+﻿key,0,1,2,3,4,5,6,7,8
+#,RequiredReputation,Name,AlliedNames,Color,,,,,
+int32,uint16,str,sbyte,UIColor,sbyte,sbyte,sbyte,sbyte,sbyte
+0,0,"None",0,"",0,0,0,0,0
+1,150,"Neutral",0,"",0,0,0,0,0
+2,360,"Recognized",0,"",0,0,0,0,0
+3,510,"Friendly",0,"",0,0,0,0,0
+4,0,"Trusted",0,"",0,0,0,0,0
+5,0,"Respected",0,"",0,0,0,0,0
+6,0,"Honored",0,"",0,0,0,0,0
+7,0,"Sworn",0,"",0,0,0,0,0
+8,0,"Allied",0,"",0,0,0,0,0
+9,0,"",0,"",0,0,0,0,0
+10,0,"",0,"",0,0,0,0,0

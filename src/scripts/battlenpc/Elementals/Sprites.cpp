@@ -4,185 +4,187 @@
 #include <Actor/BNpc.h>
 #include <Script/NativeScriptApi.h>
 #include <ScriptObject.h>
+#include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
 
+using namespace Sapphire::World;
 using namespace Sapphire::ScriptAPI;
-using namespace Sapphire;
+using namespace Sapphire::World::AI;
+using json = nlohmann::json;
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// Water Sprite Script | Need to find correct water spell id
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class WaterSprite : public BattleNpcScript
+// Base class with common implementation for all sprite types
+class SpriteBase : public BattleNpcScript
 {
 public:
-  WaterSprite() : BattleNpcScript( 59 )// baseId = 59
-  {
-  }
+  // Constructor registering for a specific baseId
+  SpriteBase( uint32_t baseId ) : BattleNpcScript( baseId ) {}
 
   void onInit( Sapphire::Entity::BNpc& bnpc ) override
   {
-    if( !&bnpc )
-    {
-      return;
-    }
+    loadAndApplyGambitPack( bnpc );
+  }
 
+protected:
+  std::shared_ptr< GambitPack > m_gambitPack;
+
+  void loadAndApplyGambitPack( Sapphire::Entity::BNpc& bnpc )
+  {
     try
     {
-      bnpc.setBNpcNameId( 56 );
-      //defining range
-      bnpc.setIsRanged( true );
-      bnpc.setAttackRange( 20.0f );
+      // Get BNpc baseId to determine which sprite type we're dealing with
+      uint32_t baseId = bnpc.getBNpcBaseId();
 
-      auto gambitPack = std::make_shared< Sapphire::World::AI::GambitTimeLinePack >( -1 );
-      if( !gambitPack )
+      // Load JSON configuration
+      const std::string jsonPath = "data/battlenpc/elementals/sprites.json";
+      std::ifstream file( jsonPath );
+
+      // Try alternate paths if needed
+      if( !file.is_open() )
       {
+        std::vector< std::string > alternativePaths = {
+                "../data/battlenpc/elementals/sprites.json",
+                "../../data/battlenpc/elementals/sprites.json",
+                "./data/battlenpc/elementals/sprites.json" };
+
+        for( const auto& path : alternativePaths )
+        {
+          file.open( path );
+          if( file.is_open() )
+          {
+            std::cerr << "Found sprites.json at: " << path << std::endl;
+            break;
+          }
+        }
+
+        if( !file.is_open() )
+        {
+          std::cerr << "Failed to open sprites.json from any path" << std::endl;
+          return;
+        }
+      }
+
+      // Properly parse JSON data
+      json data;
+      file >> data;
+
+      std::string spriteType;
+
+      // Determine sprite type from baseId
+      if( baseId == 59 ) spriteType = "WaterSprite";
+      else if( baseId == 133 ) spriteType = "WindSprite";
+      else if( baseId == 135 ) spriteType = "LightningSprite";
+      else if( baseId == 134 ) spriteType = "FireSprite";
+      else if( baseId == 131 ) spriteType = "EarthSprite";
+      else
+      {
+        std::cerr << "Unknown sprite baseId: " << baseId << std::endl;
         return;
       }
 
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 134, 0 ),
-              0 );
+      if( !data[ "sprites" ].contains( spriteType ) )
+      {
+        std::cerr << "Sprite type not found in JSON: " << spriteType << std::endl;
+        return;
+      }
 
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 971, 0 ),
-              2 );
+      const auto& spriteData = data[ "sprites" ][ spriteType ];
+
+      // Configure the BNpc
+      bnpc.setBNpcNameId( spriteData[ "nameId" ] );
+
+      // Read isRanged and attackRange from JSON
+      bool isRanged = spriteData.value( "isRanged", true );
+      float attackRange = spriteData.value( "attackRange", 20.0f );
+
+      bnpc.setIsRanged( isRanged );
+      bnpc.setAttackRange( attackRange );
+      bnpc.setIsMagical( true );
 
 
+
+      // Get loop count from JSON or use default -1 (infinite)
+      int8_t loopCount = spriteData[ "gambitPack" ].value( "loopCount", -1 );
+
+      // Create the gambit pack with the loop count from JSON
+      auto gambitPack = std::make_shared< GambitTimeLinePack >( loopCount );
+      if( !gambitPack )
+      {
+        std::cerr << "Failed to create gambit pack" << std::endl;
+        return;
+      }
+
+      // Add all timelines from JSON
+      for( const auto& timeline : spriteData[ "gambitPack" ][ "timeLines" ] )
+      {
+        std::shared_ptr< GambitTargetCondition > condition;
+
+        // Create the appropriate condition
+        if( timeline[ "condition" ] == "TopHateTarget" )
+          condition = make_TopHateTargetCondition();
+        else
+          condition = make_TopHateTargetCondition();// Default
+
+        // Add timeline to gambit pack
+        gambitPack->addTimeLine(
+                condition,
+                Action::make_Action(
+                        bnpc.getAsChara(),
+                        timeline[ "actionId" ],
+                        timeline[ "actionParam" ] ),
+                timeline[ "timing" ] );
+      }
+
+      // Store and set the gambit pack
       m_gambitPack = gambitPack;
       bnpc.setGambitPack( m_gambitPack );
-    } catch( const std::exception& )
+
+      //std::cerr << "Successfully initialized sprite " << spriteType << " with baseId " << baseId << std::endl;
+
+    } catch( const std::exception& e )
     {
+      std::cerr << "Error processing sprite data: " << e.what() << std::endl;
     }
   }
-
-private:
-  std::shared_ptr< Sapphire::World::AI::GambitPack > m_gambitPack;
 };
 
-// End of Water Sprite Script
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fire Sprite Script
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class FireSprite : public BattleNpcScript
+////////////////////////////////////////////////////////////////////
+// Specific Sprites
+////////////////////////////////////////////////////////////////////
+class WaterSprite : public SpriteBase
 {
 public:
-  FireSprite() : BattleNpcScript( 134 )// baseId = 134
-  {
-  }
-
-  void onInit( Sapphire::Entity::BNpc& bnpc ) override
-  {
-    if( !&bnpc )
-    {
-      return;
-    }
-
-    try
-    {
-      bnpc.setBNpcNameId( 116 );
-      //defining range
-      bnpc.setIsRanged( true );
-      bnpc.setAttackRange( 20.0f );
-
-      auto gambitPack = std::make_shared< Sapphire::World::AI::GambitTimeLinePack >( -1 );
-      if( !gambitPack )
-      {
-        return;
-      }
-
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 141, 0 ),
-              0 );
-
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 5325, 0 ),
-              4 );
-
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 3497, 0 ),
-              8 );
-
-      m_gambitPack = gambitPack;
-      bnpc.setGambitPack( m_gambitPack );
-    } catch( const std::exception& )
-    {
-    }
-  }
-
-private:
-  std::shared_ptr< Sapphire::World::AI::GambitPack > m_gambitPack;
+  WaterSprite() : SpriteBase( 59 ) {}
 };
 
-// End of Fire Sprite Script
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// Earth Sprite Script
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class EarthSprite : public BattleNpcScript
+class FireSprite : public SpriteBase
 {
 public:
-  EarthSprite() : BattleNpcScript( 131 )// baseId = 131
-  {
-  }
-
-  void onInit( Sapphire::Entity::BNpc& bnpc ) override
-  {
-    if( !&bnpc )
-    {
-      return;
-    }
-
-    try
-    {
-      bnpc.setBNpcNameId( 113 );
-      //defining range
-      bnpc.setIsRanged( true );
-      bnpc.setAttackRange( 20.0f );
-
-      auto gambitPack = std::make_shared< Sapphire::World::AI::GambitTimeLinePack >( -1 );
-      if( !gambitPack )
-      {
-        return;
-      }
-
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 119, 0 ),
-              0 );
-
-      gambitPack->addTimeLine(
-              Sapphire::World::AI::make_TopHateTargetCondition(),
-              Sapphire::World::Action::make_Action( bnpc.getAsChara(), 119, 0 ),
-              2 );
-
-      m_gambitPack = gambitPack;
-      bnpc.setGambitPack( m_gambitPack );
-    } catch( const std::exception& )
-    {
-    }
-  }
-
-private:
-  std::shared_ptr< Sapphire::World::AI::GambitPack > m_gambitPack;
+  FireSprite() : SpriteBase( 134 ) {}
 };
 
-// End of Earth Sprite Script
+class EarthSprite : public SpriteBase
+{
+public:
+  EarthSprite() : SpriteBase( 131 ) {}
+};
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// Expose Each Script | Add these to src/scripts/battlenpc/Scriptloader.cpp.in
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+class WindSprite : public SpriteBase
+{
+public:
+  WindSprite() : SpriteBase( 133 ) {}
+};
 
+class LightningSprite : public SpriteBase
+{
+public:
+  LightningSprite() : SpriteBase( 135 ) {}
+};
+
+
+// Register all three sprite classes
 EXPOSE_SCRIPT( WaterSprite );
 EXPOSE_SCRIPT( FireSprite );
 EXPOSE_SCRIPT( EarthSprite );
+EXPOSE_SCRIPT( WindSprite );
+EXPOSE_SCRIPT( LightningSprite );

@@ -78,6 +78,16 @@ namespace Sapphire::Entity
            m_bNpcNameId = nameId;
        }
 
+       // Test method to see if sprites stop auto attacking
+       void setIsMagical( bool isMagical )
+       {
+         if( isMagical )
+           setFlag( AutoAttackDisabled );
+         else
+           removeFlag( AutoAttackDisabled );
+       }
+
+
         virtual ~BNpc() override;
 
         void init();

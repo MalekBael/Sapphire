@@ -1,0 +1,136 @@
+﻿key,0,1,2,3,4,5
+#,Name,Description,Icon,FCRank,Cost,Order
+int32,str,str,Image,FCRank,uint32,byte
+0,"","",0,0,0,0
+1,"The Heat of Battle","Increases EXP earned through battle by 5%.
+<Color(52258)>Duration:</Color> 24h",64213,5,3500,1
+2,"Earth and Water","Increases EXP earned through gathering by 5%.
+<Color(52258)>Duration:</Color> 24h",64215,5,3500,2
+3,"Helping Hand","Increases EXP earned through crafting by 5%.
+<Color(52258)>Duration:</Color> 24h",64216,5,3500,3
+4,"A Man's Best Friend","Increases EXP earned by companions by 5%.
+<Color(52258)>Duration:</Color> 24h",64214,5,3500,4
+5,"Mark Up","Increases Wolf Marks earned by 5%.
+<Color(52258)>Duration:</Color> 24h",64217,5,3500,5
+6,"Seal Sweetener","Increases company seals earned by 5%.
+<Color(52258)>Duration:</Color> 24h",64218,5,3500,6
+7,"Brave New World","Increases the attributes of all Disciple of War or Magic members under level 10 by 10%.
+<Color(52258)>Duration:</Color> 24h",64201,5,3500,7
+8,"Live off the Land","Increases Gathering by 5.
+<Color(52258)>Duration:</Color> 24h",64202,5,3500,8
+9,"What You See","Increases Perception by 5.
+<Color(52258)>Duration:</Color> 24h",64203,5,3500,9
+10,"Eat from the Hand","Increases Craftsmanship by 5.
+<Color(52258)>Duration:</Color> 24h",64204,5,3500,10
+11,"In Control","Increases Control by 5.
+<Color(52258)>Duration:</Color> 24h",64205,5,3500,11
+12,"That Which Binds Us","Increases spiritbonding speed.
+<Color(52258)>Duration:</Color> 24h",64209,5,3500,12
+13,"Meat and Mead","Increases duration of food effects by five minutes.
+<Color(52258)>Duration:</Color> 24h",64208,5,3500,13
+14,"Proper Care","Slows gear wear by 10%.
+<Color(52258)>Duration:</Color> 24h",64210,5,3500,14
+15,"Back on Your Feet","Reduces duration of Weakness after being revived by 10%.
+<Color(52258)>Duration:</Color> 24h",64211,5,3500,15
+16,"Reduced Rates","Reduces teleportation fees by 20%.
+<Color(52258)>Duration:</Color> 24h",64212,5,3500,16
+17,"","",0,0,0,0
+18,"","",0,0,0,0
+19,"","",0,0,0,0
+20,"","",0,0,0,0
+21,"","",0,0,0,0
+22,"","",0,0,0,0
+23,"","",0,0,0,0
+24,"","",0,0,0,0
+25,"","",0,0,0,0
+26,"","",0,0,0,0
+27,"","",0,0,0,0
+28,"","",0,0,0,0
+29,"","",0,0,0,0
+30,"","",0,0,0,0
+31,"The Heat of Battle II","Increases EXP earned through battle by 10%.
+<Color(52258)>Duration:</Color> 24h",64238,8,7000,17
+32,"Earth and Water II","Increases EXP earned through gathering by 10%.
+<Color(52258)>Duration:</Color> 24h",64240,8,7000,18
+33,"Helping Hand II","Increases EXP earned through crafting by 10%.
+<Color(52258)>Duration:</Color> 24h",64241,8,7000,19
+34,"A Man's Best Friend II","Increases EXP earned by companions by 10%.
+<Color(52258)>Duration:</Color> 24h",64239,8,7000,20
+35,"Mark Up II","Increases Wolf Marks earned by 10%.
+<Color(52258)>Duration:</Color> 24h",64242,8,7000,21
+36,"Seal Sweetener II","Increases company seals earned by 10%.
+<Color(52258)>Duration:</Color> 24h",64243,8,7000,22
+37,"Brave New World II","Increases the attributes of all Disciple of War or Magic members under level 10 by 15%.
+<Color(52258)>Duration:</Color> 24h",64226,8,7000,23
+38,"Live off the Land II","Increases Gathering by 10.
+<Color(52258)>Duration:</Color> 24h",64227,8,7000,24
+39,"What You See II","Increases Perception by 10.
+<Color(52258)>Duration:</Color> 24h",64228,8,7000,25
+40,"Eat from the Hand II","Increases Craftsmanship by 10.
+<Color(52258)>Duration:</Color> 24h",64229,8,7000,26
+41,"In Control II","Increases Control by 10.
+<Color(52258)>Duration:</Color> 24h",64230,8,7000,27
+42,"That Which Binds Us II","Increases spiritbonding speed.
+<Color(52258)>Duration:</Color> 24h",64234,8,7000,28
+43,"Meat and Mead II","Increases duration of food effects by ten minutes.
+<Color(52258)>Duration:</Color> 24h",64233,8,7000,29
+44,"Proper Care II","Slows gear wear by 20%.
+<Color(52258)>Duration:</Color> 24h",64235,8,7000,30
+45,"Back on Your Feet II","Reduces duration of Weakness after being revived by 15%.
+<Color(52258)>Duration:</Color> 24h",64236,8,7000,31
+46,"Reduced Rates II","Reduces teleportation fees by 30%.
+<Color(52258)>Duration:</Color> 24h",64237,8,7000,32
+47,"","",0,0,0,0
+48,"","",0,0,0,0
+49,"","",0,0,0,0
+50,"","",0,0,0,0
+51,"","",0,0,0,0
+52,"","",0,0,0,0
+53,"","",0,0,0,0
+54,"","",0,0,0,0
+55,"","",0,0,0,0
+56,"","",0,0,0,0
+57,"","",0,0,0,0
+58,"","",0,0,0,0
+59,"","",0,0,0,0
+60,"","",0,0,0,0
+61,"","",0,0,0,0
+62,"","",0,0,0,0
+63,"","",0,0,0,0
+64,"","",0,0,0,0
+65,"","",0,0,0,0
+66,"","",0,0,0,0
+67,"","",0,0,0,0
+68,"","",0,0,0,0
+69,"","",0,0,0,0
+70,"","",0,0,0,0
+71,"","",0,0,0,0
+72,"","",0,0,0,0
+73,"","",0,0,0,0
+74,"","",0,0,0,0
+75,"","",0,0,0,0
+76,"","",0,0,0,0
+77,"","",0,0,0,0
+78,"","",0,0,0,0
+79,"","",0,0,0,0
+80,"","",0,0,0,0
+81,"","",0,0,0,0
+82,"","",0,0,0,0
+83,"","",0,0,0,0
+84,"","",0,0,0,0
+85,"","",0,0,0,0
+86,"","",0,0,0,0
+87,"","",0,0,0,0
+88,"","",0,0,0,0
+89,"","",0,0,0,0
+90,"","",0,0,0,0
+91,"","",0,0,0,0
+92,"","",0,0,0,0
+93,"","",0,0,0,0
+94,"","",0,0,0,0
+95,"","",0,0,0,0
+96,"","",0,0,0,0
+97,"","",0,0,0,0
+98,"","",0,0,0,0
+99,"","",0,0,0,0
+100,"","",0,0,0,0

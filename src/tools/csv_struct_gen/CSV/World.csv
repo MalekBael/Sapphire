@@ -1,0 +1,852 @@
+﻿key,0,1,2,3
+#,InternalName,Name,Region,UserType
+int32,str,str,byte,byte
+0,"Zvahl","GM Test World",0,0
+1,"c-funereus","Type C World",0,0
+2,"c-contents","Type C World - Finder",0,0
+3,"c-whiteae","Type C World",0,0
+4,"c-baudinii","Type C World",0,0
+16,"konconv","1.0 Data Conversion Slot",0,0
+23,"Asura","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+24,"Belias","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+25,"Chaos","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,0
+26,"Hecatoncheir","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,0
+27,"Moomba","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,0
+28,"Pandaemonium","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+29,"Quetzalcoatl","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,0
+30,"Unicorn","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+31,"Yojimbo","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+32,"Zeromus","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+33,"Adrammelech","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,0
+34,"Brynhildr","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+35,"Famfrit","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+36,"Lich","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,6
+37,"Mateus","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+38,"Shemhazai","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,0
+39,"Syldra","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,0
+40,"Valigarmanda","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,0
+41,"Zalera","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+42,"Zodiark","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,0
+43,"Alexander","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+44,"Anima","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+45,"Carbuncle","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+46,"Fenrir","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+47,"Hades","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+48,"Ixion","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+49,"Kujata","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+50,"Typhon","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+51,"Ultima","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+52,"Valefor","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+53,"Exodus","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+54,"Faerie","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+55,"Lamia","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+56,"Phoenix","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,6
+57,"Siren","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+58,"Garuda","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+59,"Ifrit","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+60,"Ramuh","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+61,"Titan","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+62,"Diabolos","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+63,"Gilgamesh","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+64,"Leviathan","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+65,"Midgardsormr","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+66,"Odin","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,6
+67,"Shiva","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,6
+68,"Atomos","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+69,"Bahamut","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+70,"Chocobo","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+71,"Moogle","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,6
+72,"Tonberry","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,1
+73,"Adamantoise","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+74,"Coeurl","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+75,"Malboro","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+76,"Tiamat","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,2
+77,"Ultros","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+78,"Behemoth","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,5
+79,"Cactuar","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+80,"Cerberus","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",5,6
+81,"Goblin","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",3,4
+82,"Mandragora","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",1,3
+90,"Aegis","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",2,1
+91,"Balmung","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",4,4
+92,"Durandal","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",2,2
+93,"Excalibur","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",4,5
+94,"Gungnir","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",2,1
+95,"Hyperion","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",4,5
+96,"Masamune","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",2,3
+97,"Ragnarok","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",6,6
+98,"Ridill","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",2,2
+99,"Sargatanas","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",4,4
+100,"dev_test","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.
+
+※This World will only be available for the duration of the beta test. ",0,0
+101,"cent_test","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.
+
+※This World will only be available for the duration of the beta test. ",0,0
+102,"trs_test","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.
+
+※This World will only be available for the duration of the beta test. ",0,0
+110,"b-tirica","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.
+
+※This World will only be available for the duration of the beta test. ",1,1
+111,"b-contents","Type B - Content",0,0
+112,"b-chiriri","",3,4
+113,"b-contents2","",0,0
+114,"b-jugularis","",1,2
+115,"e-regia","Foreign Data Center JP Side",0,0
+116,"e-pialii","Foreign Data Center NA Side",0,0
+117,"e-jcontents","Foreign Data Center JP Side - Content",0,0
+118,"e-nacontents","Foreign Data Center NA Side - Content",0,0
+119,"e-aegis","Type E 1.0 World",0,0
+120,"e-balmung","Type E 1.0 World",0,0
+121,"e-durandal","Type E 1.0 World",0,0
+122,"e-excalibur","Type E 1.0 World",0,0
+123,"e-gungnir","Type E 1.0 World",0,0
+124,"e-hyperion","Type E 1.0 World",0,0
+125,"e-masamune","Type E 1.0 World",0,0
+126,"e-ragnarok","Type E 1.0 World",0,0
+127,"e-ridill","Type E 1.0 World",0,0
+128,"e-sargatanas","Type E 1.0 World",0,0
+129,"a-militaris","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.
+
+Worlds are divided into two different groups, JP and NA/EU, based on the
+location of their servers. To ensure you encounter the fewest number of
+latency issues, it is recommended, but not required, that you select the
+group that is closer to where you will be playing. Legacy Worlds (servers
+existing since the original launch) are indicated in parentheses.",0,0
+130,"a-aegis","Type A World",1,0
+131,"a-balmung","Type A World",2,0
+132,"a-durandal","Type A World",3,0
+133,"a-excalibur","Type A World",4,0
+134,"a-gungnir","Type A World",5,0
+135,"a-hyperion","Type A World",6,0
+136,"a-masamune","Type A World",0,0
+137,"a-ragnarok","Type A World",1,0
+138,"a-ridill","Type A World",2,0
+139,"a-sargatanas","Type A World",3,0
+140,"a-contents","Type A World - Finder",4,0
+141,"b-contents3","",0,0
+142,"b-cyanoptera","",3,0
+143,"b-contents4","",0,0
+160,"s-bella","Type S World",0,0
+161,"shanghai","""World"" is another name for the server on which your character will reside.
+Once you have chosen a World, you will not be allowed to move to another,
+so if you have made plans to play FINAL FANTASY XIV: A Realm Reborn
+with friends, make sure that you all select the same one.",0,0
+201,"Nacontents01","",0,0
+202,"Nacontents02","",0,0
+203,"Nacontents03","",0,0
+204,"Nacontents04","",0,0
+205,"Nacontents05","",0,0
+206,"Nacontents06","",0,0
+207,"Nacontents07","",0,0
+208,"Nacontents08","",0,0
+209,"Nacontents09","",0,0
+210,"Nacontents10","",0,0
+211,"Nacontents11","",0,0
+212,"Nacontents12","",0,0
+213,"Nacontents13","",0,0
+214,"Nacontents14","",0,0
+215,"Nacontents15","",0,0
+216,"Nacontents16","",0,0
+217,"Nacontents17","",0,0
+218,"Nacontents18","",0,0
+219,"Nacontents19","",0,0
+220,"Nacontents20","",0,0
+221,"Nacontents21","",0,0
+222,"Nacontents22","",0,0
+223,"Nacontents23","",0,0
+224,"Nacontents24","",0,0
+225,"Jpcontents01","",0,0
+226,"Jpcontents02","",0,0
+227,"Jpcontents03","",0,0
+228,"Jpcontents04","",0,0
+229,"Jpcontents05","",0,0
+230,"Jpcontents06","",0,0
+231,"Jpcontents07","",0,0
+232,"Jpcontents08","",0,0
+233,"Jpcontents09","",0,0
+234,"Jpcontents10","",0,0
+235,"Jpcontents11","",0,0
+236,"Jpcontents12","",0,0
+237,"Jpcontents13","",0,0
+238,"Jpcontents14","",0,0
+239,"Jpcontents15","",0,0
+240,"Jpcontents16","",0,0
+241,"Jpcontents17","",0,0
+242,"Jpcontents18","",0,0
+243,"Jpcontents19","",0,0
+244,"Jpcontents20","",0,0
+245,"Jpcontents21","",0,0
+246,"Jpcontents22","",0,0
+247,"Jpcontents23","",0,0
+248,"Jpcontents24","",0,0

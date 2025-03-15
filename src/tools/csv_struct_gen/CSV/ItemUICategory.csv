@@ -1,0 +1,104 @@
+﻿key,0,1,2,3
+#,Name,Icon,Order{Minor},Order{Major}
+int32,str,Image,byte,byte
+0,"",0,0,0
+1,"Pugilist's Arm",60101,1,1
+2,"Gladiator's Arm",60102,0,1
+3,"Marauder's Arm",60103,2,1
+4,"Archer's Arm",60104,4,1
+5,"Lancer's Arm",60105,3,1
+6,"One–handed Thaumaturge's Arm",60106,7,1
+7,"Two–handed Thaumaturge's Arm",60106,8,1
+8,"One–handed Conjurer's Arm",60107,5,1
+9,"Two–handed Conjurer's Arm",60107,6,1
+10,"Arcanist's Grimoire",60108,9,1
+11,"Shield",60109,0,3
+12,"Carpenter's Primary Tool",60111,0,2
+13,"Carpenter's Secondary Tool",60111,1,2
+14,"Blacksmith's Primary Tool",60112,2,2
+15,"Blacksmith's Secondary Tool",60112,3,2
+16,"Armorer's Primary Tool",60113,4,2
+17,"Armorer's Secondary Tool",60113,5,2
+18,"Goldsmith's Primary Tool",60114,6,2
+19,"Goldsmith's Secondary Tool",60114,7,2
+20,"Leatherworker's Primary Tool",60115,8,2
+21,"Leatherworker's Secondary Tool",60115,9,2
+22,"Weaver's Primary Tool",60116,10,2
+23,"Weaver's Secondary Tool",60116,11,2
+24,"Alchemist's Primary Tool",60117,12,2
+25,"Alchemist's Secondary Tool",60117,13,2
+26,"Culinarian's Primary Tool",60118,14,2
+27,"Culinarian's Secondary Tool",60118,15,2
+28,"Miner's Primary Tool",60119,16,2
+29,"Miner's Secondary Tool",60119,17,2
+30,"Botanist's Primary Tool",60120,18,2
+31,"Botanist's Secondary Tool",60120,19,2
+32,"Fisher's Primary Tool",60121,20,2
+33,"Fishing Tackle",60122,24,7
+34,"Head",60123,1,3
+35,"Body",60125,2,3
+36,"Legs",60127,5,3
+37,"Hands",60128,3,3
+38,"Feet",60129,6,3
+39,"Waist",60130,4,3
+40,"Necklace",60131,0,4
+41,"Earrings",60132,1,4
+42,"Bracelets",60133,2,4
+43,"Ring",60134,3,4
+44,"Medicine",60135,0,5
+45,"Ingredient",60136,0,6
+46,"Meal",60145,1,5
+47,"Seafood",60137,1,6
+48,"Stone",60138,2,6
+49,"Metal",60139,3,6
+50,"Lumber",60140,4,6
+51,"Cloth",60141,5,6
+52,"Leather",60142,6,6
+53,"Bone",60143,7,6
+54,"Reagent",60144,8,6
+55,"Dye",60146,10,6
+56,"Part",60147,9,6
+57,"Furnishing",60160,19,7
+58,"Materia",60149,0,7
+59,"Crystal",60150,1,7
+60,"Catalyst",60151,2,7
+61,"Miscellany",60152,3,7
+62,"Soul Crystal",60153,4,4
+63,"Other",60155,5,7
+64,"Construction Permit",60156,6,7
+65,"Roof",60156,7,7
+66,"Exterior Wall",60156,8,7
+67,"Window",60156,9,7
+68,"Door",60156,10,7
+69,"Roof Decoration",60156,11,7
+70,"Exterior Wall Decoration",60156,12,7
+71,"Placard",60156,13,7
+72,"Fence",60156,14,7
+73,"Interior Wall",60157,15,7
+74,"Flooring",60157,16,7
+75,"Ceiling Light",60157,17,7
+76,"Outdoor Furnishing",60164,18,7
+77,"Table",60158,20,7
+78,"Table-top",60159,21,7
+79,"Wall-mounted",60162,22,7
+80,"Rug",60163,23,7
+81,"Minion",60155,4,7
+82,"",0,0,0
+83,"",0,0,0
+84,"",0,0,0
+85,"",0,0,0
+86,"",0,0,0
+87,"",0,0,0
+88,"",0,0,0
+89,"",0,0,0
+90,"",0,0,0
+91,"",0,0,0
+92,"",0,0,0
+93,"",0,0,0
+94,"",0,0,0
+95,"",0,0,0
+96,"",0,0,0
+97,"",0,0,0
+98,"",0,0,0
+99,"",0,0,0
+100,"",0,0,0

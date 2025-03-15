@@ -1,0 +1,40 @@
+﻿key,0,1,2
+#,,List,
+int32,bool,str,uint32
+0,False,"",0
+1,False,"Producer",61531
+2,False,"Game Master",61524
+3,False,"Game Master",61532
+4,False,"Game Master",61533
+5,False,"Disconnected",61503
+6,True,"Waiting for Friend List Approval",61501
+7,True,"Waiting for Linkshell Approval",61501
+8,True,"Waiting for Free Company Approval",61501
+9,True,"Not Found",61502
+10,True,"Offline",61504
+11,True,"Busy",61509
+12,True,"PvP",61510
+13,True,"Viewing Cutscene",61508
+14,False,"Sharing Duty",61506
+15,False,"Similar Duty",61507
+16,True,"In Duty",61510
+17,True,"Using a Chocobo Porter",61534
+18,True,"Away from Keyboard",61511
+19,True,"Looking for Repairs",61512
+20,True,"Looking to Repair",61513
+21,True,"Looking to Meld Materia",61514
+22,True,"Looking for Party",61515
+23,True,"",61516
+24,True,"Waiting for Duty Finder",61517
+25,True,"Recruting Party Members",61536
+26,True,"Alliance Leader",61518
+27,True,"Alliance Party Leader",61519
+28,True,"Alliance Party Member",61520
+29,True,"Party Leader",61521
+30,True,"Party Member",61522
+31,True,"Another World",61535
+32,True,"New Adventurer",61523
+33,True,"Trial Adventurer",61525
+34,False,"Free Company",0
+35,False,"Grand Company",0
+36,True,"Online",61505

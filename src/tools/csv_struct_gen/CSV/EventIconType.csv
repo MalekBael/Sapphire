@@ -1,0 +1,10 @@
+﻿key,0,1,2
+#,NpcIcon{Available},MapIcon{Available},NpcIcon{Invalid}
+int32,Image,Image,Image
+0,0,0,5
+1,60920,60620,5
+2,60960,60660,5
+3,60900,60600,5
+4,60091,0,1
+5,60940,60640,5
+6,60980,60680,5

@@ -1,0 +1,13 @@
+﻿key,0,1,2,3,4,5,6,7
+#,Singular,Adjective,Plural,PossessivePronoun,StartsWithVowel,,Pronoun,Article
+int32,str,sbyte,str,sbyte,sbyte,sbyte,sbyte,sbyte
+0,"",0,"",0,0,1,0,0
+1,"mineral deposit",0,"mineral deposits",0,0,0,0,0
+2,"rocky outcrop",0,"rocky outcrops",0,0,0,0,0
+3,"mature tree",0,"mature trees",0,0,0,0,0
+4,"lush vegetation patch",0,"lush vegetation patch",0,0,0,0,0
+5,"unspoiled mineral deposit",0,"unspoiled mineral deposits",0,0,0,0,0
+6,"unspoiled rocky outcrop",0,"unspoiled rocky outcrops",0,0,0,0,0
+7,"unspoiled mature tree",0,"unspoiled mature trees",0,0,0,0,0
+8,"unspoiled lush vegetation patch",0,"unspoiled lush vegetation patches",0,0,0,0,0
+9,"",0,"",0,0,1,0,0

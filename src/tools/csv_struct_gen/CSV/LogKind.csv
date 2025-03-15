@@ -1,0 +1,106 @@
+﻿key,0,1,2,3
+#,,Format,,
+int32,str,str,str,byte
+0,"[LogKind未設定]<Color(-3355444)><Highlight>StringParameter(2)</Highlight></Color>","None","",0
+1,"<Color(-3355444)><Highlight>StringParameter(2)</Highlight></Color>","Debug","",0
+2,"<Color(-32897)><Highlight>StringParameter(2)</Highlight></Color>","Urgent Information","Urgent messages sent by the operations team to all PCs in the World.",0
+3,"<Color(-5010177)><Highlight>StringParameter(2)</Highlight></Color>","General Information","General messages sent by the operations team to all PCs in the World.",0
+4,"","","",0
+5,"","","",0
+6,"","","",0
+7,"","","",0
+8,"","","",0
+9,"","","",0
+10,"<Color(PlayerParameter(13))><Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","Say","Cloud Strife: Never mind...",1
+11,"<Color(PlayerParameter(14))><Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","Shout","Cloud Strife: Can someone give me some gil?",1
+12,"<Color(PlayerParameter(15))>>> <Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","Tell",">> Tifa Lockhart: Nice shirt.
+Tifa Lockhart >> Eyes up here, Cloud.",1
+13,"<Color(PlayerParameter(15))><Highlight>StringParameter(1)</Highlight> >> <Highlight>StringParameter(2)</Highlight></Color>","Tell_Receive","",0
+14,"<Color(PlayerParameter(16))>(<Highlight>StringParameter(1)</Highlight>) <Highlight>StringParameter(2)</Highlight></Color>","Party","Cloud Strife: Where is everybody?",1
+15,"<Color(PlayerParameter(17))>((<Highlight>StringParameter(1)</Highlight>)) <Highlight>StringParameter(2)</Highlight></Color>","Alliance","",1
+16,"<Color(PlayerParameter(18))>[1]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [1]","[1]<Cloud Strife> Never mind...",1
+17,"<Color(PlayerParameter(19))>[2]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [2]","[2]<Cloud Strife> Never mind...",1
+18,"<Color(PlayerParameter(20))>[3]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [3]","[3]<Cloud Strife> Never mind...",1
+19,"<Color(PlayerParameter(21))>[4]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [4]","[4]<Cloud Strife> Never mind...",1
+20,"<Color(PlayerParameter(22))>[5]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [5]","[5]<Cloud Strife> Never mind...",1
+21,"<Color(PlayerParameter(23))>[6]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [6]","[6]<Cloud Strife> Never mind...",1
+22,"<Color(PlayerParameter(24))>[7]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [7]","[7]<Cloud Strife> Never mind...",1
+23,"<Color(PlayerParameter(25))>[8]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Linkshell [8]","[8]<Cloud Strife> Never mind...",1
+24,"<Color(PlayerParameter(26))>[FC]<<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","Free Company","",1
+25,"","","",0
+26,"","","",0
+27,"","","",0
+28,"<Color(PlayerParameter(30))><Highlight>StringParameter(1)</Highlight><Highlight>StringParameter(2)</Highlight></Color>","Custom Emotes","Cloud Strife points at Bayohne.",1
+29,"<Color(PlayerParameter(31))><Highlight>StringParameter(2)</Highlight></Color>","Standard Emotes","Cloud Strife wallows in self pity...",1
+30,"<Color(PlayerParameter(32))><Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","Yell","",1
+31,"","","",0
+32,"","","",0
+33,"","","",0
+34,"","","",0
+35,"","","",0
+36,"","","",0
+37,"","","",0
+38,"","","",0
+39,"","","",0
+40,"","","",0
+41,"<Color(PlayerParameter(36))><Highlight>StringParameter(2)</Highlight></Color>","Damage","Shantotto hits the vorpal bunny for 123 damage.",2
+42,"<Color(PlayerParameter(37))><Highlight>StringParameter(2)</Highlight></Color>","Failed Attacks","Shantotto misses the vorpal bunny.",2
+43,"<Color(PlayerParameter(38))><Highlight>StringParameter(2)</Highlight></Color>","Actions","Shantotto uses Sanguine Rite.",2
+44,"<Color(PlayerParameter(39))><Highlight>StringParameter(2)</Highlight></Color>","Items","Shantotto uses a potion.",2
+45,"<Color(PlayerParameter(40))><Highlight>StringParameter(2)</Highlight></Color>","Cure Spells","Shantotto recovers 123 HP.",2
+46,"<Color(PlayerParameter(41))><Highlight>StringParameter(2)</Highlight></Color>","Beneficial Effects","Shantotto gains the effect of Stoneskin.",2
+47,"<Color(PlayerParameter(42))><Highlight>StringParameter(2)</Highlight></Color>","Detrimental Effects","Shantotto suffers the effect of Bio.",2
+48,"","","",0
+49,"","","",0
+50,"","","",0
+51,"","","",0
+52,"","","",0
+53,"","","",0
+54,"","","",0
+55,"","","",0
+56,"<Color(PlayerParameter(43))><Highlight>StringParameter(2)</Highlight></Color>","Echo","Echo",3
+57,"<Color(PlayerParameter(44))><Highlight>StringParameter(2)</Highlight></Color>","System Messages","You invite Cloud Strife to a party.",3
+58,"<Color(PlayerParameter(57))><Highlight>StringParameter(2)</Highlight></Color>","System Error Messages","Message to Cloud Strife could not be sent.",3
+59,"<Color(PlayerParameter(58))><Highlight>StringParameter(2)</Highlight></Color>","Battle System Messages","The vorpal bunny calls for help!
+ ⇒ 50 more enemies join the battle.",3
+60,"<Color(PlayerParameter(59))><Highlight>StringParameter(2)</Highlight></Color>","Gathering System Messages","There are no mineral deposits of rocky outcrops in this area.",3
+61,"<Color(PlayerParameter(60))><Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","NPC Say","Baderon: Now off with ye. I got casks to tap.",3
+62,"<Color(PlayerParameter(61))><Highlight>StringParameter(2)</Highlight></Color>","Loot Notices","You obtain Excalipoor.",3
+63,"","","",0
+64,"<Color(PlayerParameter(62))><Highlight>StringParameter(2)</Highlight></Color>","Character Progress","Shantotto attains level 51!",3
+65,"<Color(PlayerParameter(63))><Highlight>StringParameter(2)</Highlight></Color>","Lot Messages","Shantotto rolls on Need. 50!",3
+66,"<Color(PlayerParameter(64))><Highlight>StringParameter(2)</Highlight></Color>","Crafting Messages","Shantotto synthesizes a bottle of ether.",3
+67,"<Color(PlayerParameter(65))><Highlight>StringParameter(2)</Highlight></Color>","Gathering Messages","Shantotto begins quarrying.",3
+68,"<Color(PlayerParameter(60))><Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","NPC Announcements","Baderon: Don't go stickin' yer manhood in the forge!",3
+69,"<Color(PlayerParameter(33))><Highlight>StringParameter(2)</Highlight></Color>","FC Announcements","",3
+70,"<Color(PlayerParameter(33))><Highlight>StringParameter(2)</Highlight></Color>","FC Login Messages","",0
+71,"<Color(PlayerParameter(44))><Highlight>StringParameter(2)</Highlight></Color>","Retainer Sale Reports","",0
+72,"","","",0
+73,"","","",0
+74,"","","",0
+75,"","","",0
+76,"","","",0
+77,"","","",0
+78,"","","",0
+79,"","","",0
+80,"<Color(PlayerParameter(15))>[GM]<Highlight>StringParameter(1)</Highlight> >> <Highlight>StringParameter(2)</Highlight></Color>","GMからのTell","",0
+81,"<Color(PlayerParameter(13))>[GM]<Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","GMからのSay","",0
+82,"<Color(PlayerParameter(14))>[GM]<Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","GMからのShout","",0
+83,"<Color(PlayerParameter(32))>[GM]<Highlight>StringParameter(1)</Highlight>: <Highlight>StringParameter(2)</Highlight></Color>","GMからのYell","",0
+84,"<Color(PlayerParameter(16))>([GM]<Highlight>StringParameter(1)</Highlight>) <Highlight>StringParameter(2)</Highlight></Color>","GMからのParty","",0
+85,"<Color(PlayerParameter(26))>[FC]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのFreeCompanyチャット","",0
+86,"<Color(PlayerParameter(18))>[1]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS1チャット","",0
+87,"<Color(PlayerParameter(19))>[2]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS2チャット","",0
+88,"<Color(PlayerParameter(20))>[3]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS3チャット","",0
+89,"<Color(PlayerParameter(21))>[4]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS4チャット","",0
+90,"<Color(PlayerParameter(22))>[5]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS5チャット","",0
+91,"<Color(PlayerParameter(23))>[6]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS6チャット","",0
+92,"<Color(PlayerParameter(24))>[7]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS7チャット","",0
+93,"<Color(PlayerParameter(25))>[8]<[GM]<Highlight>StringParameter(1)</Highlight>> <Highlight>StringParameter(2)</Highlight></Color>","GMからのLS8チャット","",0
+94,"","","",0
+95,"","","",0
+96,"","","",0
+97,"","","",0
+98,"","","",0
+99,"","","",0
+100,"","","",0

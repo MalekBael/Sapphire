@@ -1,0 +1,10 @@
+﻿key,0
+#,
+int32,str
+0,""
+1,"<Highlight>StringParameter(1)</Highlight>が<Value>IntegerParameter(2)</Value>のとき"
+2,"<Highlight>StringParameter(1)</Highlight>が<Value>IntegerParameter(2)</Value>ではないとき"
+3,"<Highlight>StringParameter(1)</Highlight>が<Value>IntegerParameter(2)</Value>より大きい"
+4,"<Highlight>StringParameter(1)</Highlight>が<Value>IntegerParameter(2)</Value>より小さい"
+5,"<Highlight>StringParameter(1)</Highlight>が<Value>IntegerParameter(2)</Value>以上"
+6,"<Highlight>StringParameter(1)</Highlight>が<Value>IntegerParameter(2)</Value>以下"

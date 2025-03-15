@@ -1,0 +1,424 @@
+﻿key,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+#,Name,Description,Icon,,MaxStacks,ClassJobCategory,StatusCategory,HitEffect,VFX,LockMovement,,LockActions,LockControl,Transfiguration,IsGaze,CanDispel,InflictedByActor
+int32,str,str,Image,byte,byte,ClassJobCategory,bool,StatusHitEffect,StatusLoopVFX,bool,bool,bool,byte,bool,uint16,bool,bool
+0,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+1,"Petrification","Stone-like rigidity is preventing the execution of actions.",15001,0,2,47,True,True,False,False,False,False,100,False,0,False,False
+2,"Stun","Unable to execute actions.",15004,0,2,43,True,True,False,False,False,False,100,False,0,False,False
+3,"Sleep","Overwhelming drowsiness is preventing the execution of actions.",15013,0,2,42,True,True,False,False,False,False,100,False,0,False,False
+4,"Daze","Scattered senses are preventing the execution of actions.",15003,0,2,50,True,True,False,False,False,False,100,False,0,False,False
+5,"Amnesia","Unable to use abilities.",15015,0,2,59,False,False,False,False,False,False,100,False,0,False,False
+6,"Pacification","Unable to use weaponskills.",15017,0,2,58,False,False,False,False,False,False,100,False,0,False,False
+7,"Silence","A stifling magic is preventing casts.",15005,0,2,48,False,False,False,False,False,False,100,False,0,False,False
+8,"Haste","Weaponskill recast time, spell recast time, and auto-attack delay are reduced.",15008,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+9,"Slow","Weaponskill recast time, spell recast time, and auto-attack delay are increased.",15009,0,2,56,False,False,False,False,False,False,50,False,0,False,False
+10,"Slow","Weaponskill recast time, spell recast time, and auto-attack delay are increased.",15545,0,2,56,False,False,False,False,True,True,50,False,0,False,False
+11,"Charmed","Your mind is being controlled by the enemy.",15559,0,2,61,False,False,True,True,False,False,100,False,0,False,False
+12,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+13,"Bind","Unable to move.",15003,0,2,54,True,False,False,False,False,False,100,False,0,False,False
+14,"Heavy","Movement speed is reduced.",15002,0,2,44,False,False,False,False,False,False,100,False,0,False,False
+15,"Blind","Encroaching darkness is lowering accuracy.",15012,0,2,52,False,False,False,False,False,False,50,False,0,False,False
+16,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+17,"Paralysis","Deadened nerves are sometimes preventing the execution of actions.",15006,0,2,46,False,False,False,False,False,False,100,False,0,False,False
+18,"Poison","Toxins are causing damage over time.",15007,0,2,41,False,False,False,False,False,False,10,False,0,False,False
+19,"Pollen","Deadly pollen has filled the lungs, causing damage over time.",15517,0,2,41,False,False,False,False,True,True,10,False,0,False,False
+20,"TP Bleed","Bleeding TP over time.",15025,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+21,"HP Boost","Maximum HP is increased.",15075,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+22,"HP Penalty","Maximum HP is reduced.",15076,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+23,"MP Boost","Maximum MP is increased.",15077,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+24,"MP Penalty","Maximum MP is reduced.",15078,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+25,"Attack Up","Attack power is enhanced.",15050,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+26,"Attack Down","Attack power is reduced.",15051,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+27,"Accuracy Up","Accuracy is enhanced.",15060,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+28,"Accuracy Down","Accuracy is reduced.",15061,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+29,"Defense Up","Defense is enhanced.",15052,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+30,"Defense Down","Defense is reduced.",15053,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+31,"Evasion Up","Evasion is enhanced.",15062,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+32,"Evasion Down","Evasion is reduced.",15063,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+33,"Attack Magic Potency Up","Attack magic potency is enhanced.",15054,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+34,"Attack Magic Potency Down","Attack magic potency is reduced.",15055,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+35,"Healing Potency Up","Healing magic potency is enhanced.",15058,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+36,"Healing Potency Down","Healing magic potency is reduced.",15059,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+37,"Magic Defense Up","Magic defense is enhanced.",15056,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+38,"Magic Defense Down","Magic defense is reduced.",15057,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+39,"Stun Resistance","Immune to stun effects.",15566,0,1,60,False,False,False,False,True,True,100,False,0,False,False
+40,"Silence Resistance","Immune to silence effects.",15567,0,1,60,False,False,False,False,True,True,100,False,0,False,False
+41,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+42,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+43,"Weakness","All attributes are reduced by 15%.",15010,0,2,0,False,False,False,False,False,False,100,False,0,False,False
+44,"Brink of Death","All attributes are reduced by 30%.",15011,0,2,0,False,False,False,False,False,False,100,False,0,False,False
+45,"Crafter's Grace","Chance of increased experience point gains as a Disciple of the Hand.",16106,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+46,"Gatherer's Grace","Chance of increased experience point gains as a Disciple of the Land.",16006,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+47,"Stealth","Cannot be detected by enemies. Movement speed is reduced.",16001,0,1,60,False,False,False,False,True,True,2,False,0,False,True
+48,"Well Fed","Enjoying the benefits of a full belly.",16202,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+49,"Medicated","Performance is being enhanced by a medicinal item.",16203,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+50,"Sprint","Movement speed is increased.",10101,0,1,0,False,False,False,False,False,False,0,False,0,False,False
+51,"Strength Down","Strength is reduced.",15080,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+52,"Vitality Down","Vitality is reduced.",15082,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+53,"Physical Damage Up","Physical damage dealt is increased.",15050,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+54,"Physical Damage Down","Physical damage dealt is reduced.",15051,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+55,"Physical Vulnerability Down","Physical damage taken is reduced.",15052,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+56,"Physical Vulnerability Up","Physical damage taken is increased.",15053,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+57,"Magic Damage Up","Magic damage dealt is increased.",15054,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+58,"Magic Damage Down","Magic damage dealt is reduced.",15055,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+59,"Magic Vulnerability Down","Magic damage taken is reduced.",15056,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+60,"Magic Vulnerability Up","Magic damage taken is increased.",15057,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+61,"Determination Up","Damage dealt is increased.",15519,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+62,"Determination Down","Damage dealt is reduced.",15520,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+63,"Vulnerability Down","Damage taken is reduced.",15021,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+64,"Vulnerability Up","Damage taken is increased.",15020,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+65,"Critical Skill","All weaponskills are dealing critical damage.",15016,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+66,"Terror","Frozen with fear.",15516,0,2,178,True,True,False,False,False,False,100,False,0,False,False
+67,"Leaden","Movement speed is reduced, and cannot be restored by normal means.",15518,0,2,44,False,False,False,False,True,True,100,False,0,False,False
+68,"Drainstrikes","Auto-attacks are generating an Absorb HP effect.",15504,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+69,"Aspirstrikes","Auto-attacks are generating an Absorb MP effect.",15505,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+70,"Stunstrikes","Auto-attacks may stun target.",15506,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+71,"Rampart","Damage taken is reduced.",10202,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+72,"Convalescence","HP recovery via curing magic is increased.",10207,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+73,"Awareness","Cannot suffer critical damage.",10204,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+74,"Sentinel","Damage taken is reduced.",10201,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+75,"Tempered Will","Immune to knockback and draw-in effects.",10203,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+76,"Fight or Flight","Physical damage dealt is increased.",10205,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+77,"Bulwark","Block rate is increased.",10206,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+78,"Sword Oath","Auto-attacks are enhanced.",13005,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+79,"Shield Oath","Damage taken and dealt is reduced, while enmity is increased.",13006,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+80,"Cover","Protecting a party member.",13001,0,1,60,False,False,False,False,False,False,100,True,0,False,False
+81,"Covered","Under the protection of a party member.",13002,0,1,60,False,False,False,False,False,False,100,True,0,False,False
+82,"Hallowed Ground","Impervious to most attacks.",13004,0,1,60,False,False,False,False,False,False,70,False,0,False,False
+83,"Foresight","Defense is increased.",10402,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+84,"Bloodbath","Physical attacks generate HP equal to a portion of damage dealt.",10401,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+85,"Maim","Damage dealt is increased.",10412,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+86,"Berserk","Attack power is enhanced. Will be unable to use weaponskills for several seconds after effect ends.",10403,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+87,"Thrill of Battle","Maximum HP is increased.",10404,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+88,"Holmgang","Unable to move until effect fades.",10405,0,2,61,True,False,False,False,False,False,100,False,0,False,False
+89,"Vengeance","Inflicting a portion of sustained damage back to its source.",10406,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+90,"Storm's Eye","Slashing resistance and HP recovery via curing magic are reduced.",10413,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+91,"Defiance","Maximum HP, HP recovery, and enmity are increased, while damage dealt is reduced. Using certain actions will incur Wrath.",13201,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+92,"Unchained","Damage penalty inflicted by Defiance is nullified.",13202,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+93,"Wrath","Critical hit rate is increased.",10407,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+94,"Wrath II","Critical hit rate is increased.",10408,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+95,"Wrath III","Critical hit rate is increased.",10409,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+96,"Wrath IV","Critical hit rate is increased.",10410,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+97,"Infuriated","Critical hit rate is increased.",10411,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+98,"Dragon Kick","Blunt resistance and intelligence are reduced.",10315,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+99,"Featherfoot","Evasion is enhanced.",10301,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+100,"Internal Release","Critical hit rate is increased.",10304,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+101,"Twin Snakes","Damage dealt is increased.",10316,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+102,"Mantra","HP recovery via curing magic is increased.",10306,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+103,"Fists of Fire","Damage dealt is increased.",10302,0,1,60,False,False,False,False,True,True,0,True,528,False,False
+104,"Fists of Earth","Damage taken is reduced.",10303,0,1,60,False,False,False,False,True,True,0,True,528,False,False
+105,"Fists of Wind","Movement speed is increased.",13101,0,1,60,False,False,False,False,True,True,0,True,528,False,False
+106,"Touch of Death","Organs are failing, causing damage over time.",10311,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+107,"Opo-opo Form","Employing the opo-opo fighting stance.",10312,0,1,60,False,False,False,False,False,False,0,True,528,False,False
+108,"Raptor Form","Employing the raptor fighting stance.",10313,0,1,60,False,False,False,False,False,False,0,True,528,False,False
+109,"Coeurl Form","Employing the coeurl fighting stance.",10314,0,1,60,False,False,False,False,False,False,0,True,528,False,False
+110,"Perfect Balance","Employing all three pugilistic fighting stances─opo-opo, raptor, and coeurl.",10317,0,1,60,False,False,False,False,False,False,0,True,528,False,False
+111,"Greased Lightning","Damage dealt and attack speed are increased.",10307,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+112,"Greased Lightning II","Damage dealt and attack speed are increased.",10308,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+113,"Greased Lightning III","Damage dealt and attack speed are increased.",10309,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+114,"Keen Flurry","Chance to parry is increased.",10501,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+115,"Heavy Thrust","Damage dealt is increased.",10506,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+116,"Life Surge","Next non-magic action is a critical hit with resulting damage being absorbed as HP.",10502,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+117,"Blood for Blood","Increasing damage dealt while increasing damage taken.",10504,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+118,"Chaos Thrust","Wounds are bleeding, causing damage over time.",10507,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+119,"Phlebotomize","Wounds are bleeding, causing damage over time.",10505,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+120,"Power Surge","Damage is increased for next Jump or Spineshatter Dive.",10503,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+121,"Disembowel","Piercing resistance is reduced.",13301,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+122,"Straighter Shot","Next Straight Shot will result in a critical hit.",10615,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+123,"Hawk's Eye","Accuracy is increased and all attacks are guaranteed to land.",10601,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+124,"Venomous Bite","Toxins are causing damage over time.",10602,0,2,41,False,False,False,False,False,False,10,False,0,False,False
+125,"Raging Strikes","Damage dealt is increased.",10604,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+126,"Physical Vulnerability Up","Physical damage taken is increased.",17101,8,2,61,False,False,False,False,False,False,100,False,0,False,False
+127,"Quelling Strikes","Enmity generation is reduced.",10605,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+128,"Barrage","Striking multiple times per auto-attack.",10606,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+129,"Windbite","Wounds are exposed to the elements, causing wind damage over time.",10610,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+130,"Straight Shot","Critical hit rate is increased.",10611,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+131,"Downpour of Death","Next Rain of Death will not require any TP.",13407,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+132,"Quicker Nock","Next Quick Nock will not require any TP.",10612,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+133,"Swiftsong","Movement speed of self and nearby party members is increased.",10608,0,1,60,False,False,False,False,True,True,1,True,0,False,False
+134,"Swiftsong","Movement speed is increased.",10607,0,1,60,False,False,False,False,False,True,0,True,0,False,False
+135,"Mage's Ballad","Using MP to gradually restore the MP of nearby party members. Damage dealt is reduced.",13403,0,1,60,False,False,False,False,True,True,1,True,0,False,False
+136,"Mage's Ballad","Restoring MP over time.",13402,0,1,60,False,False,False,False,False,True,0,True,0,False,False
+137,"Army's Paeon","Using MP to gradually refresh the TP of self and nearby party members. Damage dealt is reduced.",13405,0,1,60,False,False,False,False,True,True,1,True,0,False,False
+138,"Army's Paeon","Regenerating TP over time.",13404,0,1,60,False,False,False,False,False,True,0,True,0,False,False
+139,"Foe Requiem","Using MP to lower the elemental resistances of nearby enemies.",13406,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+140,"Foe Requiem","All elemental resistances are reduced.",13408,0,2,61,False,False,False,False,False,True,50,True,0,False,False
+141,"Battle Voice","The effectiveness of songs is increased.",13401,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+142,"Chameleon","All elemental resistances are increased.",10609,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+143,"Aero","Taking wind damage over time.",10703,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+144,"Aero II","Taking wind damage over time.",10709,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+145,"Cleric Stance","INT and MND ratings are swapped, while increasing potency of attack spells and reducing potency of healing spells.",10702,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+146,"Protect","Defense is enhanced.",10704,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+147,"Protect","Both physical and magic defense are enhanced.",10705,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+148,"Raise","Teetering on the brink of consciousness.",10706,0,1,60,False,False,False,False,False,False,100,False,0,False,False
+149,"Rebirth","Rebirth",15004,0,2,43,True,True,False,False,False,False,100,False,0,False,False
+150,"Medica II","Regenerating HP over time.",10713,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+151,"Stoneskin","Lithified flesh is absorbing damage.",10701,0,1,60,False,False,False,False,False,False,30,False,0,False,False
+152,"Stoneskin (Physical)","Lithified flesh is absorbing physical damage.",10701,0,1,60,False,False,False,False,True,True,30,False,0,False,False
+153,"Stoneskin (Magical)","Lithified flesh is absorbing magic damage.",10701,0,1,60,False,False,False,False,True,True,30,False,0,False,False
+154,"Shroud of Saints","Restoring MP over time.",10708,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+155,"Freecure","Next Cure II will not require any MP to cast.",10710,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+156,"Overcure","Next Cure III will cost half MP.",10711,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+157,"Presence of Mind","Spell speed is increased.",13502,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+158,"Regen","Regenerating HP over time.",13501,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+159,"Divine Seal","The amount of HP restored by healing spells is increased.",10707,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+160,"Surecast","Next spell cannot be interrupted by taking damage.",10802,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+161,"Thunder","Taking lightning damage over time.",10807,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+162,"Thunder II","Taking lightning damage over time.",10808,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+163,"Thunder III","Taking lightning damage over time.",10809,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+164,"Thundercloud","Next Thunder, Thunder II, or Thunder III will add its full damage over time amount to its initial damage, require no time to cast, and cost no MP.",10811,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+165,"Firestarter","Next Fire III will require no time to cast and cost no MP.",10810,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+166,"Succor","Next Succor will cost no MP.",13804,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+167,"Swiftcast","Next spell will require no time to cast.",10804,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+168,"Manaward","An aetherial barrier is preventing all magic damage.",10806,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+169,"Manawall","An aetherial barrier is preventing all physical damage.",13601,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+170,"Apocatastasis","Fire, ice, and lightning resistances are increased by 30%.",10801,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+171,"Ekpyrosis","Unable to receive Apocatastasis.",13602,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+172,"Infirmity","Recovering HP at a slower rate.",15531,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+173,"Astral Fire","Aetherial balance of mind and spirit is leaning astrally. Fire-aspected spells require more MP, but do more damage. Ice-aspected spells require less MP, but do less damage. MP regeneration has stopped.",10813,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+174,"Astral Fire II","Aetherial balance of mind and spirit is leaning astrally. Fire-aspected spells require more MP, but do more damage. Ice-aspected spells require less MP, but do less damage. MP regeneration has stopped.",10814,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+175,"Astral Fire III","Aetherial balance of mind and spirit is leaning astrally. Fire-aspected spells require more MP, but do more damage. Ice-aspected spells require less MP, but do less damage, and casting times are halved. MP regeneration has quickened.",10815,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+176,"Umbral Ice","Aetherial balance of mind and spirit is leaning umbrally. Fire-aspected spells require less MP, but do less damage. MP regeneration has quickened.",10816,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+177,"Umbral Ice II","Aetherial balance of mind and spirit is leaning umbrally. Fire-aspected spells require less MP, but do less damage. MP regeneration has quickened.",10817,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+178,"Umbral Ice III","Aetherial balance of mind and spirit is leaning umbrally. Fire-aspected spells require less MP, but do less damage, and casting times are halved. MP regeneration has quickened.",10818,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+179,"Bio","Contagions are spreading, causing damage over time.",10904,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+180,"Miasma","Lungs are failing, causing damage over time.",10906,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+181,"Disease","Movement speed and HP recovered via curing magic are reduced.",15014,0,2,61,False,False,False,False,False,False,100,False,0,False,False
+182,"Virus","Motor skills are hampered, causing reduced strength and dexterity.",10910,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+183,"Fever","Head is burning, causing reduced mind and intelligence.",10911,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+184,"Sustain","Recovering HP over time.",10908,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+185,"Eye for an Eye","Chance that next hit suffered will lower the attacker's damage dealt.",10912,0,1,60,False,False,False,False,False,False,30,False,0,False,False
+186,"Eye for an Eye","Damage dealt is reduced.",10913,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+187,"Rouse","Damage and healing magic potency are increased.",10909,0,1,60,False,False,False,False,False,False,30,False,0,False,False
+188,"Miasma II","Contagions are spreading, causing damage over time.",10907,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+189,"Bio II","Lungs are failing, causing damage over time.",10905,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+190,"Shadow Flare","Burning shadows dance across the ground, dealing unaspected damage to any who enter.",10914,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+191,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+192,"Spur","Attack power and attack magic potency are increased.",13704,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+193,"Slow","Weaponskill recast time, spell recast time, and auto-attack delay are increased.",15009,0,2,56,False,False,False,False,False,True,50,False,0,False,False
+194,"Shield Wall","Damage taken is reduced.",16401,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+195,"Mighty Guard","Damage taken is reduced.",16401,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+196,"Last Bastion","Damage taken is reduced.",16401,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+197,"Blaze Spikes","Fire spikes are damaging attackers.",15508,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+198,"Ice Spikes","Ice spikes are damaging and sometimes slowing down attackers.",15501,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+199,"Shock Spikes","Lightning spikes are damaging and sometimes stunning attackers.",15502,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+200,"Physical Vulnerability Up","Physical damage taken is increased.",17101,4,2,61,False,False,False,False,False,False,100,False,0,False,False
+201,"Stun","Unable to execute actions.",15004,0,2,43,True,True,False,False,True,True,100,False,0,False,False
+202,"Vulnerability Up","Damage taken is increased.",17101,8,2,61,False,False,False,False,False,False,100,False,0,False,False
+203,"Boost","Attack power on next special technique is increased.",15507,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+204,"Enfire","Fire damage added to auto-attacks.",15509,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+205,"Enblizzard","Ice damage added to auto-attacks.",15510,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+206,"Enaero","Wind damage added to auto-attacks.",15511,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+207,"Enstone","Earth damage added to auto-attacks.",15512,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+208,"Enthunder","Lightning damage added to auto-attacks.",15513,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+209,"Enwater","Water damage added to auto-attacks.",15514,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+210,"Doom","Certain death when counter reaches zero.",15503,0,2,51,False,False,False,False,False,False,200,False,0,False,False
+211,"Sharpened Knife","Damage dealt by next Lateral Slash is increased.",15515,0,1,60,False,False,False,False,True,True,100,False,0,False,False
+212,"True Sight","Able to see through the levequest target's glamour.",15076,0,2,61,False,False,False,False,True,True,0,False,0,False,False
+213,"Pacification","The target is pacified and will no longer attack.",16301,0,2,61,True,True,False,False,False,False,0,False,0,False,False
+214,"Agitation","Excited by failed pacification. Attack power and attack magic potency are enhanced.",16302,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+215,"Determination Down","Damage dealt is reduced.",15520,0,2,61,False,False,False,False,True,True,50,False,0,False,False
+216,"Paralysis","Deadened nerves are sometimes preventing the execution of actions.",15006,0,2,46,False,False,False,False,False,False,100,False,0,False,False
+217,"Triangulate","Able to locate mature trees and lush vegetation.",11601,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+218,"Gathering Rate Up","Chance of obtaining an item while gathering is increased.",16002,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+219,"Gathering Yield Up","Number of items obtained while gathering is increased.",16003,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+220,"Gathering Fortune Up","Chance of obtaining an HQ item while gathering is increased.",16004,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+221,"Truth of Forests","Able to locate unspoiled mature trees and lush vegetation.",11607,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+222,"Truth of Mountains","Able to locate unspoiled mineral deposits and rocky outcrops.",11507,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+223,"Byregot's Ward","Affinity to the element lightning is increased while gathering.",11604,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+224,"Nophica's Ward","Affinity to the element earth is increased while gathering.",11605,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+225,"Prospect","Able to locate mineral deposits and rocky outcrops.",11501,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+226,"Haste","Weaponskill recast time, spell recast time, and auto-attack delay are reduced.",15008,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+227,"Seduced","Enthralled by an irresistible force and unable to act of your own volition.",15552,0,2,61,False,True,True,True,False,False,100,False,0,False,False
+228,"Menphina's Ward","Affinity to the element ice is increased while gathering.",11504,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+229,"Nald'thal's Ward","Affinity to the element fire is increased while gathering.",11505,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+230,"Llymlaen's Ward","Affinity to the element wind is increased while gathering.",11606,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+231,"Thaliak's Ward","Affinity to the element water is increased while gathering.",11506,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+232,"Preparation","Able to recognize the conditions for obtaining HQ items while gathering.",16005,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+233,"Arbor Call","Surveying the land for the nearest mature tree or lush vegetation.",11602,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+234,"Lay of the Land","Surveying the land for the nearest mineral deposit or rocky outcrop.",11502,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+235,"Windburn","Sustaining wind damage over time.",15526,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+236,"Choco Beak","Bleeding HP over time.",15522,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+237,"Choco Regen","Regenerating HP over time.",15075,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+238,"Choco Surge","The amount of HP restored by healing spells is increased.",15058,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+239,"The Echo","Maximum HP and damage dealt are increased.",16207,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+240,"Ingenuity","Success rate for all synthesis and touch actions is increased by 10%.",15002,0,2,44,False,False,False,False,False,False,100,False,0,False,False
+241,"Blessing of Light","Bathed in the light of the Mothercrystal.",15548,0,1,60,False,False,False,False,True,True,100,True,0,False,False
+242,"Arbor Call II","Surveying the land for the highest-level mature tree or lush vegetation.",11603,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+243,"Lay of the Land II","Surveying the land for the highest-level mineral deposit or rocky outcrop.",11503,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+244,"Fracture","Wounds are bleeding, causing damage over time.",10414,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+245,"Sanction","Receiving the gear-enhancing benefits of a Grand Company sanction.",16206,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+246,"Demolish","Internal bleeding is causing damage over time.",10318,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+247,"Rain of Death","Evasion is reduced.",13409,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+248,"Circle of Scorn","Wounds are bleeding, causing damage over time.",10208,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+249,"Flaming Arrow","Ground is ablaze, dealing fire damage to any who enter.",10613,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+250,"Burns","Sustaining fire damage over time.",15524,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+251,"Inner Quiet","Receiving a bonus to control with every increase in quality.",17321,11,1,60,False,False,False,False,True,True,0,True,0,False,False
+252,"Waste Not","Durability loss is reduced by half.",12401,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+253,"Steady Hand","Action success rate is increased by 20%.",12101,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+254,"Great Strides","Efficiency of next Touch action is doubled.",16105,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+255,"Ingenuity","Recipe level is equal to your own.",12102,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+256,"Ingenuity II","Recipe level is three lower than your own.",12103,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+257,"Waste Not II","Durability loss is reduced by half.",12402,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+258,"Manipulation","Receiving 10 points of durability after each step.",12301,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+259,"Innovation","Control is increased by 50%.",12302,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+260,"Reclaim","90% chance that materials will not be lost in the event of botched synthesis.",12701,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+261,"Comfort Zone","Regaining 8 CP after each step.",12601,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+262,"Steady Hand II","Action success rate is increased by 30%.",12702,0,1,60,False,False,False,False,True,False,0,True,0,False,False
+263,"Vulnerability Down","Damage taken is reduced.",15519,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+264,"Flesh Wound","Wounds dealt by a slashing weapon are bleeding, causing damage over time.",15521,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+265,"Stab Wound","Wounds dealt by a piercing weapon are bleeding, causing damage over time.",15522,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+266,"Concussion","Wounds dealt by a blunt weapon are causing damage over time.",15523,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+267,"Burns","Sustaining fire damage over time.",15524,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+268,"Frostbite","Sustaining ice damage over time.",15525,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+269,"Windburn","Sustaining wind damage over time.",15526,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+270,"Sludge","Sustaining earth damage over time.",15527,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+271,"Electrocution","Sustaining lightning damage over time.",15528,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+272,"Dropsy","Sustaining water damage over time.",15529,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+273,"Bleeding","Sustaining damage over time.",15530,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+274,"Recuperation","Regenerating HP over time.",13501,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+275,"Poison +1","Toxins are causing damage over time.",17001,4,2,41,False,False,False,False,False,False,10,False,0,False,False
+276,"Voice of Valor","Regenerating HP over time.",15549,0,1,60,False,False,False,False,False,True,5,True,0,False,False
+277,"Voice of Fortitude","Damage taken is reduced.",15550,0,1,60,False,False,False,False,False,True,0,True,0,False,False
+278,"Relentless March","",15551,0,1,60,False,False,False,False,False,True,0,True,0,False,False
+279,"Rehabilitation","Regenerating HP over time.",13501,0,1,60,False,False,False,False,True,True,5,False,0,False,False
+280,"Bind","Unable to move.",15003,0,2,54,True,False,False,False,True,True,100,False,0,False,False
+281,"Physical Damage Down","Damage dealt by physical attacks is reduced.",15051,0,2,61,False,False,False,False,True,True,50,False,0,False,False
+282,"Mana Modulation","Damage dealt by magic attacks and HP restored by healing spells are reduced.",15055,0,2,61,False,False,False,False,True,True,50,False,0,False,False
+283,"Dropsy","Sustaining water damage over time.",15529,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+284,"Burns","Sustaining fire damage over time.",15524,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+285,"Frostbite","Sustaining ice damage over time.",15525,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+286,"Windburn","Sustaining wind damage over time.",15526,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+287,"Sludge","Sustaining earth damage over time.",15527,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+288,"Electrocution","Sustaining lightning damage over time.",15528,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+289,"Dropsy","Sustaining water damage over time.",15529,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+290,"Determination Up","Damage dealt is increased.",15519,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+291,"Hundred Fists","Auto-attack, skill, and spell speed are all improved.",15008,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+292,"Fetters","Unable to move.",15534,0,2,43,True,True,False,False,True,True,100,False,0,False,False
+293,"Skill Speed Up","Weaponskill cast and recast times are reduced.",15553,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+294,"Spell Speed Up","Spell cast and recast times are reduced.",15554,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+295,"Goldbile","Sulphuric sludge is eating away at the skin, causing extreme discomfort and gradual HP loss.",15533,0,2,41,False,False,False,False,True,True,50,False,0,False,False
+296,"Hysteria","Unable to act on your own free will.",15552,0,2,61,True,True,False,False,False,False,100,False,0,False,False
+297,"Galvanize","A magicked barrier is nullifying damage.",13801,0,1,60,False,False,False,False,False,False,30,False,0,False,False
+298,"Sacred Soil","An area of land has been sanctified, reducing damage taken for all who enter.",13802,0,1,60,False,False,False,False,False,False,0,True,0,False,False
+299,"Sacred Soil","Damage taken is reduced.",13803,0,1,60,False,False,False,False,False,True,0,False,0,False,False
+300,"Determination Up","Damage dealt is increased.",17061,8,1,60,False,False,False,False,True,True,0,False,0,False,False
+301,"Critical Strikes","All attacks are dealing critical damage.",15555,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+302,"Gold Lung","A layer of sulphuric sludge has built up on the body.",17021,5,2,41,False,False,False,False,False,False,50,False,0,False,False
+303,"Burrs","Hooked burrs have dug into your flesh.",17041,9,2,41,False,False,False,False,False,False,50,False,0,False,False
+304,"Aetherflow","Aether is gathering in the body.",10901,3,1,60,False,False,False,False,True,True,0,True,0,False,False
+305,"The Dragon's Curse","Under the power of the dragon's eye.",13501,0,1,60,False,False,False,False,True,True,5,True,0,False,False
+306,"Inner Dragon","Under control of the dragon's eye.",13501,0,1,60,False,False,False,False,True,True,5,True,0,False,False
+307,"Voice of Valor","Gradually restoring the HP of nearby party members. Damage dealt is reduced.",15549,0,1,60,False,False,False,False,True,True,1,True,0,False,False
+308,"Voice of Fortitude","Reducing damage taken by nearby party members. Damage dealt is reduced.",15550,0,1,60,False,False,False,False,True,True,1,True,0,False,False
+309,"Relentless March","Increasing frequency of actions executed by nearby party members. Damage dealt is reduced.",15551,0,1,60,False,False,False,False,True,True,1,True,0,False,False
+310,"Curl","Damage taken is reduced.",10951,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+311,"Earthen Ward","Damage taken is reduced.",13751,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+312,"Earthen Fury","Jagged shards protrude from the ground, dealing earth damage to any who enter.",13752,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+313,"Radiant Shield","Countering any physical attacks.",13761,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+314,"Inferno","Sustaining fire damage over time.",13762,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+315,"Whispering Dawn","Regenerating HP over time.",13851,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+316,"Fey Covenant","Magic defense is increased.",13852,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+317,"Fey Illumination","The amount of HP restored by healing spells is increased.",13853,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+318,"Fey Glow","Spell speed is increased.",13861,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+319,"Fey Light","Skill speed is increased.",13862,0,1,60,False,False,False,False,False,False,1,False,0,False,False
+320,"Bleeding","Sustaining damage over time.",15530,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+321,"Gungnir","The power slumbering within the legendary lance has awoken.",15530,0,1,60,False,False,False,False,False,True,0,False,0,False,False
+322,"Crystal Veil","Damage taken is significantly reduced.",15556,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+323,"Reduced Immunity","HP recovery via actions is reduced. Can be cured with Esuna.",15557,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+324,"Greenwrath","The anger of the elementals tears at your very sanity, causing damage over time.",15530,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+325,"Invincibility","Invulnerable to all damage.",15024,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+326,"Lightning Charge","Lightning-aspected actions are enhanced.",15513,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+327,"Ice Charge","Ice-aspected actions are enhanced.",15510,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+328,"Heart of the Mountain","Invulnerable to all damage.",15024,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+329,"Modification","Applying parts from another bot to enhance and repair systems.",17061,4,1,60,False,False,False,False,True,True,0,False,0,False,False
+330,"Haste","Weaponskill recast time, spell recast time, and auto-attack delay are reduced.",15008,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+331,"Magic Vulnerability Down","Magic damage taken is reduced.",15056,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+332,"Determination Up","Damage dealt is increased.",15519,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+333,"Allagan Rot","An ancient pestilence corrupts your humours and will soon cause severe physical damage.",15538,0,2,61,False,False,False,False,False,False,200,False,0,False,False
+334,"Allagan Immunity","Your body is showing resistance to the Allagan Rot.",15539,0,2,61,False,False,False,False,False,False,200,True,0,False,False
+335,"Firestream","The flesh melts from your bones, causing damage over time.",15524,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+336,"Sequence AB1","Blunt resistance is increased.",15535,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+337,"Sequence AP1","Piercing resistance is increased.",15536,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+338,"Sequence AS1","Slashing resistance is increased.",15537,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+339,"Bleeding","Sustaining damage over time.",17121,8,2,61,False,False,False,False,False,False,10,False,0,False,False
+340,"Physical Field","Physical damage taken is reduced.",10701,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+341,"Aetherial Field","Magic damage taken is reduced.",10701,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+342,"Repelling Spray","Countering any magic attacks.",15542,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+343,"Bleeding","Sustaining damage over time.",15530,0,2,61,False,False,False,False,True,True,10,False,0,False,False
+344,"Neurolink","Movement is slowed, damage dealt and HP recovery via actions is reduced.",15545,0,2,61,False,False,False,False,True,True,50,False,0,False,False
+345,"Recharge","Damage dealt is increased, while weaponskill recast time, spell recast time, and auto-attack delay are reduced.",17061,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+346,"Waxen Flesh","The rate at which Firestream burns your flesh is increased.",17081,8,1,60,False,False,False,False,False,False,0,False,0,False,False
+347,"Pox","An ancient pestilence corrupts your humours, reducing maximum HP.",15544,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+348,"Disseminate","Physical damage taken is increased.",17101,4,2,61,False,False,False,False,False,False,50,False,0,False,False
+349,"Steel Scales","Physical damage dealt is increased.",17061,8,1,60,False,False,False,False,True,True,0,False,0,False,False
+350,"Vulnerability Down","Damage taken is reduced.",15021,0,1,60,False,False,False,False,True,True,1,False,0,False,False
+351,"Rancor","The rage of fallen brethren is enhancing the potency of certain attacks.",17141,5,1,60,False,False,False,False,True,True,0,False,0,False,False
+352,"Spjot","Magicks of eld permeate your body, causing damage over time.",15530,0,2,61,False,False,False,False,False,True,10,False,0,False,False
+353,"Brave New World","Attributes are increased when a Disciple of War or Magic below level 10. (Company Action)",16501,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+354,"Live off the Land","Gathering is increased when a Disciple of the Land. (Company Action)",16502,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+355,"What You See","Perception is increased when a Disciple of the Land. (Company Action)",16503,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+356,"Eat from the Hand","Craftsmanship is increased when a Disciple of the Hand. (Company Action)",16504,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+357,"In Control","Control is increased when a Disciple of the Hand. (Company Action)",16505,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+358,"Snowman","Covered in snow and able to deal damage to targets under the Fey Fire effect.",15510,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+359,"Fey Fire","A fey fire envelops you, nullifying all damage received.",15508,0,1,60,False,False,False,False,True,True,0,True,0,False,False
+360,"Meat and Mead","Food effect duration is increased.",16508,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+361,"That Which Binds Us","Spiritbonding speed is increased.",16509,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+362,"Proper Care","Gear wear is reduced.",16510,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+363,"Back on Your Feet","Weakness duration is reduced.",16511,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+364,"Reduced Rates","Teleportation fees are reduced.",16512,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+365,"The Heat of Battle","EXP earned through battle is increased.",16513,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+366,"A Man's Best Friend","EXP earned by companions is increased.",16514,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+367,"Earth and Water","EXP earned through gathering is increased.",16515,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+368,"Helping Hand","EXP earned through crafting is increased.",16516,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+369,"Viscous Aetheroplasm","Aetheroplasm is attached to your body. A stack of five will result in incapacitation.",17281,5,2,61,False,False,False,False,False,False,100,False,0,False,False
+370,"Siren Song","Gradually turning into a zombie. Must be at maximum HP when effect ends to avoid zombification.",15558,0,2,61,False,False,False,False,False,False,100,False,0,False,False
+371,"Zombification","Turned into a mindless zombie under the siren's control.",15559,0,2,61,True,True,False,False,False,False,100,False,0,False,False
+372,"Brood Rage","The mother zu is maddened by the death of her brood. Damage dealt is increased.",17221,16,1,60,False,False,False,False,True,True,100,False,0,False,False
+373,"Blight","Unable to benefit from HP recovery effects.",15561,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+374,"Corrupted Crystal","Shards of corrupted crystals are attached to your body. A stack of three will trigger an explosion.",17161,3,2,61,False,False,False,False,False,False,200,False,0,False,False
+375,"Suppuration","Maximum HP is reduced and damage taken is increased.",17181,5,2,61,False,False,False,False,False,False,100,False,0,False,False
+376,"Searing Wind","Ignited by white-hot embers and scorching those nearby. Sustaining fire damage over time.",15560,0,2,61,False,False,False,False,False,False,200,False,0,False,False
+377,"Infernal Fetters","A prison of fire is reducing damage dealt and inflicting fire damage over time.",17201,8,2,61,False,False,False,False,False,False,50,False,0,False,False
+378,"Death Throes","Held firmly by the leg and unable to move.",15003,0,2,61,True,True,False,False,True,True,100,False,0,False,False
+379,"Thermal Low","The wind is high. Sustaining wind damage over time.",17241,3,2,61,False,False,False,False,False,False,100,False,0,False,False
+380,"Thermal High","The wind has died. Resistance to wind damage is increased.",15569,0,1,60,False,False,False,False,True,True,0,False,0,False,False
+381,"Testudo","Damage taken is reduced.",14801,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+382,"テストゥド：不可","新たに「テストゥド」がかからない状態。",0,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+383,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+384,"Thrill of War","Maximum HP is increased.",14803,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+385,"Full Swing","Taking damage over time.",14804,0,2,61,False,False,False,False,False,False,10,False,0,False,False
+386,"Somersault","Spell speed is reduced.",14805,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+387,"Fetter Ward","Immune to the effects of stun, sleep, bind, heavy, and disease.",14806,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+388,"Impulse Rush","Weaponskills cost less TP to execute.",14807,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+389,"Skewer","Intelligence is reduced.",14808,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+390,"Sacred Prism","A veil of succor is healing party members in the area.",14809,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+391,"Phantom Dart","All elemental resistances are reduced.",14810,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+392,"Misty Veil","Attack range is reduced.",14811,0,2,61,False,False,False,False,False,False,100,False,0,False,False
+393,"Wither","All elemental resistances are reduced.",14812,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+394,"Focalization","All elemental resistances are increased.",14813,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+395,"Aetheric Burst","Skill speed is reduced.",14814,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+396,"Equanimity","Casting is not interrupted by damage.",14815,0,1,60,False,False,False,False,False,False,0,False,0,False,False
+397,"Attunement","Evasion is greatly enhanced, and damage taken is reduced.",14816,0,1,60,True,True,False,False,False,False,0,False,0,False,False
+398,"Astral Realignment","Existentially aligned to the astral realm. Damage dealt is reduced, but can attack ghostly beings.",15562,0,2,61,False,False,False,False,False,False,0,False,0,False,True
+399,"Corporeal Return","Weakened by the time in astral realignment. Damage taken is doubled.",15563,0,2,61,False,False,False,False,False,False,0,False,0,False,False
+400,"Charge","Storing lightning energy. Resistance to lightning damage is reduced.",17261,8,2,60,False,False,False,False,False,False,0,False,0,False,False
+401,"Death Grip","Held in the iron claws' vice-like grip and cannot act. Taking damage over time.",15564,0,2,61,True,True,False,False,True,True,0,False,0,False,False
+402,"Thrown for a Loop","Provoked beyond all mortal limits. Can only pursue and auto-attack the target.",15565,0,2,61,False,False,True,True,False,False,100,False,0,False,False
+403,"Determination Up","Damage dealt is increased.",15519,0,1,60,False,False,False,False,False,True,200,False,0,False,False
+404,"Transporting","Carrying an object in your arms, growing wearier with each passing second.",16208,0,1,60,False,False,False,False,False,False,200,False,0,False,False
+405,"Bewildered","Confused and unable to control your actions.",15545,0,2,61,False,False,False,False,True,True,100,False,0,False,False
+406,"Vulnerability Down","Damage taken is reduced.",17301,8,1,60,False,False,False,False,True,True,30,False,0,False,False
+407,"Dust Poisoning","Poisoned by the crystal dust you inhaled. A stack of 4 will render you unable to act.",17001,4,2,41,False,False,False,False,False,False,200,False,0,False,False
+408,"Storm's Path","Damage dealt is reduced.",10415,0,2,61,False,False,False,False,False,False,50,False,0,False,False
+409,"Holmgang","Unable to move until effect fades. Most attacks cannot reduce your HP to less than 1.",10405,0,2,61,False,False,False,False,False,False,100,False,0,False,False
+410,"Antibody","Immune to the effects of virus and fever.",10915,0,1,61,False,False,False,False,False,False,30,False,0,False,False
+411,"Inner Beast","Damage taken is reduced.",13203,0,1,60,False,False,False,False,False,False,30,False,0,False,False
+412,"Hover","Floating above ground.",15024,0,1,60,False,False,False,False,True,False,200,False,0,False,False
+413,"Mark Up","Wolf Marks earned is increased.",16517,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+414,"Seal Sweetener","Company seals earned is increased.",16518,0,1,60,False,False,False,False,True,True,0,True,0,True,False
+415,"Regain","Gradually regenerating TP.",16203,0,1,60,False,False,False,False,False,False,5,False,0,False,False
+416,"Transparent","Body is allowing light to pass, rendering you invisible to the enemy.",16209,0,1,60,False,False,False,False,False,False,2,False,0,False,True
+417,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False
+418,"Physical Vulnerability Down","Physical damage taken is reduced.",15052,0,1,60,False,False,False,False,False,True,30,False,0,False,False
+419,"Misty Veil","Attack range is reduced.",14811,0,2,61,False,False,False,False,False,False,100,False,0,False,False
+420,"","",0,0,0,0,False,False,False,False,False,False,0,False,0,False,False

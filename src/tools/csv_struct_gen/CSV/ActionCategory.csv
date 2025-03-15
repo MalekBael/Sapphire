@@ -1,0 +1,15 @@
+﻿key,0
+#,Name
+int32,str
+0,""
+1,"Auto-attack"
+2,"Spell"
+3,"Weaponskill"
+4,"Ability"
+5,"Item"
+6,"DoL Ability"
+7,"DoH Ability"
+8,"イベント"
+9,"リミットブレイク"
+10,"システム"
+11,""

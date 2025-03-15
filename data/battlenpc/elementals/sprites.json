@@ -3,19 +3,77 @@
     "WaterSprite": {
       "baseId": 59,
       "nameId": 56,
+      "isRanged": true,
+      "attackRange": 20.0,
       "gambitPack": {
+        "loopCount": -1,
         "timeLines": [
           {
             "condition": "TopHateTarget",
-            "actionId": 1120,
+            "actionId": 971,
             "actionParam": 0,
-            "timing": 0
+            "timing": 0,
+            "description": "Water"
           },
           {
             "condition": "TopHateTarget",
-            "actionId": 1120,
+            "actionId": 971,
             "actionParam": 0,
-            "timing": 2
+            "timing": 3,
+            "description": "Water"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 971,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Water"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 971,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Water"
+          }
+        ]
+      }
+    },
+    "WindSprite": {
+      "baseId": 133,
+      "nameId": 115,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Aero"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Aero"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Aero"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Aero"
           }
         ]
       }
@@ -23,19 +81,77 @@
     "FireSprite": {
       "baseId": 134,
       "nameId": 116,
+      "isRanged": true,
+      "attackRange": 20.0,
       "gambitPack": {
+        "loopCount": -1,
         "timeLines": [
           {
             "condition": "TopHateTarget",
-            "actionId": 141,
+            "actionId": 966,
             "actionParam": 0,
-            "timing": 0
+            "timing": 0,
+            "description": "Fire"
           },
           {
             "condition": "TopHateTarget",
-            "actionId": 141,
+            "actionId": 966,
             "actionParam": 0,
-            "timing": 2
+            "timing": 3,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Fire"
+          }
+        ]
+      }
+    },
+    "LightninSprite": {
+      "baseId": 135,
+      "nameId": 117,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 968,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 968,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 968,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 968,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Fire"
           }
         ]
       }
@@ -43,19 +159,38 @@
     "EarthSprite": {
       "baseId": 131,
       "nameId": 113,
+      "isRanged": true,
+      "attackRange": 20.0,
       "gambitPack": {
+        "loopCount": -1,
         "timeLines": [
           {
             "condition": "TopHateTarget",
-            "actionId": 119,
+            "actionId": 970,
             "actionParam": 0,
-            "timing": 0
+            "timing": 0,
+            "description": "Stone"
           },
           {
             "condition": "TopHateTarget",
-            "actionId": 119,
+            "actionId": 970,
             "actionParam": 0,
-            "timing": 2
+            "timing": 3,
+            "description": "Stone"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 970,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Stone"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 970,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Stone"
           }
         ]
       }
