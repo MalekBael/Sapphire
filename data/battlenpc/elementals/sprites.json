@@ -35,6 +35,13 @@
             "actionParam": 0,
             "timing": 9,
             "description": "Water"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
           }
         ]
       }
@@ -74,6 +81,59 @@
             "actionParam": 0,
             "timing": 9,
             "description": "Aero"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "TaintedWindSprite": {
+      "baseId": 296,
+      "nameId": 135,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Aero"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Aero"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Aero"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Aero"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
           }
         ]
       }
@@ -113,11 +173,64 @@
             "actionParam": 0,
             "timing": 9,
             "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
           }
         ]
       }
     },
-    "LightninSprite": {
+    "FlameShiver": {
+      "baseId": 1515,
+      "nameId": 1970,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Fire"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "LightningSprite": {
       "baseId": 135,
       "nameId": 117,
       "isRanged": true,
@@ -152,6 +265,105 @@
             "actionParam": 0,
             "timing": 9,
             "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "IceSprite": {
+      "baseId": 132,
+      "nameId": 114,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "StoneShiver": {
+      "baseId": 2204,
+      "nameId": 1882,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 6,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 9,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
           }
         ]
       }
@@ -191,6 +403,13 @@
             "actionParam": 0,
             "timing": 9,
             "description": "Stone"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 11,
+            "description": "Wait"
           }
         ]
       }

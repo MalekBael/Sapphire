@@ -13,12 +13,64 @@ using namespace Sapphire::ScriptAPI;
 using namespace Sapphire::World::AI;
 using json = nlohmann::json;
 
+// Load and cache the sprites.json file
+json loadSpriteJson()
+{
+  const std::string jsonPath = "data/battlenpc/elementals/sprites.json";
+  std::ifstream file( jsonPath );
+
+  // Try alternate paths if needed
+  if( !file.is_open() )
+  {
+    std::vector< std::string > alternativePaths = {
+            "../data/battlenpc/elementals/sprites.json",
+            "../../data/battlenpc/elementals/sprites.json",
+            "./data/battlenpc/elementals/sprites.json" };
+
+    for( const auto& path : alternativePaths )
+    {
+      file.open( path );
+      if( file.is_open() )
+      {
+        std::cerr << "Found sprites.json at: " << path << std::endl;
+        break;
+      }
+    }
+
+    if( !file.is_open() )
+    {
+      std::cerr << "Failed to open sprites.json from any path" << std::endl;
+      return json();
+    }
+  }
+
+  json data;
+  try
+  {
+    file >> data;
+    return data;
+  } catch( const std::exception& e )
+  {
+    std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+    return json();
+  }
+}
+
 // Base class with common implementation for all sprite types
 class SpriteBase : public BattleNpcScript
 {
 public:
-  // Constructor registering for a specific baseId
-  SpriteBase( uint32_t baseId ) : BattleNpcScript( baseId ) {}
+  // Constructor taking spriteType string and using baseId from JSON
+  SpriteBase( const std::string& spriteType )
+      : BattleNpcScript( getBaseIdFromJson( spriteType ) ),
+        m_spriteType( spriteType )
+  {
+    // Log if we failed to get a valid baseId
+    if( getBaseIdFromJson( spriteType ) == 0 )
+    {
+      std::cerr << "WARNING: Failed to get valid baseId for sprite type: " << spriteType << std::endl;
+    }
+  }
 
   void onInit( Sapphire::Entity::BNpc& bnpc ) override
   {
@@ -26,72 +78,44 @@ public:
   }
 
 protected:
+  std::string m_spriteType;
   std::shared_ptr< GambitPack > m_gambitPack;
+
+  // Retrieve baseId from JSON during construction
+  static uint32_t getBaseIdFromJson( const std::string& spriteType )
+  {
+    static json spriteData = loadSpriteJson();
+
+    if( spriteData.empty() ||
+        !spriteData.contains( "sprites" ) ||
+        !spriteData[ "sprites" ].contains( spriteType ) ||
+        !spriteData[ "sprites" ][ spriteType ].contains( "baseId" ) )
+    {
+      return 0;
+    }
+
+    return spriteData[ "sprites" ][ spriteType ][ "baseId" ];
+  }
 
   void loadAndApplyGambitPack( Sapphire::Entity::BNpc& bnpc )
   {
     try
     {
-      // Get BNpc baseId to determine which sprite type we're dealing with
-      uint32_t baseId = bnpc.getBNpcBaseId();
-
       // Load JSON configuration
-      const std::string jsonPath = "data/battlenpc/elementals/sprites.json";
-      std::ifstream file( jsonPath );
+      json data = loadSpriteJson();
+      if( data.empty() ) return;
 
-      // Try alternate paths if needed
-      if( !file.is_open() )
+      if( !data[ "sprites" ].contains( m_spriteType ) )
       {
-        std::vector< std::string > alternativePaths = {
-                "../data/battlenpc/elementals/sprites.json",
-                "../../data/battlenpc/elementals/sprites.json",
-                "./data/battlenpc/elementals/sprites.json" };
-
-        for( const auto& path : alternativePaths )
-        {
-          file.open( path );
-          if( file.is_open() )
-          {
-            std::cerr << "Found sprites.json at: " << path << std::endl;
-            break;
-          }
-        }
-
-        if( !file.is_open() )
-        {
-          std::cerr << "Failed to open sprites.json from any path" << std::endl;
-          return;
-        }
-      }
-
-      // Properly parse JSON data
-      json data;
-      file >> data;
-
-      std::string spriteType;
-
-      // Determine sprite type from baseId
-      if( baseId == 59 ) spriteType = "WaterSprite";
-      else if( baseId == 133 ) spriteType = "WindSprite";
-      else if( baseId == 135 ) spriteType = "LightningSprite";
-      else if( baseId == 134 ) spriteType = "FireSprite";
-      else if( baseId == 131 ) spriteType = "EarthSprite";
-      else
-      {
-        std::cerr << "Unknown sprite baseId: " << baseId << std::endl;
+        std::cerr << "Sprite type not found in JSON: " << m_spriteType << std::endl;
         return;
       }
 
-      if( !data[ "sprites" ].contains( spriteType ) )
-      {
-        std::cerr << "Sprite type not found in JSON: " << spriteType << std::endl;
-        return;
-      }
-
-      const auto& spriteData = data[ "sprites" ][ spriteType ];
+      const auto& spriteData = data[ "sprites" ][ m_spriteType ];
 
       // Configure the BNpc
-      bnpc.setBNpcNameId( spriteData[ "nameId" ] );
+      if( spriteData.contains( "nameId" ) )
+        bnpc.setBNpcNameId( spriteData[ "nameId" ] );
 
       // Read isRanged and attackRange from JSON
       bool isRanged = spriteData.value( "isRanged", true );
@@ -101,7 +125,12 @@ protected:
       bnpc.setAttackRange( attackRange );
       bnpc.setIsMagical( true );
 
-
+      // Set up gambit pack if present
+      if( !spriteData.contains( "gambitPack" ) )
+      {
+        std::cerr << "No gambitPack found for sprite type: " << m_spriteType << std::endl;
+        return;
+      }
 
       // Get loop count from JSON or use default -1 (infinite)
       int8_t loopCount = spriteData[ "gambitPack" ].value( "loopCount", -1 );
@@ -139,8 +168,6 @@ protected:
       m_gambitPack = gambitPack;
       bnpc.setGambitPack( m_gambitPack );
 
-      //std::cerr << "Successfully initialized sprite " << spriteType << " with baseId " << baseId << std::endl;
-
     } catch( const std::exception& e )
     {
       std::cerr << "Error processing sprite data: " << e.what() << std::endl;
@@ -154,37 +181,64 @@ protected:
 class WaterSprite : public SpriteBase
 {
 public:
-  WaterSprite() : SpriteBase( 59 ) {}
+  WaterSprite() : SpriteBase( "WaterSprite" ) {}
 };
 
 class FireSprite : public SpriteBase
 {
 public:
-  FireSprite() : SpriteBase( 134 ) {}
+  FireSprite() : SpriteBase( "FireSprite" ) {}
 };
 
 class EarthSprite : public SpriteBase
 {
 public:
-  EarthSprite() : SpriteBase( 131 ) {}
+  EarthSprite() : SpriteBase( "EarthSprite" ) {}
 };
 
 class WindSprite : public SpriteBase
 {
 public:
-  WindSprite() : SpriteBase( 133 ) {}
+  WindSprite() : SpriteBase( "WindSprite" ) {}
+};
+
+class TaintedWindSprite : public SpriteBase
+{
+public:
+  TaintedWindSprite() : SpriteBase( "TaintedWindSprite" ) {}
 };
 
 class LightningSprite : public SpriteBase
 {
 public:
-  LightningSprite() : SpriteBase( 135 ) {}
+  LightningSprite() : SpriteBase( "LightningSprite" ) {}
 };
 
+class IceSprite : public SpriteBase
+{
+public:
+  IceSprite() : SpriteBase( "IceSprite" ) {}
+};
 
-// Register all three sprite classes
+class FlameShiver : public SpriteBase
+{
+public:
+  FlameShiver() : SpriteBase( "FlameShiver" ) {}
+};
+
+class StoneShiver : public SpriteBase
+{
+public:
+  StoneShiver() : SpriteBase( "StoneShiver" ) {}
+};
+
+// Register all sprite classes
 EXPOSE_SCRIPT( WaterSprite );
 EXPOSE_SCRIPT( FireSprite );
 EXPOSE_SCRIPT( EarthSprite );
 EXPOSE_SCRIPT( WindSprite );
+EXPOSE_SCRIPT( TaintedWindSprite );
 EXPOSE_SCRIPT( LightningSprite );
+EXPOSE_SCRIPT( IceSprite );
+EXPOSE_SCRIPT( FlameShiver );
+EXPOSE_SCRIPT( StoneShiver );
