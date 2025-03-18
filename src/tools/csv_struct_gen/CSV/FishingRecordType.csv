@@ -1,9 +1,0 @@
-﻿key,0,1,2
-#,Addon,RankBRequirement,RankARequirement
-int32,Addon,uint16,uint16
-0,3835,346,744
-1,3836,566,1377
-2,3834,299,523
-3,3833,330,633
-4,3837,440,779
-5,3838,472,1047

@@ -1,9 +1,0 @@
-﻿key,0,1,2,3,4,5,6,7,8,9,10
-#,,MinLevel,BeastRankBonus,Icon{Reputation},Icon,MaxRank,Expansion,,CurrencyItem,DisplayOrder,Name
-int32,uint32,uint32,BeastRankBonus,Image,Image,sbyte,ExVersion,sbyte,Item,sbyte,str
-0,0,0,"",0,"",0,0,0,0,0,""
-1,61901,61486,"Amalj'aa",0,"",0,0,0,0,0,"Amalj'aa Relations"
-2,61902,61487,"Sylphs",0,"",0,0,0,0,0,"Sylphic Relations"
-3,61903,61488,"Ixal",0,"",0,0,0,0,0,"Ixali Relations"
-4,61905,61490,"Sahagin",0,"",0,0,0,0,0,"Sahagin Relations"
-5,61904,61489,"Kobolds",0,"",0,0,0,0,0,"Kobold Relations"
