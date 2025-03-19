@@ -5,7 +5,6 @@
 #include <Script/NativeScriptApi.h>
 #include <ScriptObject.h>
 #include <fstream>
-#include <iostream>
 #include <nlohmann/json.hpp>
 
 using namespace Sapphire::World;
@@ -13,13 +12,11 @@ using namespace Sapphire::ScriptAPI;
 using namespace Sapphire::World::AI;
 using json = nlohmann::json;
 
-// Load and cache the sprites.json file
 json loadSpriteJson()
 {
   const std::string jsonPath = "data/battlenpc/elementals/sprites.json";
   std::ifstream file( jsonPath );
 
-  // Try alternate paths if needed
   if( !file.is_open() )
   {
     std::vector< std::string > alternativePaths = {
@@ -31,17 +28,11 @@ json loadSpriteJson()
     {
       file.open( path );
       if( file.is_open() )
-      {
-        std::cerr << "Found sprites.json at: " << path << std::endl;
         break;
-      }
     }
 
     if( !file.is_open() )
-    {
-      std::cerr << "Failed to open sprites.json from any path" << std::endl;
       return json();
-    }
   }
 
   json data;
@@ -49,9 +40,8 @@ json loadSpriteJson()
   {
     file >> data;
     return data;
-  } catch( const std::exception& e )
+  } catch( const std::exception& )
   {
-    std::cerr << "Error parsing JSON: " << e.what() << std::endl;
     return json();
   }
 }
@@ -65,11 +55,6 @@ public:
       : BattleNpcScript( getBaseIdFromJson( spriteType ) ),
         m_spriteType( spriteType )
   {
-    // Log if we failed to get a valid baseId
-    if( getBaseIdFromJson( spriteType ) == 0 )
-    {
-      std::cerr << "WARNING: Failed to get valid baseId for sprite type: " << spriteType << std::endl;
-    }
   }
 
   void onInit( Sapphire::Entity::BNpc& bnpc ) override
@@ -81,7 +66,6 @@ protected:
   std::string m_spriteType;
   std::shared_ptr< GambitPack > m_gambitPack;
 
-  // Retrieve baseId from JSON during construction
   static uint32_t getBaseIdFromJson( const std::string& spriteType )
   {
     static json spriteData = loadSpriteJson();
@@ -101,15 +85,11 @@ protected:
   {
     try
     {
-      // Load JSON configuration
       json data = loadSpriteJson();
       if( data.empty() ) return;
 
       if( !data[ "sprites" ].contains( m_spriteType ) )
-      {
-        std::cerr << "Sprite type not found in JSON: " << m_spriteType << std::endl;
         return;
-      }
 
       const auto& spriteData = data[ "sprites" ][ m_spriteType ];
 
@@ -127,10 +107,7 @@ protected:
 
       // Set up gambit pack if present
       if( !spriteData.contains( "gambitPack" ) )
-      {
-        std::cerr << "No gambitPack found for sprite type: " << m_spriteType << std::endl;
         return;
-      }
 
       // Get loop count from JSON or use default -1 (infinite)
       int8_t loopCount = spriteData[ "gambitPack" ].value( "loopCount", -1 );
@@ -138,10 +115,7 @@ protected:
       // Create the gambit pack with the loop count from JSON
       auto gambitPack = std::make_shared< GambitTimeLinePack >( loopCount );
       if( !gambitPack )
-      {
-        std::cerr << "Failed to create gambit pack" << std::endl;
         return;
-      }
 
       // Add all timelines from JSON
       for( const auto& timeline : spriteData[ "gambitPack" ][ "timeLines" ] )
@@ -154,7 +128,6 @@ protected:
         else
           condition = make_TopHateTargetCondition();// Default
 
-        // Add timeline to gambit pack
         gambitPack->addTimeLine(
                 condition,
                 Action::make_Action(
@@ -168,9 +141,8 @@ protected:
       m_gambitPack = gambitPack;
       bnpc.setGambitPack( m_gambitPack );
 
-    } catch( const std::exception& e )
+    } catch( const std::exception& )
     {
-      std::cerr << "Error processing sprite data: " << e.what() << std::endl;
     }
   }
 };
@@ -182,6 +154,18 @@ class WaterSprite : public SpriteBase
 {
 public:
   WaterSprite() : SpriteBase( "WaterSprite" ) {}
+};
+
+class TaintedWaterSprite : public SpriteBase
+{
+public:
+  TaintedWaterSprite() : SpriteBase( "TaintedWaterSprite" ) {}
+};
+
+class DeepStainedWaterSprite : public SpriteBase
+{
+public:
+  DeepStainedWaterSprite() : SpriteBase( "DeepStainedWaterSprite" ) {}
 };
 
 class FireSprite : public SpriteBase
@@ -196,10 +180,22 @@ public:
   EarthSprite() : SpriteBase( "EarthSprite" ) {}
 };
 
+class TaintedEarthSprite : public SpriteBase
+{
+public:
+  TaintedEarthSprite() : SpriteBase( "TaintedEarthSprite" ) {}
+};
+
 class WindSprite : public SpriteBase
 {
 public:
   WindSprite() : SpriteBase( "WindSprite" ) {}
+};
+
+class CrazedSprite : public SpriteBase
+{
+public:
+  CrazedSprite() : SpriteBase( "CrazedSprite" ) {}
 };
 
 class TaintedWindSprite : public SpriteBase
@@ -208,10 +204,22 @@ public:
   TaintedWindSprite() : SpriteBase( "TaintedWindSprite" ) {}
 };
 
+class DeepStainedWindSprite : public SpriteBase
+{
+public:
+  DeepStainedWindSprite() : SpriteBase( "DeepStainedWindSprite" ) {}
+};
+
 class LightningSprite : public SpriteBase
 {
 public:
   LightningSprite() : SpriteBase( "LightningSprite" ) {}
+};
+
+class DeepStainedLightningSprite : public SpriteBase
+{
+public:
+  DeepStainedLightningSprite() : SpriteBase( "DeepStainedLightningSprite" ) {}
 };
 
 class IceSprite : public SpriteBase
@@ -234,11 +242,17 @@ public:
 
 // Register all sprite classes
 EXPOSE_SCRIPT( WaterSprite );
+EXPOSE_SCRIPT( TaintedWaterSprite );
+EXPOSE_SCRIPT( DeepStainedWaterSprite );
 EXPOSE_SCRIPT( FireSprite );
 EXPOSE_SCRIPT( EarthSprite );
+EXPOSE_SCRIPT( TaintedEarthSprite );
 EXPOSE_SCRIPT( WindSprite );
+EXPOSE_SCRIPT( CrazedSprite );
+EXPOSE_SCRIPT( DeepStainedWindSprite );
 EXPOSE_SCRIPT( TaintedWindSprite );
 EXPOSE_SCRIPT( LightningSprite );
+EXPOSE_SCRIPT( DeepStainedLightningSprite );
 EXPOSE_SCRIPT( IceSprite );
 EXPOSE_SCRIPT( FlameShiver );
 EXPOSE_SCRIPT( StoneShiver );

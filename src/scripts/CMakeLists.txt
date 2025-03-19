@@ -18,6 +18,25 @@ if( WIN32 )
     set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL "${SCRIPT_LIB_DIR}" )
 endif()
 
+# Find all JSON files in the data directory recursively
+file(GLOB_RECURSE JSON_FILES "${CMAKE_SOURCE_DIR}/data/**/*.json")
+
+# Copy each JSON file while preserving directory structure
+foreach(JSON_FILE ${JSON_FILES})
+    # Get the relative path from source directory
+    file(RELATIVE_PATH REL_PATH "${CMAKE_SOURCE_DIR}" "${JSON_FILE}")
+    # Set the destination path
+    set(DEST_FILE "${CMAKE_CURRENT_BINARY_DIR}/${REL_PATH}")
+    # Ensure destination directory exists
+    get_filename_component(DEST_DIR "${DEST_FILE}" DIRECTORY)
+    file(MAKE_DIRECTORY "${DEST_DIR}")
+    # Copy the file
+    configure_file("${JSON_FILE}" "${DEST_FILE}" COPYONLY)
+    
+    # Log which files we're copying (optional)
+    message(STATUS "Copying JSON: ${REL_PATH}")
+endforeach()
+
 file(GLOB children "${CMAKE_CURRENT_SOURCE_DIR}/*" )
 foreach(_scriptDir ${children})
     get_filename_component(_name "${_scriptDir}" NAME_WE)
@@ -104,12 +123,6 @@ foreach(_scriptDir ${children})
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/ScriptLoader.cpp.in" "${_scriptDir}/ScriptLoader.cpp")
 
         set(ScriptTargetName "script_${_name}")
-
-        configure_file(
-            ${CMAKE_SOURCE_DIR}/data/battlenpc/elementals/sprites.json 
-            ${CMAKE_CURRENT_BINARY_DIR}/data/battlenpc/elementals/sprites.json 
-            COPYONLY
-)
 
         # Copy the modules over once they're built. Prevent watchdog from trying to reload partially written files.
         if(MSVC)
