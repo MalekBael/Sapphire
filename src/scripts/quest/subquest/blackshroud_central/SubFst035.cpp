@@ -7,6 +7,7 @@
 #include <Actor/BNpc.h>
 #include <ScriptObject.h>
 #include <Service.h>
+#include "Manager/PlayerMgr.h"
 
 // Quest Script: SubFst035_00129
 // Quest Name: Spirithold Broken
@@ -84,7 +85,7 @@ public:
   SubFst035() : Sapphire::ScriptAPI::QuestScript( 65665 ){};
   ~SubFst035() = default;
 
-  //////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
   // Event Handlers
   void onTalk( World::Quest& quest, Entity::Player& player, uint64_t actorId ) override
   {
@@ -183,6 +184,13 @@ public:
           Scene00025( quest, player );
         break;
       }
+      case Eobject0:
+      {
+        if( quest.getSeq() == Seq3 )
+          // Use an intermediate scene first
+          Scene00018( quest, player );
+        break;
+      }
       case Actor9:
       {
         break;
@@ -207,10 +215,22 @@ private:
   {
     if( quest.getUI8AL() >= 5 )
     {
+      // Reset ALL flags that might affect the visibility of objects in Seq3
       quest.setUI8AL( 0 );
+      quest.setBitFlag8( 1, false );
+      quest.setBitFlag8( 2, false );
+      quest.setBitFlag8( 3, false );
+      quest.setBitFlag8( 4, false );
+      quest.setBitFlag8( 5, false );
+
       quest.setSeq( Seq3 );
+
+      // THIS IS THE IMPORTANT ADDITION:
+      // Send an event notice to tell the player to interact with the quest battle entrance
+      eventMgr().sendEventNotice( player, getId(), 2, 0 );
     }
   }
+
   //////////////////////////////////////////////////////////////////////
   // Available Scenes in this quest, not necessarly all are used
   //////////////////////////////////////////////////////////////////////
@@ -445,8 +465,19 @@ private:
     eventMgr().playQuestScene( player, getId(), 18, NONE, bindSceneReturn( &SubFst035::Scene00018Return ) );
   }
 
+// Now modify the Scene00018Return method to include the event action that triggers Scene00019
   void Scene00018Return( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result )
   {
+    if( quest.getSeq() == Seq3 )
+    {
+      // Use event action to trigger the battle confirmation
+      eventMgr().eventActionStart(
+              player, getId(), EventAction,// Use your EventAction value here
+              [ & ]( Entity::Player& player, uint32_t eventId, uint64_t additional ) {
+                Scene00019( quest, player );
+              },
+              nullptr, getId() );
+    }
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -534,10 +565,28 @@ private:
 
   void Scene00025Return( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result )
   {
+    // No debug logging - this was causing a crash
 
-    if( result.getResult( 0 ) == 1 )
+    // Get the result safely - just use direct access instead of intermediate variables
+    if( result.getResult( 0 ) == 1 )// Player made a selection
     {
+      // First finish the quest with the selected reward option
       player.finishQuest( getId(), result.getResult( 1 ) );
+
+      // Send the completion notice
+      eventMgr().sendEventNotice( player, getId(), 3, 0 );
+
+      // Set reward flags - directly without any conditional checks
+      // These are the most important parts that unlock features
+      player.setRewardFlag( static_cast< Common::UnlockEntry >( UnlockImageInn ) );
+      player.setRewardFlag( static_cast< Common::UnlockEntry >( UnlockImageGearSet ) );
+      player.setRewardFlag( static_cast< Common::UnlockEntry >( UnlockImageLeve ) );
+
+      // Mark that the player has received these rewards
+      player.setRewardFlag( static_cast< Common::UnlockEntry >( UnlockCheckInnReward ) );
+
+      // Set the welcome emote as in the Lua script
+      player.setPersistentEmote( Motion3 );
     }
   }
 };

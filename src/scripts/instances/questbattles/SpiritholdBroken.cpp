@@ -1,5 +1,8 @@
 #include <ScriptObject.h>
 #include <Territory/QuestBattle.h>
+#include <Actor/Player.h>
+#include <Actor/GameObject.h>
+#include <Actor/BNpc.h>
 
 using namespace Sapphire;
 
@@ -109,17 +112,72 @@ public:
 
   }
 
+  enum vars
+  {
+    SUCCESS_CALLED,
+  };
+
+
+  void onPlayerSetup(Sapphire::QuestBattle& instance, Entity::Player& player) override
+  {
+    player.setRot( 3.f );                               
+    player.setPos( { 259.981f, 24.000f, 191.259f } );
+  }
+
+  void onDutyCommence( QuestBattle& instance, Entity::Player& player ) override
+    {
+      //edit 21141, is copied from chasingshadows
+      auto boss = instance.createBNpcFromLayoutId( INIT_POP_01, 21141, Common::BNpcType::Enemy );
+      //boss->setFlag( Entity::NoDeaggro );
+      boss->hateListAdd( player.getAsPlayer(), 1 );
+    }
+
   void onUpdate( QuestBattle& instance, uint64_t tickCount ) override
-  {
+      {
+        auto boss = instance.getActiveBNpcByLayoutId( INIT_POP_01 );
+        auto successCalled = instance.getDirectorVar( SUCCESS_CALLED );
+        auto pPlayer = instance.getPlayerPtr();
 
-  }
+        uint32_t bossHpPercent = 0;
+        if( boss )
+          bossHpPercent = boss->getHpPercent();
 
-  void onEnterTerritory( QuestBattle& instance, Entity::Player& player, uint32_t eventId, uint16_t param1,
+        if( pPlayer && !pPlayer->isAlive() )
+        {
+          instance.fail();
+          return;
+        }
+
+        if( instance.getCountEnemyBNpc() == 0 && successCalled == 0 )
+        {
+          instance.setDirectorVar( SUCCESS_CALLED, 1 );
+          instance.success();
+          return;
+        }
+    }
+
+    void onEnterTerritory( QuestBattle& instance, Entity::Player& player, uint32_t eventId, uint16_t param1,
                          uint16_t param2 ) override
+    {
+      eventMgr().playScene( player, instance.getDirectorId(), 1,
+                            NO_DEFAULT_CAMERA | CONDITION_CUTSCENE | SILENT_ENTER_TERRI_ENV |
+                            HIDE_HOTBAR | SILENT_ENTER_TERRI_BGM | SILENT_ENTER_TERRI_SE |
+                            DISABLE_STEALTH | 0x00100000 | LOCK_HUD | LOCK_HOTBAR |
+                            // todo: wtf is 0x00100000
+                            DISABLE_CANCEL_EMOTE, [ & ]( Entity::Player& player, const Event::SceneResult& result )
+                            {
+                              player.setOnEnterEventDone( true );
+                            } );
+    }
+
+  void onDutyComplete( QuestBattle& instance, Entity::Player& player ) override
   {
-
+    auto idx = player.getQuestIndex( instance.getQuestId() );
+    if( idx == -1 )
+      return;
+    auto& quest = player.getQuestByIndex( idx );
+    quest.setSeq( 4 );
   }
-
 };
 
 EXPOSE_SCRIPT( SpiritholdBroken );

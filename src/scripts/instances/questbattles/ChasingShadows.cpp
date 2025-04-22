@@ -336,7 +336,7 @@ public:
 
   void onDutyCommence( QuestBattle& instance, Entity::Player& player ) override
   {
-    auto boss = instance.createBNpcFromLayoutId( INIT_POP_BOSS, 21141, Common::BNpcType::Enemy );
+    auto boss = instance.createBNpcFromLayoutId( INIT_POP_BOSS, 83940, Common::BNpcType::Enemy );
     auto a2 = instance.createBNpcFromLayoutId( INIT_POP_ENEMY_B_01, 1440, Common::BNpcType::Enemy );
     auto a3 = instance.createBNpcFromLayoutId( INIT_POP_ENEMY_B_02, 1440, Common::BNpcType::Enemy );
 
