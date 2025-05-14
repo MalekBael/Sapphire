@@ -14,15 +14,15 @@ using json = nlohmann::json;
 
 json loadSpriteJson()
 {
-  const std::string jsonPath = "data/battlenpc/elementals/sprites.json";
+  const std::string jsonPath = "data/battlenpc/elementals/aetherials/sprites.json";
   std::ifstream file( jsonPath );
 
   if( !file.is_open() )
   {
     std::vector< std::string > alternativePaths = {
-            "../data/battlenpc/elementals/sprites.json",
-            "../../data/battlenpc/elementals/sprites.json",
-            "./data/battlenpc/elementals/sprites.json" };
+            "../data/battlenpc/elementals/aetherials/sprites.json",
+            "../../data/battlenpc/elementals/aetherials/sprites.json",
+            "./data/battlenpc/elementals/aetherials/sprites.json" };
 
     for( const auto& path : alternativePaths )
     {
