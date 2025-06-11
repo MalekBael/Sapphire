@@ -13,6 +13,7 @@ file( GLOB SERVER_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
         ContentFinder/*.cpp
         DebugCommand/*.cpp
         Event/*.cpp
+        Encounter/*.cpp
         FreeCompany/*.cpp
         Inventory/*.cpp
         Linkshell/*.cpp

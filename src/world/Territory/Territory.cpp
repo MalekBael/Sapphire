@@ -1,33 +1,33 @@
-#include <stdio.h>
-#include <vector>
-#include <time.h>
 #include <random>
+#include <stdio.h>
+#include <time.h>
+#include <vector>
 
-#include <Logging/Logger.h>
-#include <Util/Util.h>
-#include <Util/UtilMath.h>
-#include <Network/GamePacket.h>
-#include <Exd/ExdData.h>
-#include <Network/CommonNetwork.h>
-#include <Network/PacketDef/Zone/ServerZoneDef.h>
-#include <Network/PacketContainer.h>
-#include <Network/CommonActorControl.h>
 #include <Database/DatabaseDef.h>
+#include <Exd/ExdData.h>
+#include <Logging/Logger.h>
+#include <Network/CommonActorControl.h>
+#include <Network/CommonNetwork.h>
+#include <Network/GamePacket.h>
+#include <Network/PacketContainer.h>
+#include <Network/PacketDef/Zone/ServerZoneDef.h>
 #include <Network/PacketWrappers/ActorControlSelfPacket.h>
 #include <Service.h>
+#include <Util/Util.h>
+#include <Util/UtilMath.h>
 
-#include "Territory.h"
 #include "InstanceContent.h"
-#include "QuestBattle.h"
 #include "Manager/TerritoryMgr.h"
 #include "Navi/NaviProvider.h"
+#include "QuestBattle.h"
+#include "Territory.h"
 
-#include "Session.h"
-#include "Actor/Chara.h"
-#include "Actor/GameObject.h"
 #include "Actor/BNpc.h"
-#include "Actor/Player.h"
+#include "Actor/Chara.h"
 #include "Actor/EventObject.h"
+#include "Actor/GameObject.h"
+#include "Actor/Player.h"
+#include "Session.h"
 
 #include "Action/ActionResult.h"
 
@@ -35,12 +35,12 @@
 
 #include "Script/ScriptMgr.h"
 
+#include "CellHandler.h"
 #include "ForwardsZone.h"
 #include "WorldServer.h"
-#include "CellHandler.h"
 
-#include "Manager/RNGMgr.h"
 #include "Manager/NaviMgr.h"
+#include "Manager/RNGMgr.h"
 #include "Math/CalcStats.h"
 
 using namespace Sapphire;
@@ -52,26 +52,24 @@ using namespace Sapphire::World::Manager;
 #define START_EOBJ_ID 0x400D0000
 #define START_GAMEOBJECT_ID 0x500D0000
 
-Territory::Territory() :
-  m_territoryTypeId( 0 ),
-  m_ident(),
-  m_guId( 0 ),
-  m_currentWeather( Common::Weather::FairSkies ),
-  m_weatherOverride( Common::Weather::None ),
-  m_lastMobUpdate( 0 ),
-  m_nextEObjId( START_EOBJ_ID ),
-  m_nextActorId( START_GAMEOBJECT_ID ),
-  m_inRangeDistance( 80.f )
+Territory::Territory() : m_territoryTypeId( 0 ),
+                         m_ident(),
+                         m_guId( 0 ),
+                         m_currentWeather( Common::Weather::FairSkies ),
+                         m_weatherOverride( Common::Weather::None ),
+                         m_lastMobUpdate( 0 ),
+                         m_nextEObjId( START_EOBJ_ID ),
+                         m_nextActorId( START_GAMEOBJECT_ID ),
+                         m_inRangeDistance( 80.f )
 {
 }
 
-Territory::Territory( uint16_t territoryTypeId, uint32_t guId, const std::string& internalName, const std::string& placeName ) :
-  m_currentWeather( Common::Weather::FairSkies ),
-  m_nextEObjId( START_EOBJ_ID ),
-  m_nextActorId( START_GAMEOBJECT_ID ),
-  m_lastUpdate( 0 ),
-  m_lastActivityTime( Common::Util::getTimeMs() ),
-  m_inRangeDistance( 80.f )
+Territory::Territory( uint16_t territoryTypeId, uint32_t guId, const std::string& internalName, const std::string& placeName ) : m_currentWeather( Common::Weather::FairSkies ),
+                                                                                                                                 m_nextEObjId( START_EOBJ_ID ),
+                                                                                                                                 m_nextActorId( START_GAMEOBJECT_ID ),
+                                                                                                                                 m_lastUpdate( 0 ),
+                                                                                                                                 m_lastActivityTime( Common::Util::getTimeMs() ),
+                                                                                                                                 m_inRangeDistance( 80.f )
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
   auto& teriMgr = Common::Service< TerritoryMgr >::ref();
@@ -101,8 +99,7 @@ void Territory::loadWeatherRates()
 
   auto& exdData = Common::Service< Data::ExdData >::ref();
 
-  uint8_t weatherRateId = m_territoryTypeInfo->data().WeatherRate > exdData.getIdList< Excel::WeatherRate >().size() ?
-                          uint8_t{ 0 } : m_territoryTypeInfo->data().WeatherRate;
+  uint8_t weatherRateId = m_territoryTypeInfo->data().WeatherRate > exdData.getIdList< Excel::WeatherRate >().size() ? uint8_t{ 0 } : m_territoryTypeInfo->data().WeatherRate;
 
   uint8_t sumPc = 0;
   auto weatherRate = exdData.getRow< Excel::WeatherRate >( weatherRateId );
@@ -188,8 +185,8 @@ Common::Weather Territory::getNextWeather()
 
   uint32_t calcBase = ( totalDays * 0x64 ) + increment;
 
-  uint32_t step1 = ( calcBase << 0xB ) ^calcBase;
-  uint32_t step2 = ( step1 >> 8 ) ^step1;
+  uint32_t step1 = ( calcBase << 0xB ) ^ calcBase;
+  uint32_t step2 = ( step1 >> 8 ) ^ step1;
 
   auto rate = static_cast< uint8_t >( step2 % 0x64 );
 
@@ -259,13 +256,15 @@ void Territory::pushActor( const Entity::GameObjectPtr& pActor )
   {
     auto pBNpc = pActor->getAsBNpc();
 
-    if( m_pNaviProvider )
+    if( m_pNaviProvider && !pBNpc->hasFlag( Entity::Immobile ) )
+    {
       agentId = m_pNaviProvider->addAgent( *pBNpc );
-    pBNpc->setAgentId( agentId );
+      pBNpc->setAgentId( agentId );
+      pBNpc->setPathingActive( true );
+    }
 
     m_bNpcMap[ pBNpc->getId() ] = pBNpc;
     updateCellActivity( cx, cy, 1 );
-
   }
   else if( pActor->isEventObj() )
   {
@@ -299,7 +298,6 @@ void Territory::removeActor( const Entity::GameObjectPtr& pActor )
     m_playerMap.erase( pActor->getId() );
 
     onLeaveTerritory( *pActor->getAsPlayer() );
-
   }
   else if( pActor->isBattleNpc() )
   {
@@ -315,7 +313,6 @@ void Territory::removeActor( const Entity::GameObjectPtr& pActor )
   // remove from lists of other actors
   pActor->removeFromInRange();
   pActor->clearInRangeSet();
-
 }
 
 void Territory::queuePacketForRange( Entity::Player& sourcePlayer, float range, Network::Packets::FFXIVPacketBasePtr pPacketEntry )
@@ -445,7 +442,6 @@ void Territory::updateBNpcs( uint64_t tickCount )
   // iterate the cached active bnpcs
   for( const auto& actor : activeBNpc )
     actor->update( tickCount );
-
 }
 
 uint64_t Territory::getLastActivityTime() const
@@ -582,7 +578,6 @@ void Territory::updateCellActivity( uint32_t x, uint32_t y, int32_t radius )
         else if( !isCellActive( posX, posY ) && pCell->isActive() )
           pCell->setActivity( false );
       }
-
     }
   }
 }
@@ -703,7 +698,6 @@ void Territory::updateInRangeSet( Entity::GameObjectPtr pActor, CellPtr pCell )
 
       pActor->addInRangeActor( pCurAct );
       pCurAct->addInRangeActor( pActor );
-
     }
     else if( !isInRange && isInRangeSet )
     {
@@ -731,17 +725,14 @@ void Territory::onUpdate( uint64_t tickCount )
 
 void Territory::onFinishLoading( Entity::Player& player )
 {
-
 }
 
 void Territory::onInitDirector( Entity::Player& player )
 {
-
 }
 
 void Territory::onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 )
 {
-
 }
 
 void Territory::addEObj( Entity::EventObjectPtr object )
@@ -763,6 +754,18 @@ Entity::EventObjectPtr Territory::getEObj( uint32_t objId )
     return nullptr;
 
   return obj->second;
+}
+
+Entity::PlayerPtr Territory::getPlayer( uint32_t playerId )
+{
+  if( auto it = m_playerMap.find( playerId ); it != m_playerMap.end() )
+    return it->second;
+  return nullptr;
+}
+
+const std::unordered_map< uint32_t, Entity::PlayerPtr >& Territory::getPlayers()
+{
+  return m_playerMap;
 }
 
 InstanceContentPtr Territory::getAsInstanceContent()
@@ -842,6 +845,18 @@ Entity::BNpcPtr Territory::createBNpcFromLayoutId( uint32_t layoutId, uint32_t h
   return pBNpc;
 }
 
+Entity::BNpcPtr Territory::createBNpcFromLayoutIdNoPush( uint32_t layoutId, uint32_t hp, Common::BNpcType bnpcType, uint32_t triggerOwnerId )
+{
+  auto infoPtr = m_bNpcBaseMap.find( layoutId );
+  if( infoPtr == m_bNpcBaseMap.end() )
+    return nullptr;
+
+  auto pBNpc = std::make_shared< Entity::BNpc >( getNextActorId(), infoPtr->second, *this, hp, bnpcType );
+  pBNpc->init();
+  pBNpc->setTriggerOwnerId( triggerOwnerId );
+  return pBNpc;
+}
+
 Entity::BNpcPtr Territory::getActiveBNpcByEntityId( uint32_t entityId )
 {
   auto it = m_bNpcMap.find( entityId );
@@ -882,6 +897,8 @@ bool Territory::loadBNpcs()
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::ZONE_SEL_BNPCS_BY_TERI );
   stmt->setUInt( 1, getTerritoryTypeId() );
   auto res = db.query( stmt );
+
+  // todo: load any exd links, cache them, build more info and setup bnpcs properly
 
   while( res->next() )
   {
@@ -945,17 +962,25 @@ bool Territory::loadBNpcs()
 
       m_spawnInfo.emplace_back( info );
     }
-
   }
   return true;
 }
 
 void Territory::onEventHandlerOrder( Entity::Player& player, uint32_t arg0, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4 )
 {
-
 }
 
 const Common::TerritoryIdent& Territory::getTerritoryIdent() const
 {
   return m_ident;
+}
+
+void Territory::setEncounterTimeline( const std::string& name )
+{
+  m_timelinePack = Encounter::EncounterTimeline::getEncounterPack( name, true );
+}
+
+Encounter::TimelinePack& Territory::getEncounterTimeline()
+{
+  return m_timelinePack;
 }

@@ -2,13 +2,15 @@
 
 #include "Forwards.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <chrono>
-#include <random>
 #include <memory>
+#include <random>
 #include <type_traits>
 #include <vector>
+
+#include <Logging/Logger.h>
 
 namespace Sapphire::World::Manager
 {
@@ -20,9 +22,8 @@ namespace Sapphire::World::Manager
   {
   public:
     RandGenerator( std::shared_ptr< std::mt19937 > pEngine, T minRange = std::numeric_limits< T >::min(), T maxRange = std::numeric_limits< T >::max() )
-      : m_engine( pEngine ), m_fpuDist( minRange, maxRange ), m_intDist( minRange, maxRange )
+        : m_engine( pEngine ), m_fpuDist( minRange, maxRange ), m_intDist( minRange, maxRange )
     {
-
     }
 
     // returns a single value for T type on set ranges, deducing real or integer distribution from given numeric type
@@ -95,8 +96,12 @@ namespace Sapphire::World::Manager
       return RandGenerator< T >( m_engine );
     }
 
-  private:
+    std::shared_ptr< std::mt19937 > getRNGEngine()
+    {
+      return m_engine;
+    }
 
+  private:
     template< std::size_t STATE_SIZE >
     std::unique_ptr< std::seed_seq > engineSeed()
     {
@@ -119,4 +124,4 @@ namespace Sapphire::World::Manager
     std::shared_ptr< std::mt19937 > m_engine;
   };
 
-}
+}// namespace Sapphire::World::Manager

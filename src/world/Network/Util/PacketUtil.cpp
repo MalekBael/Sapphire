@@ -12,14 +12,14 @@
 #include <Network/PacketWrappers/ActorControlPacket.h>
 #include <Network/PacketWrappers/ActorControlSelfPacket.h>
 #include <Network/PacketWrappers/ActorControlTargetPacket.h>
-#include <Network/PacketWrappers/HudParamPacket.h>
-#include <Network/PacketWrappers/ModelEquipPacket.h>
-#include <Network/PacketWrappers/ConditionPacket.h>
-#include <Network/PacketWrappers/RestingPacket.h>
-#include <Network/PacketWrappers/PlayerSetupPacket.h>
-#include <Network/PacketWrappers/InitZonePacket.h>
-#include <Network/PacketWrappers/ServerNoticePacket.h>
 #include <Network/PacketWrappers/ChatPacket.h>
+#include <Network/PacketWrappers/ConditionPacket.h>
+#include <Network/PacketWrappers/HudParamPacket.h>
+#include <Network/PacketWrappers/InitZonePacket.h>
+#include <Network/PacketWrappers/ModelEquipPacket.h>
+#include <Network/PacketWrappers/PlayerSetupPacket.h>
+#include <Network/PacketWrappers/RestingPacket.h>
+#include <Network/PacketWrappers/ServerNoticePacket.h>
 
 using namespace Sapphire;
 using namespace Sapphire::World::Manager;
@@ -83,7 +83,7 @@ void Util::Packet::sendStatusUpdate( Entity::Player& player )
   playerStatusUpdate->data().ClassJob = static_cast< uint8_t >( player.getClass() );
   playerStatusUpdate->data().Lv = player.getLevel();
   playerStatusUpdate->data().Lv1 = player.getLevel();
-  playerStatusUpdate->data().LvSync = 0; //player.getLevelSync();
+  playerStatusUpdate->data().LvSync = 0;//player.getLevelSync();
   playerStatusUpdate->data().Exp = player.getCurrentExp();
 
   server().queueForPlayer( player.getCharacterId(), playerStatusUpdate );
@@ -123,7 +123,6 @@ void Util::Packet::sendHuntingLog( Entity::Player& player )
 
       if( allComplete )
         completionFlag |= ( 1ull << ( index0 * 5 + 4 ) );
-
     }
 
     memcpy( huntPacket->data().killCount, entry.entries, sizeof( entry.entries ) );
@@ -165,6 +164,32 @@ void Util::Packet::sendActorControlTarget( const std::set< uint64_t >& character
                                            uint32_t param2, uint32_t param3, uint32_t param4, uint32_t param5, uint32_t param6 )
 {
   server().queueForPlayers( characterIds, makeActorControlTarget( srcId, category, param1, param2, param3, param4, param5, param6 ) );
+}
+
+void Sapphire::Network::Util::Packet::sendBattleTalk( Sapphire::Entity::Player& player, uint32_t battleTalkId, uint32_t handlerId,
+                                                      uint32_t kind, uint32_t nameId, uint32_t talkerId, uint32_t time,
+                                                      uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4,
+                                                      uint32_t param5, uint32_t param6, uint32_t param7, uint32_t param8 )
+{
+  auto battleTalkPacket = makeZonePacket< FFXIVIpcBattleTalk8 >( talkerId, player.getId() );
+  auto& data = battleTalkPacket->data();
+  data.battleTalkId = battleTalkId;
+  data.handlerId = handlerId;
+  data.nameId = nameId;
+  data.kind = kind;
+  data.talkerId = talkerId;
+  data.time = time;
+
+  data.args[ 0 ] = param1;
+  data.args[ 1 ] = param2;
+  data.args[ 2 ] = param3;
+  data.args[ 3 ] = param4;
+  data.args[ 4 ] = param5;
+  data.args[ 5 ] = param6;
+  data.args[ 6 ] = param7;
+  data.args[ 7 ] = param8;
+
+  server().queueForPlayer( player.getCharacterId(), battleTalkPacket );
 }
 
 void Util::Packet::sendTitleList( Entity::Player& player )

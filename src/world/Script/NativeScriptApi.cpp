@@ -214,6 +214,10 @@ namespace Sapphire::ScriptAPI
     // Initialize the BNpc with specific logic
   }
 
+  void InstanceContentScript::onReset( InstanceContent& instance )
+  {
+  }
+
   void BattleNpcScript::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   {
     // Update the BNpc with specific logic

@@ -3,27 +3,27 @@
 #include <Service.h>
 
 #include <Exd/ExdData.h>
-#include <Util/Util.h>
 #include <Territory/Land.h>
+#include <Util/Util.h>
 
 #include <Manager/AchievementMgr.h>
-#include <Manager/TerritoryMgr.h>
 #include <Manager/HousingMgr.h>
-#include <Manager/QuestMgr.h>
-#include <Manager/WarpMgr.h>
 #include <Manager/MapMgr.h>
+#include <Manager/QuestMgr.h>
+#include <Manager/TerritoryMgr.h>
+#include <Manager/WarpMgr.h>
 
-#include <Script/ScriptMgr.h>
 #include <Common.h>
+#include <Script/ScriptMgr.h>
 
-#include <Database/ZoneDbConnection.h>
 #include <Database/DbWorkerPool.h>
+#include <Database/ZoneDbConnection.h>
 
 #include <Network/CommonActorControl.h>
 #include <Network/Util/PacketUtil.h>
 
-#include <Actor/Player.h>
 #include <Actor/BNpc.h>
+#include <Actor/Player.h>
 
 #include <Inventory/Item.h>
 
@@ -84,7 +84,6 @@ std::vector< Sapphire::Entity::PlayerPtr > PlayerMgr::searchPlayersByName( const
   return results;
 }
 
-
 std::string PlayerMgr::getPlayerNameFromDb( uint64_t characterId, bool forceDbLoad )
 {
   if( !forceDbLoad )
@@ -99,13 +98,12 @@ std::string PlayerMgr::getPlayerNameFromDb( uint64_t characterId, bool forceDbLo
   auto res = db.query( "SELECT name FROM charainfo WHERE characterid = " + std::to_string( characterId ) );
 
   if( !res->next() )
-    return "Unknown";
+    return "Obtaining Signature";
 
   std::string playerName = res->getString( 1 );
 
   return playerName;
 }
-
 
 Sapphire::Entity::PlayerPtr PlayerMgr::addPlayer( uint64_t characterId )
 {
@@ -224,11 +222,11 @@ void PlayerMgr::sendLoginMessage( Entity::Player& player )
   }
 }
 
-void PlayerMgr::onLogin( Entity::Player &player )
+void PlayerMgr::onLogin( Entity::Player& player )
 {
 }
 
-void PlayerMgr::onLogout( Entity::Player &player )
+void PlayerMgr::onLogout( Entity::Player& player )
 {
 }
 
@@ -276,7 +274,7 @@ void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
   if( player.isLogin() )
   {
     Network::Util::Packet::sendChangeClass( player );
-    Network::Util::Packet::sendActorControl( player, player.getId(), 0x112, 0x24 ); // unknown
+    Network::Util::Packet::sendActorControl( player, player.getId(), 0x112, 0x24 );// unknown
     Network::Util::Packet::sendContentAttainFlags( player );
     player.clearSoldItems();
   }
@@ -290,13 +288,12 @@ void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
     Network::Util::Packet::sendDailyQuests( player );
     Network::Util::Packet::sendQuestRepeatFlags( player );
 
-    auto &questMgr = Common::Service< World::Manager::QuestMgr >::ref();
+    auto& questMgr = Common::Service< World::Manager::QuestMgr >::ref();
     questMgr.sendQuestsInfo( player );
     Network::Util::Packet::sendGrandCompany( player );
   }
 
   teri.onPlayerZoneIn( player );
-
 }
 
 void PlayerMgr::onUpdate( Entity::Player& player, uint64_t tickCount )
@@ -341,13 +338,14 @@ void PlayerMgr::checkAutoAttack( Entity::Player& player, uint64_t tickCount ) co
       player.autoAttack( actor->getAsChara() );
     }
   }
-
 }
 
 void PlayerMgr::onGainExp( Entity::Player& player, uint32_t exp )
 {
   uint32_t currentExp = player.getCurrentExp();
   uint16_t level = player.getLevel();
+  uint32_t expGained = exp;
+
   auto currentClass = static_cast< uint8_t >( player.getClass() );
 
   if( level >= Common::MAX_PLAYER_LEVEL )
@@ -374,12 +372,11 @@ void PlayerMgr::onGainExp( Entity::Player& player, uint32_t exp )
       onLevelChanged( player, level + 1 );
 
     player.setCurrentExp( exp );
-
   }
   else
     player.setCurrentExp( currentExp + exp );
 
-  Network::Util::Packet::sendActorControlSelf( player, player.getId(), GainExpMsg, currentClass, exp );
+  Network::Util::Packet::sendActorControlSelf( player, player.getId(), GainExpMsg, currentClass, expGained );
   Network::Util::Packet::sendActorControlSelf( player, player.getId(), UpdateUiExp, currentClass, player.getCurrentExp() );
 }
 
@@ -427,8 +424,8 @@ void PlayerMgr::onDiscoverArea( Entity::Player& player, int16_t mapId, int16_t s
   {
     discoveredAreas = ( discovery[ offset + 3 ] << 24 ) |
                       ( discovery[ offset + 2 ] << 16 ) |
-                      ( discovery[ offset + 1 ] << 8  ) |
-                        discovery[ offset ];
+                      ( discovery[ offset + 1 ] << 8 ) |
+                      discovery[ offset ];
   }
 
   bool allDiscovered = ( ( discoveredAreas & mask ) == mask );
@@ -442,17 +439,17 @@ void PlayerMgr::onDiscoverArea( Entity::Player& player, int16_t mapId, int16_t s
 
 ////////// Helper ///////////
 
-void PlayerMgr::sendServerNotice( Entity::Player& player, const std::string& message ) //Purple Text
+void PlayerMgr::sendServerNotice( Entity::Player& player, const std::string& message )//Purple Text
 {
   Network::Util::Packet::sendServerNotice( player, message );
 }
 
-void PlayerMgr::sendUrgent( Entity::Player& player, const std::string& message ) //Red Text
+void PlayerMgr::sendUrgent( Entity::Player& player, const std::string& message )//Red Text
 {
   Network::Util::Packet::sendChat( player, Common::ChatType::ServerUrgent, message );
 }
 
-void PlayerMgr::sendDebug( Entity::Player& player, const std::string& message ) //Grey Text
+void PlayerMgr::sendDebug( Entity::Player& player, const std::string& message )//Grey Text
 {
   Network::Util::Packet::sendChat( player, Common::ChatType::SystemMessage, message );
 }
@@ -461,6 +458,15 @@ void PlayerMgr::sendLogMessage( Entity::Player& player, uint32_t messageId, uint
                                 uint32_t param4, uint32_t param5, uint32_t param6 )
 {
   Network::Util::Packet::sendActorControlTarget( player, player.getId(), LogMsg, messageId, param2, param3, param4, param5, param6 );
+}
+
+void PlayerMgr::sendBattleTalk( Sapphire::Entity::Player& player, uint32_t battleTalkId, uint32_t handlerId,
+                                uint32_t kind, uint32_t nameId, uint32_t talkerId, uint32_t time,
+                                uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4,
+                                uint32_t param5, uint32_t param6, uint32_t param7, uint32_t param8 )
+{
+  Network::Util::Packet::sendBattleTalk( player, battleTalkId, handlerId, kind, nameId, talkerId, time,
+                                         param1, param2, param3, param4, param5, param6, param7, param8 );
 }
 
 void PlayerMgr::onUpdateHuntingLog( Entity::Player& player, uint8_t id )
@@ -474,12 +480,13 @@ void PlayerMgr::onUpdateHuntingLog( Entity::Player& player, uint8_t id )
   if( !classJobInfo )
     return;
 
-  auto currentClassId = classJobInfo->data().MainClass;
+  auto currentClassId = classJobInfo->data().MonsterNote;
+  if( currentClassId == -1 || currentClassId == 127 )
+    return;
 
-  auto& logEntry = player.getHuntingLogEntry( currentClassId - 1 );
+  auto& logEntry = player.getHuntingLogEntry( currentClassId );
 
   bool logChanged = false;
-
 
   bool allSectionsComplete = true;
   for( int i = 1; i <= 10; ++i )
@@ -541,7 +548,6 @@ void PlayerMgr::onExitInstance( Entity::Player& player )
 
   warpMgr.requestMoveTerritory( player, Common::WarpType::WARP_TYPE_CONTENT_END_RETURN,
                                 player.getPrevTerritoryId(), player.getPrevPos(), player.getPrevRot() );
-
 }
 
 void PlayerMgr::onClassJobChanged( Entity::Player& player, Common::ClassJob classJob )
@@ -584,6 +590,3 @@ void PlayerMgr::onSongLearned( Entity::Player& player, uint8_t songId, uint32_t 
   player.learnSong( songId, itemId );
   Network::Util::Packet::sendActorControlSelf( player, player.getId(), ToggleOrchestrionUnlock, songId, 1, itemId );
 }
-
-
-
