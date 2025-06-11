@@ -870,29 +870,8 @@ void Action::Action::addDefaultActorFilters()
 
     case Common::CastType::RectangularAOE:
     {
-      // Convert rotation from game units to radians
-      constexpr double pi = 3.14159265358979323846;
-      float rotation = 2.0f * static_cast< float >( pi ) * ( m_pSource->getRot() / 65535.0f );
-
-      // Use effectRange for the length and effectWidth for the width
-      // Default to reasonable values if either is not specified
-      float length = m_effectRange > 0 ? m_effectRange : 8.0f;
-
-      // For all rectangular AOEs, apply a width multiplier to better match visual telegraphs
-      // The default width is typically too narrow compared to what players see
-      float width = m_effectWidth > 0 ? m_effectWidth : 4.0f;
-
-      // Apply a consistent width multiplier for all rectangular AOEs
-      constexpr float RECTANGULAR_AOE_WIDTH_MULTIPLIER = 2.5f;
-      width *= RECTANGULAR_AOE_WIDTH_MULTIPLIER;
-
-      Logger::debug( "Action: Applying rectangular AOE width adjustment: Base width {:.1f}, Adjusted width {:.1f} for action {}",
-                     width / RECTANGULAR_AOE_WIDTH_MULTIPLIER, width, getId() );
-
-      auto filter = std::make_shared< World::Util::ActorFilterRectangle >(
-              m_pos, rotation, length, width, m_pSource->getId() );
+      auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
       addActorFilter( filter );
-      break;
     }
 
     case Common::CastType::CircularAOEWithPadding:
@@ -903,28 +882,9 @@ void Action::Action::addDefaultActorFilters()
       // Get the base effect range from action data
       float range = m_effectRange;
 
-      // The BNpc class doesn't have getActionOverrideValue implemented yet,
-      // so comment out this section for now
-      /*
-      // Check if this is an NPC and has a custom radius in its JSON
-      if( auto bnpc = m_pSource->getAsBNpc() )
-      {
-          auto customRange = bnpc->getActionOverrideValue( getId(), "radius" );
-          if( customRange > 0.0f )
-          {
-              range = customRange;
-              Logger::debug( "Using custom range {:.2f} for action ID {} from NPC config",
-                           range, getId() );
-          }
-      }
-      */
-
       // Use a reasonable minimum radius if none is specified
       if( range < 6.0f )
         range = 6.0f;
-
-      Logger::debug( "Action: CircularAOEWithPadding (ID: {}) using range {:.1f} from caster position",
-                     getId(), range );
 
       auto filter = std::make_shared< World::Util::ActorFilterInRange >( centerPos, range );
       addActorFilter( filter );
