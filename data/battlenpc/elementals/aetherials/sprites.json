@@ -11,16 +11,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 971,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Water"
+            "description": "Water",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -36,16 +36,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 971,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Water"
+            "description": "Water",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -61,16 +61,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 971,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Water"
+            "description": "Water",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -86,16 +86,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 969,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Aero"
+            "description": "Aero",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -111,16 +111,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 969,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Aero"
+            "description": "Aero",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -136,16 +136,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 969,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Aero"
+            "description": "Aero",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -161,16 +161,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 969,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Aero"
+            "description": "Aero",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -186,16 +186,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 966,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Fire"
+            "description": "Fire",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -211,16 +211,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 966,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Fire"
+            "description": "Fire",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -236,16 +236,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 968,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Fire"
+            "description": "Thunder",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -261,16 +261,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 968,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Fire"
+            "description": "Thunder",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -286,16 +286,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 967,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Blizzard"
+            "description": "Blizzard",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -310,17 +310,17 @@
         "timeLines": [
           {
             "condition": "TopHateTarget",
-            "actionId": 967,
-            "actionParam": 0,
+            "actionId": 970,
             "timing": 0,
-            "description": "Blizzard"
+            "description": "Stone",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -336,16 +336,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 970,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Stone"
+            "description": "Stone",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }
@@ -361,16 +361,16 @@
           {
             "condition": "TopHateTarget",
             "actionId": 970,
-            "actionParam": 0,
             "timing": 0,
-            "description": "Stone"
+            "description": "Stone",
+            "actionParam": 0
           },
           {
             "condition": "None",
             "actionId": 0,
-            "actionParam": 0,
             "timing": 3,
-            "description": "Wait"
+            "description": "Wait",
+            "actionParam": 0
           }
         ]
       }

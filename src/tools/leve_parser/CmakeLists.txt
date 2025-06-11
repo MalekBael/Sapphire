@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.10)
+cmake_policy(SET CMP0015 NEW)
+project(Tool_LeveParser)
+
+file(GLOB SERVER_PUBLIC_INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*")
+file(GLOB SERVER_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}*.c*")
+
+add_executable(leve_parse ${SERVER_PUBLIC_INCLUDE_FILES} ${SERVER_SOURCE_FILES})
+
+if (UNIX)
+  target_link_libraries(leve_parse common xivdat pthread mysql dl z stdc++fs)
+else()
+  target_link_libraries(leve_parse common xivdat mysql zlib)
+endif()
+
+target_include_directories(leve_parse PUBLIC "${CMAKE_SOURCE_DIR}/src/common")
+
+# Copy the unluac jar file if your tool needs it
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../quest_parser/unluac_2015_06_13.jar ${EXECUTABLE_OUTPUT_PATH}/unluac_2015_06_13.jar COPYONLY)

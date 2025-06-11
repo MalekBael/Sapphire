@@ -1672,3 +1672,15 @@ const CharaLandData& Entity::Player::getCharaLandData( Common::LandFlagsSlot slo
 {
   return m_charaLandData[ slot ];
 }
+
+void Player::setPersistentMount(uint32_t mountId) {
+    m_persistentStates.mountId = mountId;
+}
+
+uint32_t Player::getPersistentMount() const {
+    return m_persistentStates.mountId;
+}
+
+void Player::clearPersistentMount() {
+    m_persistentStates.mountId = 0;
+}

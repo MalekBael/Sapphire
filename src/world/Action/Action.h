@@ -167,6 +167,9 @@ namespace Sapphire::World::Action
     virtual void onInterrupt();
     virtual void onStart();
 
+    /*Cast Type support?????*/
+    void setCastType(Common::CastType castType) { m_castType = castType; }
+
   protected:
 
     bool primaryCostCheck( bool subtractCosts );

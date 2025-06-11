@@ -82,6 +82,7 @@ DebugCommandMgr::DebugCommandMgr()
   registerCommand( "ew", &DebugCommandMgr::easyWarp, "Easy warping", 1 );
   registerCommand( "reload", &DebugCommandMgr::hotReload, "Reloads a resource", 1 );
   registerCommand( "facing", &DebugCommandMgr::facing, "Checks if you are facing an actor", 1 );
+  registerCommand( "aoerange", &DebugCommandMgr::aoeRange, "AOE range utilities", 1 );
 }
 
 // clear all loaded commands
@@ -986,10 +987,15 @@ void DebugCommandMgr::instance( char* data, Entity::Player& player, std::shared_
   }
   else if( subCommand == "objstate" )
   {
-    char objName[128];
+    char objName[128] = { 0 }; // Initialize array with zeros to ensure zero-termination
     uint8_t state;
 
-    sscanf( params.c_str(), "%s %hhu", objName, &state );
+    int result = sscanf( params.c_str(), "%127s %hhu", objName, &state ); // Limit to buffer size-1
+    if (result != 2) 
+    {
+      PlayerMgr::sendDebug( player, "Invalid format. Usage: objstate <object_name> <state_value>" );
+      return;
+    }
 
     auto instance = std::dynamic_pointer_cast< InstanceContent >( pCurrentZone );
     if( !instance )
@@ -1181,10 +1187,15 @@ void DebugCommandMgr::questBattle( char* data, Entity::Player& player, std::shar
   }
   else if( subCommand == "objstate" )
   {
-    char objName[128];
+    char objName[128] = { 0 }; // Initialize array with zeros to ensure zero-termination
     uint8_t state;
 
-    sscanf( params.c_str(), "%s %hhu", objName, &state );
+    int result = sscanf( params.c_str(), "%127s %hhu", objName, &state ); // Limit to buffer size-1
+    if (result != 2) 
+    {
+      PlayerMgr::sendDebug( player, "Invalid format. Usage: objstate <object_name> <state_value>" );
+      return;
+    }
 
     auto instance = std::dynamic_pointer_cast< QuestBattle >( pCurrentZone );
     if( !instance )
@@ -1531,4 +1542,285 @@ void DebugCommandMgr::facing( char* data, Sapphire::Entity::Player& player, std:
       PlayerMgr::sendDebug( player, "Player facing target {0}: {1}", bnpc->getLayoutId(), player.isFacingTarget( *bnpc->getAsChara(), threshold ) );
     }
   }
+}
+
+void DebugCommandMgr::aoeRange( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command )
+{
+  auto& exdData = Common::Service< Data::ExdData >::ref();
+
+  // Safety check for null or empty data
+  if( !data || strlen( data ) == 0 )
+  {
+    PlayerMgr::sendDebug( player, "Usage: /aoerange <subcommand> [params]" );
+    PlayerMgr::sendDebug( player, " - pos : Shows your current position data" );
+    PlayerMgr::sendDebug( player, " - target : Shows position and distance to your target" );
+    PlayerMgr::sendDebug( player, " - scan <radius> : Lists all actors within given radius" );
+    PlayerMgr::sendDebug( player, " - action <actionId> : Shows AOE data for specified action" );
+    PlayerMgr::sendDebug( player, " - circ <pos_x> <pos_y> <pos_z> <radius> : Tests circular AoE" );
+    return;
+  }
+
+  // Parse command string safely
+  std::string cmdStr( data );
+  std::string subCommand;
+  std::string params;
+
+  // Safely extract the subcommand - careful with string bounds
+  size_t cmdNameLength = command->getName().length();
+  if( cmdStr.length() <= cmdNameLength )
+  {
+    // Command string is too short to contain a subcommand
+    PlayerMgr::sendDebug( player, "Invalid command format" );
+    return;
+  }
+
+  // Find the space after the command name
+  size_t pos = cmdStr.find_first_of( ' ' );
+  if( pos == std::string::npos || pos + 1 >= cmdStr.length() )
+  {
+    // No parameters given or empty string after command
+    PlayerMgr::sendDebug( player, "No subcommand provided" );
+    return;
+  }
+
+  // Find the space after the subcommand
+  size_t subCmdStart = pos + 1;
+  size_t subCmdEnd = cmdStr.find_first_of( ' ', subCmdStart );
+
+  if( subCmdEnd == std::string::npos )
+  {
+    // No space after subcommand, so the rest of the string is the subcommand
+    subCommand = cmdStr.substr( subCmdStart );
+    params = "";// No parameters
+  }
+  else
+  {
+    // Extract subcommand and parameters
+    subCommand = cmdStr.substr( subCmdStart, subCmdEnd - subCmdStart );
+    if( subCmdEnd + 1 < cmdStr.length() )
+      params = cmdStr.substr( subCmdEnd + 1 );
+    else
+      params = "";// No parameters after subcommand
+  }
+
+  // Now handle the actual commands with robust string handling
+  if( subCommand.empty() )
+  {
+    PlayerMgr::sendDebug( player, "Usage: /aoerange <subcommand> [params]" );
+    PlayerMgr::sendDebug( player, " - pos : Shows your current position data" );
+    PlayerMgr::sendDebug( player, " - target : Shows position and distance to your target" );
+    PlayerMgr::sendDebug( player, " - scan <radius> : Lists all actors within given radius" );
+    PlayerMgr::sendDebug( player, " - action <actionId> : Shows AOE data for specified action" );
+    PlayerMgr::sendDebug( player, " - circ <pos_x> <pos_y> <pos_z> <radius> : Tests circular AoE" );
+    return;
+  }
+
+  if( subCommand == "pos" )
+  {
+    auto& playerPos = player.getPos();
+    PlayerMgr::sendDebug( player, "Position data:" );
+    PlayerMgr::sendDebug( player, "x: {:.3f}, y: {:.3f}, z: {:.3f}", playerPos.x, playerPos.y, playerPos.z );
+    PlayerMgr::sendDebug( player, "Rotation: {:.6f} ({} game units)",
+                          ( player.getRot() / 65535.0f ) * 2.0f * 3.14159f,
+                          player.getRot() );
+    return;
+  }
+
+  if( subCommand == "target" )
+  {
+    auto targetId = player.getTargetId();
+    if( targetId == 0 || targetId == player.getId() )
+    {
+      PlayerMgr::sendDebug( player, "No valid target selected" );
+      return;
+    }
+
+    bool targetFound = false;
+    for( auto& actor : player.getInRangeActors() )
+    {
+      if( actor->getId() == targetId )
+      {
+        targetFound = true;
+        auto& playerPos = player.getPos();
+        auto& targetPos = actor->getPos();
+        float distance = Sapphire::Common::Util::distance( playerPos, targetPos );
+
+        PlayerMgr::sendDebug( player, "Target position data:" );
+        PlayerMgr::sendDebug( player, "Target ID: {}", targetId );
+        PlayerMgr::sendDebug( player, "x: {:.3f}, y: {:.3f}, z: {:.3f}", targetPos.x, targetPos.y, targetPos.z );
+        PlayerMgr::sendDebug( player, "Distance from player: {:.3f} yalms", distance );
+        break;
+      }
+    }
+
+    if( !targetFound )
+      PlayerMgr::sendDebug( player, "Target not found in range" );
+
+    return;
+  }
+
+  if( subCommand == "scan" )
+  {
+    float radius = 10.0f;
+    if( !params.empty() )
+    {
+      try
+      {
+        radius = std::stof( params );
+      } catch( const std::exception& )
+      {
+        PlayerMgr::sendDebug( player, "Invalid radius. Using default of 10.0 yalms" );
+        radius = 10.0f;
+      }
+    }
+
+    PlayerMgr::sendDebug( player, "Scanning for actors within {:.1f} yalms radius:", radius );
+
+    auto& playerPos = player.getPos();
+    int actorCount = 0;
+
+    for( auto& actor : player.getInRangeActors() )
+    {
+      if( actor->getId() == player.getId() )
+        continue;
+
+      auto& actorPos = actor->getPos();
+      float distance = Sapphire::Common::Util::distance( playerPos, actorPos );
+
+      if( distance <= radius )
+      {
+        std::string objType;
+        switch( actor->getObjKind() )
+        {
+          case Common::ObjKind::Player:
+            objType = "Player";
+            break;
+          case Common::ObjKind::BattleNpc:
+            objType = "BattleNpc";
+            break;
+          case Common::ObjKind::EventNpc:
+            objType = "EventNpc";
+            break;
+          case Common::ObjKind::EventObj:
+            objType = "EventObj";
+            break;
+          default:
+            objType = "Unknown";
+            break;
+        }
+
+        PlayerMgr::sendDebug( player, "[{:.2f}y] {} (ID: {}) at ({:.1f}, {:.1f}, {:.1f})",
+                              distance, objType, actor->getId(),
+                              actorPos.x, actorPos.y, actorPos.z );
+        actorCount++;
+      }
+    }
+
+    PlayerMgr::sendDebug( player, "Found {} actors within radius", actorCount );
+    return;
+  }
+
+  if( subCommand == "action" )
+  {
+    if( params.empty() )
+    {
+      PlayerMgr::sendDebug( player, "Usage: /aoerange action <actionId>" );
+      return;
+    }
+
+    uint32_t actionId;
+    try
+    {
+      actionId = std::stoul( params );
+    } catch( const std::exception& )
+    {
+      PlayerMgr::sendDebug( player, "Invalid action ID format" );
+      return;
+    }
+
+    auto actionData = exdData.getRow< Excel::Action >( actionId );
+
+    if( !actionData )
+    {
+      PlayerMgr::sendDebug( player, "Action ID {} not found in database", actionId );
+      return;
+    }
+
+    Common::CastType castType = static_cast< Common::CastType >( actionData->data().EffectType );
+    PlayerMgr::sendDebug( player, "Action ID: {}", actionId );
+    PlayerMgr::sendDebug( player, "Cast Type: {} ({})", static_cast< uint8_t >( castType ),
+                          castType == Common::CastType::SingleTarget ? "SingleTarget" : castType == Common::CastType::CircularAOE      ? "CircularAOE"
+                                                                                : castType == Common::CastType::RectangularAOE         ? "RectangularAOE"
+                                                                                : castType == Common::CastType::CircularAOEWithPadding ? "CircularAOEWithPadding"
+                                                                                                                                       : "Unknown" );
+    PlayerMgr::sendDebug( player, "Effect Range: {:.1f}", actionData->data().EffectRange );
+    PlayerMgr::sendDebug( player, "Effect Width: {:.1f}", actionData->data().EffectWidth );
+    PlayerMgr::sendDebug( player, "Select Range: {:.1f}", actionData->data().SelectRange );
+    return;
+  }
+
+  if( subCommand == "circ" )
+  {
+    float posX = 0.0f, posY = 0.0f, posZ = 0.0f, radius = 5.0f;
+
+    // Safer parameter parsing
+    std::istringstream iss( params );
+    if( !( iss >> posX >> posY >> posZ >> radius ) )
+    {
+      PlayerMgr::sendDebug( player, "Usage: /aoerange circ <pos_x> <pos_y> <pos_z> <radius>" );
+      PlayerMgr::sendDebug( player, "Using current position with default 5.0 yalm radius" );
+
+      // Default to player position if parsing fails
+      posX = player.getPos().x;
+      posY = player.getPos().y;
+      posZ = player.getPos().z;
+      radius = 5.0f;
+    }
+
+    Common::FFXIVARR_POSITION3 centerPos;
+    centerPos.x = posX;
+    centerPos.y = posY;
+    centerPos.z = posZ;
+
+    PlayerMgr::sendDebug( player, "Testing circular AoE at ({:.1f}, {:.1f}, {:.1f}) with radius {:.1f}",
+                          posX, posY, posZ, radius );
+
+    auto& playerPos = player.getPos();
+    float distanceToAoE = Sapphire::Common::Util::distance( playerPos, centerPos );
+
+    PlayerMgr::sendDebug( player, "Distance from AoE center: {:.3f} yalms", distanceToAoE );
+    PlayerMgr::sendDebug( player, "Would player be hit: {}", distanceToAoE <= radius ? "YES" : "NO" );
+
+    // List all actors that would be hit
+    int hitCount = 0;
+    PlayerMgr::sendDebug( player, "Actors that would be hit:" );
+
+    for( auto& actor : player.getInRangeActors() )
+    {
+      auto& actorPos = actor->getPos();
+      float dist = Sapphire::Common::Util::distance( actorPos, centerPos );
+
+      if( dist <= radius )
+      {
+        std::string objType = "Unknown";
+        if( actor->getObjKind() == Common::ObjKind::Player )
+          objType = "Player";
+        else if( actor->getObjKind() == Common::ObjKind::BattleNpc )
+          objType = "BattleNpc";
+        else if( actor->getObjKind() == Common::ObjKind::EventNpc )
+          objType = "EventNpc";
+        else if( actor->getObjKind() == Common::ObjKind::EventObj )
+          objType = "EventObj";
+
+        PlayerMgr::sendDebug( player, " - [{:.2f}y] {} (ID: {})",
+                              dist, objType, actor->getId() );
+        hitCount++;
+      }
+    }
+
+    PlayerMgr::sendDebug( player, "Total actors hit: {}", hitCount );
+    return;
+  }
+
+  PlayerMgr::sendDebug( player, "Unknown subcommand: {}", subCommand );
 }
