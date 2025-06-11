@@ -1,107 +1,110 @@
-//doesnt work currently
-#include <Actor/Player.h>
-#include <ScriptObject.h>
-
-#include <datReader/DatCategories/bg/LgbTypes.h>
-#include <datReader/DatCategories/bg/lgb.h>
-
+#include "Manager/TerritoryMgr.h"
+#include "ScriptLogger.h"
 #include "Territory/InstanceObjectCache.h"
 #include "Territory/Territory.h"
-
-#include <Exd/ExdData.h>
-#include <Manager/PlayerMgr.h>
-#include <Service.h>
+#include <Actor/Player.h>
+#include <Network/Util/PacketUtil.h>
+#include <ScriptObject.h>
+#include "Network/PacketWrappers/ActorControlSelfPacket.h"
+#include "Network/CommonActorControl.h"
 
 using namespace Sapphire;
+using namespace Sapphire::ScriptAPI;
 
-class WarpRentalChocobo : public Sapphire::ScriptAPI::EventScript
+void logPlayerMountState(const Entity::Player& player, const char* context)
+{
+    ScriptLogger::debug("[{0}] {1}: mount={2}, status={3}, directorId={4}",
+        player.getId(), context, player.getCurrentMount(), static_cast<int>(player.getStatus()), player.getDirectorId());
+}
+
+class WarpRentalChocobo : public EventScript
 {
 public:
-  WarpRentalChocobo() : Sapphire::ScriptAPI::EventScript( 131073 )
+  WarpRentalChocobo() : EventScript( 131073 )//1179650
   {
+    ScriptLogger::debug( "WarpRentalChocobo script initialized" );
   }
 
   void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
   {
-    auto& exdData = Common::Service< Sapphire::Data::ExdData >::ref();
+    ScriptLogger::debug( "WarpRentalChocobo::onTalk triggered for player {0}, eventId: {1}", player.getId(), eventId );
 
-    auto warp = exdData.getRow< Excel::Warp >( eventId );
-    if( !warp )
-      return;
+    logPlayerMountState(player, "Before rental logic");
 
-    // Check if player has enough Gil for the chocobo rental
-    if( !checkGil( player, 80 ) )// 80 gil for rental
-    {
-      eventMgr().playScene( player, eventId, 2, HIDE_HOTBAR, {}, nullptr );
-      return;
-    }
+    uint32_t originalEventId = eventId;
 
-    // Check if player already has a mount active
-    if( player.getStatus() == Common::ActorStatus::Mounted )
-    {
-      eventMgr().playScene( player, eventId, 3, HIDE_HOTBAR, {}, nullptr );
-      return;
-    }
+    eventMgr().playScene( player, eventId, 0, HIDE_HOTBAR,
+                          [ this, originalEventId, &player ]( Entity::Player& player, const Event::SceneResult& result ) {
+                            ScriptLogger::debug( "Scene callback received: numResults={0}, using originalEventId={1}",
+                                                 result.numOfResults, originalEventId );
 
-    auto warpChoice = [ this ]( Entity::Player& player, const Event::SceneResult& result ) {
-      // If player confirmed the rental
-      if( result.numOfResults > 0 && result.results[ 0 ] == 1 )
-      {
-        // Charge gil
-        player.removeCurrency( Common::CurrencyType::Gil, 80 );
+                            if( result.numOfResults > 0 )
+                              ScriptLogger::debug( "Result[0]={0}", result.results[ 0 ] );
 
-        auto warp = this->exdData().getRow< Excel::Warp >( result.eventId );
-        if( warp )
-        {
-          // Get the destination info (outside town)
-          auto popRangeInfo = instanceObjectCache().getPopRangeInfo( warp->data().PopRange );
-          if( popRangeInfo )
-          {
-            auto pTeri = teriMgr().getTerritoryByTypeId( popRangeInfo->m_territoryTypeId );
-            if( !pTeri )
-              return;
+                            if( result.numOfResults > 0 && result.results[ 0 ] == 1 )
+                            {
+                              auto& exdData = Common::Service< Sapphire::Data::ExdData >::ref();
+                              auto warp = exdData.getRow< Excel::Warp >( originalEventId );
+                              if( !warp )
+                              {
+                                ScriptLogger::error( "Failed to get warp data for eventId: {0}", originalEventId );
+                                return;
+                              }
 
-            // Use directorId to store mount info temporarily
-            // Store 1001 for mount ID 1 (we add 1000 to distinguish from other director IDs)
-            player.setDirectorId( 1001 );
+                              ScriptLogger::debug( "Charging player {0} gil", 80 );
+                              player.removeCurrency( Common::CurrencyType::Gil, 80 );
 
-            // Request warp to outside town using the RENTAL_CHOCOBO warp type
-            // Cast the 0x9 value to the WarpType enum to match the function signature
-            warpMgr().requestMoveTerritory( player, static_cast< Common::WarpType >( 0x9 ),
-                                            pTeri->getGuId(), popRangeInfo->m_pos, popRangeInfo->m_rotation );
-          }
-        }
-      }
-    };
+                              auto popRangeInfo = instanceObjectCache().getPopRangeInfo( warp->data().PopRange );
+                              if( !popRangeInfo )
+                              {
+                                ScriptLogger::error( "Failed to get popRangeInfo" );
+                                return;
+                              }
 
-    eventMgr().playScene( player, eventId, 0, HIDE_HOTBAR, { 1 }, warpChoice );
+                              auto pTeri = teriMgr().getTerritoryByTypeId( popRangeInfo->m_territoryTypeId );
+                              if( !pTeri )
+                              {
+                                ScriptLogger::error( "Failed to get territory, id: {0}", popRangeInfo->m_territoryTypeId );
+                                return;
+                              }
+
+                              logPlayerMountState(player, "Before setMount");
+
+                              player.setPersistentMount(1);
+                              player.setMount(1); // Company Chocobo
+                              player.setStatus(static_cast<Common::ActorStatus>(Common::ActorStatus::Mounted));
+
+                              logPlayerMountState(player, "After setMount");
+
+                              ScriptLogger::debug( "Setting directorId flag to 1001 for post-warp mounting" );
+                              player.setDirectorId( 1001 );
+
+                              ScriptLogger::debug( "Requesting warp to territory {0} at position ({1}, {2}, {3})",
+                                                   popRangeInfo->m_territoryTypeId,
+                                                   popRangeInfo->m_pos.x,
+                                                   popRangeInfo->m_pos.y,
+                                                   popRangeInfo->m_pos.z );
+
+                              warpMgr().requestMoveTerritory(
+                                      player,
+                                      Common::WarpType::WARP_TYPE_RENTAL_CHOCOBO,
+                                      pTeri->getGuId(),
+                                      popRangeInfo->m_pos,
+                                      popRangeInfo->m_rotation );
+
+                              ScriptLogger::debug( "Warp requested, waiting for completion" );
+                            }
+                            else
+                            {
+                              ScriptLogger::debug( "Player declined chocobo rental or dialog was cancelled" );
+                            }
+                          } );
   }
 
-  // Handle territory entry event
-  void onEnterTerritory( Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  void onEnterTerritory(Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2) override
   {
-    // Check if this was a chocobo rental warp by checking the warp type
-    // WARP_TYPE_RENTAL_CHOCOBO = 0x9
-    if( param1 == static_cast< uint16_t >( Common::WarpType::WARP_TYPE_RENTAL_CHOCOBO ) && player.getDirectorId() >= 1000 )
-    {
-      // Extract mount ID from director ID (subtract 1000)
-      uint16_t mountId = player.getDirectorId() - 1000;
-
-      // Clear the director ID so it can be used for other purposes
-      player.setDirectorId( 0 );
-
-      if( mountId > 0 )
-      {
-        // Mount the player using the mount packet system
-        player.setMount( mountId );
-      }
-    }
-  }
-
-private:
-  bool checkGil( Entity::Player& player, uint32_t amount )
-  {
-    return player.getCurrency( Common::CurrencyType::Gil ) >= amount;
+    // Just log the entry, don't try to mount here
+    logPlayerMountState(player, "onEnterTerritory");
   }
 };
 
