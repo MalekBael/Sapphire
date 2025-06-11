@@ -1,0 +1,66 @@
+{
+  "golem": {
+    "ClayGolem": {
+      "baseId": 549,
+      "nameId": 30,
+      "isRanged": false,
+      "attackRange": 3.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Wait"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 7,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Attack"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 445,
+            "actionParam": 0,
+            "timing": 12,
+            "description": "True Grit"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 7,
+            "actionParam": 0,
+            "timing": 19,
+            "description": "Attack"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 482,
+            "radius": 6.85,
+            "actionParam": 0,
+            "timing": 23,
+            "description": "Plaincracker"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 7,
+            "actionParam": 0,
+            "timing": 28,
+            "description": "Attack"
+          },
+          {
+            "condition": "TopHateTarget",
+            "actionId": 482,
+            "radius": 6.85,
+            "actionParam": 0,
+            "timing": 31,
+            "description": "Plaincracker"
+          }
+        ]
+      }
+    }
+  }
+}

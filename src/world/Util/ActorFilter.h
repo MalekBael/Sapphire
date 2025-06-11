@@ -32,6 +32,32 @@ namespace Sapphire::World::Util
 
   /////////////////////////////////////////////////////////////////////////////
 
+  /*Cast type 3 support?????*/
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  class ActorFilterRectangle : public ActorFilter
+  {
+    struct SourcePosition : public Common::FFXIVARR_POSITION3 {
+      uint32_t actorId = 0;
+    };
+    
+    SourcePosition m_sourcePos;
+    float m_rotation;  // Rotation in radians
+    float m_length;    // Length of the rectangle
+    float m_width;     // Width of the rectangle
+
+  public:
+    ActorFilterRectangle( Common::FFXIVARR_POSITION3 sourcePos,
+                          float rotation,
+                          float length,
+                          float width,
+                          uint32_t actorId = 0 );
+
+    bool conditionApplies( const Entity::GameObject& actor ) override;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   class ActorFilterSingleTarget : public ActorFilter
   {
     uint32_t m_actorId;

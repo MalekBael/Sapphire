@@ -44,6 +44,13 @@ void WarpMgr::requestMoveTerritory( Entity::Player& player, Common::WarpType war
     return;
   }
 
+  if (warpType == Common::WarpType::WARP_TYPE_RENTAL_CHOCOBO)
+  {
+    // Store mount info in player's persistent state
+    player.setPersistentMount(player.getCurrentMount());
+    player.setDirectorId(1001); // Set flag indicating rental chocobo warp
+  }
+
   m_entityIdToWarpInfoMap[ player.getId() ] = { targetTerritoryId, warpType, targetPos, targetRot };
 
   player.updatePrevTerritory();
@@ -133,6 +140,13 @@ void WarpMgr::finishWarp( Entity::Player& player )
   Network::Util::Packet::sendActorControl( player.getInRangePlayerIds( true ), player.getId(), SetStatus, static_cast< uint8_t >( Common::ActorStatus::Idle ) );
 
   player.removeCondition( PlayerCondition::BetweenAreas );
+
+  if (player.getDirectorId() == 1001 && player.getPersistentMount() > 0)
+  {
+    player.setDirectorId(0);  // Clear our flag
+    player.setStatus(static_cast<Common::ActorStatus>(Common::ActorStatus::Mounted));
+    player.setMount(player.getPersistentMount());  // Re-apply mount
+  }
 
   Common::Service< MapMgr >::ref().updateAll( player );
 }

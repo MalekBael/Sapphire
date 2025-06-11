@@ -48,7 +48,7 @@ namespace Sapphire::World::Manager
 
     void serverInfo( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
-    void unlockCharacter( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
+    //void unlockCharacter( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
     void instance( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
     void questBattle( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
@@ -66,6 +66,9 @@ namespace Sapphire::World::Manager
     void hotReload( char* data, Sapphire::Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
     void facing( char* data, Sapphire::Entity::Player& player, std::shared_ptr< DebugCommand > command );
+
+    void aoeRange( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
+
 
   };
 

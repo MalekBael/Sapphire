@@ -14,15 +14,15 @@ using json = nlohmann::json;
 
 json loadEnemyHumanoidsJson()
 {
-  const std::string jsonPath = "data/battlenpc/spoken/enemyhumanoids.json";
+  const std::string jsonPath = "data/battlenpc/spoken/cognizants/enemyhumanoids.json";
   std::ifstream file( jsonPath );
 
   if( !file.is_open() )
   {
     std::vector< std::string > alternativePaths = {
-            "../data/battlenpc/spoken/enemyhumanoids.json",
-            "../../data/battlenpc/spoken/enemyhumanoids.json",
-            "./data/battlenpc/spoken/enemyhumanoids.json" };
+            "../data/battlenpc/spoken/cognizants/enemyhumanoids.json",
+            "../../data/battlenpc/spoken/cognizants/enemyhumanoids.json",
+            "./data/battlenpc/spoken/cognizants/enemyhumanoids.json" };
 
     for( const auto& path : alternativePaths )
     {

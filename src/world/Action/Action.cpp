@@ -37,6 +37,7 @@
 
 #include "Job/Warrior.h"
 
+
 using namespace Sapphire;
 using namespace Sapphire::Common;
 using namespace Sapphire::Network;
@@ -60,7 +61,11 @@ Action::Action::Action( Entity::CharaPtr caster, uint32_t actionId, uint16_t req
                                                                                               m_startTime( 0 ),
                                                                                               m_interruptType( Common::ActionInterruptType::None ),
                                                                                               m_requestId( requestId ),
-                                                                                              m_actionKind( Common::ActionKind::ACTION_KIND_NORMAL )
+                                                                                              m_actionKind( Common::ActionKind::ACTION_KIND_NORMAL ),
+                                                                                              m_aspect( static_cast< Common::ActionAspect >( 0 ) ),
+                                                                                              m_castType( Common::CastType::SingleTarget ),
+                                                                                              m_category( Common::ActionCategory::None ),
+                                                                                              m_primaryCostType( Common::ActionPrimaryCostType::None )
 {
 }
 
@@ -867,10 +872,30 @@ void Action::Action::addDefaultActorFilters()
       break;
     }
 
-      //    case Common::CastType::RectangularAOE:
-      //    {
-      //      break;
-      //    }
+    case Common::CastType::RectangularAOE:
+    {
+      auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
+      addActorFilter( filter );
+      break; // Add break to prevent fallthrough
+    }
+
+    case Common::CastType::CircularAOEWithPadding:
+    {
+      // For CircularAOEWithPadding (cast type 5), always use the caster's position as center
+      auto centerPos = m_pSource->getPos();
+
+      // Get the base effect range from action data
+      float range = m_effectRange;
+
+      // Use a reasonable minimum radius if none is specified
+      if( range < 6.0f )
+        range = 6.0f;
+
+      auto filter = std::make_shared< World::Util::ActorFilterInRange >( centerPos, range );
+      addActorFilter( filter );
+      break;
+    }
+
 
     default:
     {
@@ -881,6 +906,8 @@ void Action::Action::addDefaultActorFilters()
     }
   }
 }
+
+
 
 bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
 {

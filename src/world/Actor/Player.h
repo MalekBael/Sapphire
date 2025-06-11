@@ -46,6 +46,11 @@ namespace Sapphire::Entity
       std::array< uint16_t, 5 > history;
     };
 
+    struct PersistentStates {
+      uint32_t mountId = 0;  // Store mount ID to persist across zones
+      // Add other states you want to persist
+    };
+
     /*! Contructor */
     Player();
 
@@ -795,6 +800,11 @@ namespace Sapphire::Entity
 
     const Common::CharaLandData& getCharaLandData( Common::LandFlagsSlot slot ) const;
 
+    // Persistent state methods
+    void setPersistentMount(uint32_t mountId);
+    uint32_t getPersistentMount() const;
+    void clearPersistentMount();
+
   private:
     using InventoryMap = std::map< uint16_t, ItemContainerPtr >;
 
@@ -959,6 +969,8 @@ namespace Sapphire::Entity
 
     uint64_t m_partyId;
     std::vector< uint32_t > m_lastPcSearch;
+
+    PersistentStates m_persistentStates;
 
     bool addQuest( const World::Quest& quest );
 

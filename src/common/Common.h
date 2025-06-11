@@ -1868,7 +1868,14 @@ namespace Sapphire::Common
     CircularAOE = 2,
     RectangularAOE = 3,
     ConeAOE = 4,
-    CircularAoEPlaced = 7
+    CircularAOEWithPadding = 5,
+    CircularAOEWithPaddingMeteor = 6,
+    CircularAoEPlaced = 7,
+    LineFollowingPlayer = 8,
+    DonutNoPadding = 10,
+    CrossNoPadding = 11,
+    LineNoPadding = 12,
+    ConeNoPadding = 13
   };
 
   enum class Role : uint8_t

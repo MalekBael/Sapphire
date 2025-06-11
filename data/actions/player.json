@@ -5255,7 +5255,7 @@
   },
   "445": {
     "name": "True Grit",
-    "potency": 0,
+    "potency": 150,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -5265,7 +5265,18 @@
     "nextCombo": [],
     "statuses": {
       "caster": [],
-      "target": []
+      "target": [
+        {
+          "id": 571,
+          "duration": 15000,
+          "modifiers": [
+            {
+              "modifier": "AccuracyPercent",
+              "value": -70
+            }
+          ]
+        }
+      ]
     }
   },
   "446": {
@@ -5570,7 +5581,7 @@
   },
   "482": {
     "name": "Plaincracker",
-    "potency": 0,
+    "potency": 200,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11855,7 +11866,7 @@
   },
   "965": {
     "name": "Peck",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11870,7 +11881,7 @@
   },
   "966": {
     "name": "Fire",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11885,7 +11896,7 @@
   },
   "967": {
     "name": "Blizzard",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11900,7 +11911,7 @@
   },
   "968": {
     "name": "Thunder",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11915,7 +11926,7 @@
   },
   "969": {
     "name": "Aero",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11930,7 +11941,7 @@
   },
   "970": {
     "name": "Stone",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -11945,7 +11956,7 @@
   },
   "971": {
     "name": "Water",
-    "potency": 0,
+    "potency": 100,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -18210,7 +18221,18 @@
     "nextCombo": [],
     "statuses": {
       "caster": [],
-      "target": []
+      "target": [
+        {
+          "id": 571,
+          "duration": 15000,
+          "modifiers": [
+            {
+              "modifier": "AccuracyPercent",
+              "value": -70
+            }
+          ]
+        }
+      ]
     }
   },
   "1419": {
