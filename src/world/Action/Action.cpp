@@ -61,7 +61,11 @@ Action::Action::Action( Entity::CharaPtr caster, uint32_t actionId, uint16_t req
                                                                                               m_startTime( 0 ),
                                                                                               m_interruptType( Common::ActionInterruptType::None ),
                                                                                               m_requestId( requestId ),
-                                                                                              m_actionKind( Common::ActionKind::ACTION_KIND_NORMAL )
+                                                                                              m_actionKind( Common::ActionKind::ACTION_KIND_NORMAL ),
+                                                                                              m_aspect( static_cast< Common::ActionAspect >( 0 ) ),
+                                                                                              m_castType( Common::CastType::SingleTarget ),
+                                                                                              m_category( Common::ActionCategory::None ),
+                                                                                              m_primaryCostType( Common::ActionPrimaryCostType::None )
 {
 }
 
@@ -872,6 +876,7 @@ void Action::Action::addDefaultActorFilters()
     {
       auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
       addActorFilter( filter );
+      break; // Add break to prevent fallthrough
     }
 
     case Common::CastType::CircularAOEWithPadding:

@@ -1,42 +1,38 @@
 #pragma once
 
-#include <cstdint>
-#include <unordered_map>
-#include <string>
-#include <vector>
 #include "Common.h"
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace Sapphire::World::Action
 {
-  struct StatusModifier
-  {
+  struct StatusModifier {
     Common::ParamModifier modifier;
     int32_t value;
   };
 
-  struct StatusEntry
-  {
+  struct StatusEntry {
     uint16_t id;
     uint32_t duration;
     uint32_t flag;
     std::vector< StatusModifier > modifiers;
   };
 
-  struct StatusEffect
-  {
+  struct StatusEffect {
     std::vector< StatusEntry > caster;
     std::vector< StatusEntry > target;
   };
 
-  struct ActionEntry
-  {
-    uint16_t potency;
-    uint16_t comboPotency;
-    uint16_t flankPotency;
-    uint16_t frontPotency;
-    uint16_t rearPotency;
-    uint16_t curePotency;
-    uint16_t restoreMPPercentage;
+  struct ActionEntry {
+    uint16_t potency = 0;
+    uint16_t comboPotency = 0;
+    uint16_t flankPotency = 0;
+    uint16_t frontPotency = 0;
+    uint16_t rearPotency = 0;
+    uint16_t curePotency = 0;
+    uint16_t restoreMPPercentage = 0;
     std::vector< uint32_t > nextCombo;
     StatusEffect statuses;
   };
@@ -51,4 +47,4 @@ namespace Sapphire::World::Action
 
     static Lut m_actionLut;
   };
-}
+}// fixed C26495 (variable not initialized)
