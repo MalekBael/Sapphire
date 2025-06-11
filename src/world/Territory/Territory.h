@@ -1,21 +1,22 @@
 #ifndef _ZONE_H
 #define _ZONE_H
 
-#include <unordered_map>
 #include <Common.h>
+#include <unordered_map>
 
 #include "Cell.h"
 #include "CellHandler.h"
 
 #include "ForwardsZone.h"
+#include <Encounter/EncounterTimeline.h>
 
-#include <set>
 #include <map>
 #include <memory>
+#include <set>
 
+#include <Exd/Structs.h>
 #include <cstdio>
 #include <cstring>
-#include <Exd/Structs.h>
 
 namespace Sapphire
 {
@@ -25,10 +26,9 @@ namespace Sapphire
   {
     struct InstanceContent;
     struct TerritoryType;
-  }
+  }// namespace Data
 
-  struct SpawnInfo
-  {
+  struct SpawnInfo {
     std::shared_ptr< Entity::BNpc > bnpcPtr;
     std::shared_ptr< Common::BNPCInstanceObject > infoPtr;
     uint32_t lastSpawn;
@@ -75,6 +75,8 @@ namespace Sapphire
     Common::TerritoryIdent m_ident;
 
     float m_inRangeDistance;
+
+    Encounter::TimelinePack m_timelinePack;
 
   public:
     Territory();
@@ -129,7 +131,7 @@ namespace Sapphire
 
     void pushActor( const Entity::GameObjectPtr& pActor );
 
-    void removeActor( const Entity::GameObjectPtr &pActor );
+    void removeActor( const Entity::GameObjectPtr& pActor );
 
     void updateActorPosition( Entity::GameObject& pActor );
 
@@ -177,6 +179,7 @@ namespace Sapphire
     void addEObj( Entity::EventObjectPtr object );
 
     Entity::BNpcPtr createBNpcFromLayoutId( uint32_t levelId, uint32_t hp, Common::BNpcType bnpcType, uint32_t triggerOwnerId = 0 );
+    Entity::BNpcPtr createBNpcFromLayoutIdNoPush( uint32_t levelId, uint32_t hp, Common::BNpcType bnpcType, uint32_t triggerOwnerId = 0 );
 
     Entity::BNpcPtr getActiveBNpcByEntityId( uint32_t entityId );
 
@@ -185,6 +188,10 @@ namespace Sapphire
     Entity::BNpcPtr getActiveBNpcByLayoutIdAndTriggerOwner( uint32_t instanceId, uint32_t triggerOwnerId );
 
     Entity::EventObjectPtr getEObj( uint32_t objId );
+
+    Entity::PlayerPtr getPlayer( uint32_t playerId );
+
+    const std::unordered_map< uint32_t, Entity::PlayerPtr >& getPlayers();
 
     InstanceContentPtr getAsInstanceContent();
 
@@ -195,8 +202,11 @@ namespace Sapphire
     uint32_t getNextActionResultId();
 
     std::shared_ptr< World::Navi::NaviProvider > getNaviProvider();
+
+    void setEncounterTimeline( const std::string& name );
+    Encounter::TimelinePack& getEncounterTimeline();
   };
 
-}
+}// namespace Sapphire
 
 #endif

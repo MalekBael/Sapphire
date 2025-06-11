@@ -2,11 +2,11 @@
 
 #include <Common.h>
 
-#include "Forwards.h"
 #include "Chara.h"
-#include <set>
+#include "Forwards.h"
 #include <map>
 #include <queue>
+#include <set>
 
 namespace Sapphire::Entity
 {
@@ -23,7 +23,11 @@ namespace Sapphire::Entity
     Npc( Common::ObjKind type );
 
     virtual ~Npc() override;
+    bool pathingActive() const;
+    void setPathingActive( bool pathing );
 
+  private:
+    bool m_bPathingActive{ false };
   };
 
-}
+}// namespace Sapphire::Entity

@@ -18,6 +18,7 @@ namespace Sapphire::Entity
         uint32_t m_hateAmount;
         CharaPtr m_pChara;
     };
+    using HateListEntryPtr = std::shared_ptr< HateListEntry >;
 
     enum class BNpcState
     {
@@ -123,6 +124,7 @@ namespace Sapphire::Entity
         BNpcState getState() const;
         void setState(BNpcState state);
 
+        const std::set< std::shared_ptr< HateListEntry > >& getHateList() const;
         void hateListClear();
         uint32_t hateListGetValue(const Sapphire::Entity::CharaPtr& pChara);
         uint32_t hateListGetHighestValue();
@@ -162,6 +164,7 @@ namespace Sapphire::Entity
         void setFlag(uint32_t flags);
         void removeFlag( uint32_t flag );
         void clearFlags();
+        void resetFlags( uint32_t flags );
 
         void calculateStats() override;
 

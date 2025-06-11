@@ -509,6 +509,11 @@ void BNpc::sendPositionUpdate()
   server().queueForPlayers( getInRangePlayerIds(), movePacket );
 }
 
+const std::set< std::shared_ptr< HateListEntry > >& BNpc::getHateList() const
+{
+  return m_hateList;
+}
+
 void BNpc::hateListClear()
 {
   for( auto& listEntry : m_hateList )
@@ -888,6 +893,37 @@ bool BNpc::hasFlag( uint32_t flag ) const
 void BNpc::setFlag( uint32_t flag )
 {
   m_flags |= flag;
+}
+
+void BNpc::resetFlags( uint32_t flags )
+{
+  uint32_t oldFlags = m_flags;
+  m_flags = 0;
+  m_flags |= flags;
+
+  auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
+  auto pZone = teriMgr.getTerritoryByGuId( getTerritoryId() );
+
+
+  if( pZone && getAgentId() != -1 && ( oldFlags & Entity::Immobile ) != Entity::Immobile &&
+      ( m_flags & Entity::Immobile ) == Entity::Immobile )
+  {
+    Logger::debug( "{} {} Pathing deactivated", m_id, getAgentId() );
+    auto pNaviProvider = pZone->getNaviProvider();
+    pNaviProvider->removeAgent( *this );
+    setPathingActive( false );
+  }
+  else if( pZone && ( oldFlags & Entity::Immobile ) == Entity::Immobile &&
+           ( m_flags & Entity::Immobile ) != Entity::Immobile )
+  {
+    Logger::debug( "{} Pathing activated", m_id );
+    auto pNaviProvider = pZone->getNaviProvider();
+    if( getAgentId() != -1 )
+      pNaviProvider->removeAgent( *this );
+    auto agentId = pNaviProvider->addAgent( *this );
+    setAgentId( agentId );
+    setPathingActive( true );
+  }
 }
 
 void BNpc::removeFlag( uint32_t flag )

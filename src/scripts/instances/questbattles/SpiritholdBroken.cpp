@@ -19,6 +19,16 @@ private:
   static constexpr auto CUT_SCENE_01 = 69;
   static constexpr auto LOC_TALKSHAPE1 = 8;
 
+  // Battle talk message IDs
+  static constexpr auto MASKEDMAGUS_BATTLETALK_01 = 152;
+  static constexpr auto MASKEDMAGUS_BATTLETALK_02 = 153;
+  static constexpr auto MASKEDMAGUS_BATTLETALK_03 = 154;
+  
+  // Battle talk flags
+  bool m_sentBattleTalk1 = false;
+  bool m_sentBattleTalk2 = false;
+  bool m_sentBattleTalk3 = false;
+
 public:
   SpiritholdBroken() : Sapphire::ScriptAPI::QuestBattleScript( 15 )
   { }
@@ -132,29 +142,72 @@ public:
       boss->hateListAdd( player.getAsPlayer(), 1 );
     }
 
-  void onUpdate( QuestBattle& instance, uint64_t tickCount ) override
-      {
-        auto boss = instance.getActiveBNpcByLayoutId( INIT_POP_01 );
-        auto successCalled = instance.getDirectorVar( SUCCESS_CALLED );
-        auto pPlayer = instance.getPlayerPtr();
+  void onUpdate(QuestBattle& instance, uint64_t tickCount) override
+  {
+    auto boss = instance.getActiveBNpcByLayoutId(INIT_POP_01);
+    auto successCalled = instance.getDirectorVar(SUCCESS_CALLED);
+    auto pPlayer = instance.getPlayerPtr();
 
-        uint32_t bossHpPercent = 0;
-        if( boss )
-          bossHpPercent = boss->getHpPercent();
+    uint32_t bossHpPercent = 0;
+    if (boss)
+      bossHpPercent = boss->getHpPercent();
 
-        if( pPlayer && !pPlayer->isAlive() )
-        {
-          instance.fail();
-          return;
-        }
-
-        if( instance.getCountEnemyBNpc() == 0 && successCalled == 0 )
-        {
-          instance.setDirectorVar( SUCCESS_CALLED, 1 );
-          instance.success();
-          return;
-        }
+    if (pPlayer && !pPlayer->isAlive())
+    {
+      instance.fail();
+      return;
     }
+
+    // First battle talk at 90% HP
+    if (boss && bossHpPercent <= 90 && !m_sentBattleTalk1 && pPlayer)
+    {
+      // BattleTalk4 (0x264) is used for quest battle dialogue
+      playerMgr().sendBattleTalk(*pPlayer, 
+                                MASKEDMAGUS_BATTLETALK_01, // battle talk ID
+                                instance.getDirectorId(),  // handler ID
+                                0x4,                       // kind (4 for quest battles)
+                                LOC_ACTOR0,                // name ID for Masked Mage
+                                boss->getId(),             // talker ID
+                                5000,                      // duration in ms
+                                0, 0, 0, 0, 0, 0, 0, 0);   // parameters
+      m_sentBattleTalk1 = true;
+    }
+    
+    // Second battle talk at 50% HP
+    if (boss && bossHpPercent <= 50 && !m_sentBattleTalk2 && pPlayer)
+    {
+      playerMgr().sendBattleTalk(*pPlayer, 
+                                MASKEDMAGUS_BATTLETALK_02,
+                                instance.getDirectorId(),
+                                0x4,
+                                LOC_ACTOR0,
+                                boss->getId(),
+                                5000,
+                                0, 0, 0, 0, 0, 0, 0, 0);
+      m_sentBattleTalk2 = true;
+    }
+    
+    // Third battle talk at 20% HP
+    if (boss && bossHpPercent <= 20 && !m_sentBattleTalk3 && pPlayer)
+    {
+      playerMgr().sendBattleTalk(*pPlayer,
+                                MASKEDMAGUS_BATTLETALK_03,
+                                instance.getDirectorId(),
+                                0x4,
+                                LOC_ACTOR0,
+                                boss->getId(),
+                                5000,
+                                0, 0, 0, 0, 0, 0, 0, 0);
+      m_sentBattleTalk3 = true;
+    }
+
+    if (instance.getCountEnemyBNpc() == 0 && successCalled == 0)
+    {
+      instance.setDirectorVar(SUCCESS_CALLED, 1);
+      instance.success();
+      return;
+    }
+  }
 
     void onEnterTerritory( QuestBattle& instance, Entity::Player& player, uint32_t eventId, uint16_t param1,
                          uint16_t param2 ) override

@@ -1,24 +1,24 @@
 
-#include <Common.h>
-#include <Logging/Logger.h>
-#include <Util/Util.h>
-#include <Util/UtilMath.h>
-#include <Exd/ExdData.h>
-#include <Network/CommonActorControl.h>
-#include <Service.h>
-#include <datReader/DatCategories/bg/pcb.h>
-#include <datReader/DatCategories/bg/lgb.h>
-#include <datReader/DatCategories/bg/sgb.h>
+#include "Actor/EventObject.h"
+#include "Actor/Player.h"
 #include "Event/Director.h"
 #include "Event/EventDefs.h"
-#include "Script/ScriptMgr.h"
-#include "WorldServer.h"
+#include "Manager/EventMgr.h"
 #include "Manager/PlayerMgr.h"
 #include "Manager/TerritoryMgr.h"
-#include "Manager/EventMgr.h"
-
-#include "Actor/Player.h"
-#include "Actor/EventObject.h"
+#include "Manager/WarpMgr.h"
+#include "Script/ScriptMgr.h"
+#include "WorldServer.h"
+#include <Common.h>
+#include <Exd/ExdData.h>
+#include <Logging/Logger.h>
+#include <Network/CommonActorControl.h>
+#include <Service.h>
+#include <Util/Util.h>
+#include <Util/UtilMath.h>
+#include <datReader/DatCategories/bg/lgb.h>
+#include <datReader/DatCategories/bg/pcb.h>
+#include <datReader/DatCategories/bg/sgb.h>
 
 #include "Network/PacketWrappers/ActorControlPacket.h"
 #include "Network/PacketWrappers/ActorControlSelfPacket.h"
@@ -27,6 +27,9 @@
 
 #include "InstanceContent.h"
 #include "InstanceObjectCache.h"
+
+#include <Encounter/EncounterFight.h>
+#include <Task/MoveTerritoryTask.h>
 
 
 using namespace Sapphire::Common;
@@ -41,22 +44,22 @@ Sapphire::InstanceContent::InstanceContent( std::shared_ptr< Excel::ExcelStruct<
                                             uint32_t guId,
                                             const std::string& internalName,
                                             const std::string& contentName,
-                                            uint32_t instanceContentId ) :
-  Territory( static_cast< uint16_t >( territoryType ), guId, internalName, contentName ),
-  Director( Event::Director::InstanceContent, instanceContentId ),
-  m_instanceConfiguration( pInstanceConfiguration ),
-  m_contentFinderCondition( pContentFinderCondition ),
-  m_instanceContentId( instanceContentId ),
-  m_state( Created ),
-  m_pEntranceEObj( nullptr ),
-  m_instanceCommenceTime( 0 ),
-  m_voteState( false ),
-  m_currentBgm( pInstanceConfiguration->data().Music ),
-  m_instanceExpireTime( Util::getTimeSeconds() + 300 ),
-  m_instanceTerminateTime( 0 ),
-  m_instanceTerminate( false )
+                                            uint32_t instanceContentId ) : Territory( static_cast< uint16_t >( territoryType ), guId, internalName, contentName ),
+                                                                           Director( Event::Director::InstanceContent, instanceContentId ),
+                                                                           m_instanceConfiguration( pInstanceConfiguration ),
+                                                                           m_contentFinderCondition( pContentFinderCondition ),
+                                                                           m_instanceContentId( instanceContentId ),
+                                                                           m_state( Created ),
+                                                                           m_pEntranceEObj( nullptr ),
+                                                                           m_instanceCommenceTime( 0 ),
+                                                                           m_voteState( false ),
+                                                                           m_currentBgm( pInstanceConfiguration->data().Music ),
+                                                                           m_instanceExpireTime( Util::getTimeSeconds() + 300 ),
+                                                                           m_instanceTerminateTime( 0 ),
+                                                                           m_instanceResetTime( 0 ),
+                                                                           m_instanceResetFinishTime( 0 ),
+                                                                           m_instanceTerminate( false )
 {
-
 }
 
 bool Sapphire::InstanceContent::init()
@@ -73,7 +76,6 @@ bool Sapphire::InstanceContent::init()
 
 Sapphire::InstanceContent::~InstanceContent()
 {
-
 }
 
 uint32_t Sapphire::InstanceContent::getInstanceContentId() const
@@ -91,7 +93,7 @@ void Sapphire::InstanceContent::onPlayerZoneIn( Entity::Player& player )
   Logger::debug( "InstanceContent::onPlayerZoneIn: Territory#{0}|{1}, Entity#{2}",
                  getGuId(), getTerritoryTypeId(), player.getId() );
 
-  if( isTerminationReady() ) // wtf
+  if( isTerminationReady() )// wtf
   {
     Logger::warn( "Entity#{0} Appear for a terminated instance!", player.getId() );
     playerMgr().onExitInstance( player );
@@ -109,7 +111,7 @@ void Sapphire::InstanceContent::onLeaveTerritory( Entity::Player& player )
   Logger::debug( "InstanceContent::onLeaveTerritory: Territory#{0}|{1}, Entity#{2}",
                  getGuId(), getTerritoryTypeId(), player.getId() );
 
-  unbindPlayer( player.getId() );
+  //unbindPlayer( player.getId() );
 
   clearDirector( player );
 
@@ -119,6 +121,7 @@ void Sapphire::InstanceContent::onLeaveTerritory( Entity::Player& player )
 
 void Sapphire::InstanceContent::onUpdate( uint64_t tickCount )
 {
+  auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   switch( m_state )
   {
     case Created:
@@ -137,10 +140,10 @@ void Sapphire::InstanceContent::onUpdate( uint64_t tickCount )
         if( it == m_playerMap.end() )
           return;
 
-        auto player = it->second;
-        if( !player->isLoadingComplete() ||
-            !player->isDirectorInitialized() ||
-                player->hasCondition( PlayerCondition::WatchingCutscene ) )
+        auto pPlayer = it->second;
+        if( !pPlayer->isLoadingComplete() ||
+            !pPlayer->isDirectorInitialized() ||
+            pPlayer->hasCondition( PlayerCondition::WatchingCutscene ) )
           return;
       }
 
@@ -158,12 +161,81 @@ void Sapphire::InstanceContent::onUpdate( uint64_t tickCount )
       if( m_pEntranceEObj )
         m_pEntranceEObj->setPermissionInvisibility( 1 );
       m_state = DutyInProgress;
+
       break;
     }
 
 
     case DutyReset:
+    {
+      // todo: revive players if trial/enclosed raid arena, add reset timer
+      if( m_instanceResetTime == 0 )
+      {
+        sendDutyReset();
+        m_instanceResetTime = tickCount + 3000;
+
+        return;
+      }
+      else if( tickCount < m_instanceResetTime )
+        return;
+
+
+      if( m_instanceResetFinishTime == 0 )
+      {
+        m_instanceResetFinishTime = tickCount + 5000;
+        m_pEncounter->reset();
+
+        std::vector< Entity::PlayerPtr > playerList;
+
+        auto& warpMgr = Common::Service< WarpMgr >::ref();
+        auto& server = Common::Service< World::WorldServer >::ref();
+        for( const auto& playerIt : m_playerMap )
+        {
+          auto pPlayer = playerIt.second;
+
+          pPlayer->resetHp();
+          pPlayer->resetMp();
+          pPlayer->setStatus( Common::ActorStatus::Idle );
+
+          movePlayerToEntrance( *pPlayer );
+
+          playerList.push_back( pPlayer );
+        }
+
+        for( const auto& pPlayer : playerList )
+        {
+          warpMgr.requestMoveTerritory( *pPlayer, WarpType::WARP_TYPE_INSTANCE_CONTENT, getGuId(), pPlayer->getPos(), pPlayer->getRot() );
+        }
+
+        if( m_pEntranceEObj )
+          m_pEntranceEObj->setPermissionInvisibility( 0 );
+
+        scriptMgr.onInstanceReset( *this );
+
+        return;
+      }
+      else if( tickCount < m_instanceResetFinishTime )
+        return;
+
+      for( const auto& playerIt : m_playerMap )
+      {
+        auto pPlayer = playerIt.second;
+
+        if( !pPlayer->isLoadingComplete() ||
+            !pPlayer->isDirectorInitialized() ||
+            pPlayer->hasCondition( PlayerCondition::WatchingCutscene ) )
+          return;
+      }
+
+      m_pEntranceEObj->setPermissionInvisibility( 1 );
+      sendForward();
+
+      m_state = DutyInProgress;
+
+      m_instanceResetTime = 0;
+      m_instanceResetFinishTime = 0;
       break;
+    }
 
     case DutyInProgress:
     {
@@ -178,6 +250,9 @@ void Sapphire::InstanceContent::onUpdate( uint64_t tickCount )
         m_instanceTerminate = true;
 
       updateBNpcs( tickCount );
+
+      if( m_pEncounter->getStatus() == EncounterFightStatus::FAIL )
+        m_state = DutyReset;
       break;
     }
 
@@ -212,8 +287,9 @@ void Sapphire::InstanceContent::onUpdate( uint64_t tickCount )
     }
   }
 
-  auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   scriptMgr.onInstanceUpdate( *this, tickCount );
+
+  m_pEncounter->update( tickCount );
 
   m_lastUpdate = tickCount;
 }
@@ -233,12 +309,12 @@ void Sapphire::InstanceContent::onEventHandlerOrder( Entity::Player& player, uin
       {
         switch( arg2 )
         {
-          case 0: // Leave content
+          case 0:// Leave content
           {
             playerMgr().onExitInstance( player );
             break;
           }
-          case 1: // Force leave ( afk timer )
+          case 1:// Force leave ( afk timer )
           {
             break;
           }
@@ -351,7 +427,7 @@ void Sapphire::InstanceContent::onAddEObj( Entity::EventObjectPtr object )
 {
   if( object->getName() != "none" )
     m_eventObjectMap[ object->getName() ] = object;
-  if( object->getObjectId() == 2000182 ) // start
+  if( object->getObjectId() == 2000182 )// start
     m_pEntranceEObj = object;
 
   auto& exdData = Common::Service< Data::ExdData >::ref();
@@ -373,7 +449,7 @@ void Sapphire::InstanceContent::sendSharedGroup( uint32_t sharedGroupId, uint32_
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::SetSharedGroupId, sharedGroupId, timeIndex ) );
+                                                                           DirectorEventId::SetSharedGroupId, sharedGroupId, timeIndex ) );
   }
 }
 
@@ -384,7 +460,7 @@ void Sapphire::InstanceContent::sendInvalidateTodoList()
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::InvalidateTodoList ) );
+                                                                           DirectorEventId::InvalidateTodoList ) );
   }
 }
 
@@ -395,7 +471,7 @@ void Sapphire::InstanceContent::sendDutyComplete()
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::DutyComplete, m_instanceConfiguration->data().ClearMusic, 0 ) );
+                                                                           DirectorEventId::DutyComplete, m_instanceConfiguration->data().ClearMusic, 0 ) );
   }
 }
 
@@ -406,7 +482,7 @@ void Sapphire::InstanceContent::sendDutyCommence()
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::DutyCommence, getExpireValue() ) );
+                                                                           DirectorEventId::DutyCommence, getExpireValue() ) );
   }
 }
 
@@ -417,7 +493,18 @@ void Sapphire::InstanceContent::sendForward()
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::Forward, getExpireValue() ) );
+                                                                           DirectorEventId::Forward, getExpireValue() ) );
+  }
+}
+
+void Sapphire::InstanceContent::sendDutyReset()
+{
+  auto& server = Common::Service< World::WorldServer >::ref();
+  for( const auto& playerIt : m_playerMap )
+  {
+    auto player = playerIt.second;
+    server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
+                                                                           DirectorEventId::LoadingScreen, 3000 ) );
   }
 }
 
@@ -428,7 +515,7 @@ void Sapphire::InstanceContent::sendVoteState()
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::VoteState, m_voteState ) );
+                                                                           DirectorEventId::VoteState, m_voteState ) );
   }
 }
 
@@ -439,7 +526,7 @@ void Sapphire::InstanceContent::sendStringendoMode( uint16_t mode )
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(), makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                                                                              DirectorEventId::SetStringendoMode, mode ) );
+                                                                           DirectorEventId::SetStringendoMode, mode ) );
   }
 }
 
@@ -454,6 +541,34 @@ Sapphire::InstanceContent::InstanceContentState Sapphire::InstanceContent::getSt
   return m_state;
 }
 
+void Sapphire::InstanceContent::movePlayerToEntrance( Sapphire::Entity::Player& player )
+{
+  auto& exdData = Common::Service< Data::ExdData >::ref();
+  auto& instanceObjectCache = Common::Service< InstanceObjectCache >::ref();
+  auto contentInfo = exdData.getRow< Excel::InstanceContent >( m_instanceContentId );
+
+  auto rect = instanceObjectCache.getEventRange( contentInfo->data().EntranceRect );
+
+  if( m_pEntranceEObj != nullptr )
+  {
+    if( rect )
+      player.setRot( Util::eulerToDirection( { rect->header.transform.rotation.x, rect->header.transform.rotation.y, rect->header.transform.rotation.z } ) );
+    else
+      player.setRot( PI - PI / 2 );
+    player.setPos( m_pEntranceEObj->getPos() );
+  }
+  else if( rect )
+  {
+    player.setRot( Util::eulerToDirection( { rect->header.transform.rotation.x, rect->header.transform.rotation.y, rect->header.transform.rotation.z } ) );
+    player.setPos( { rect->header.transform.translation.x, rect->header.transform.translation.y, rect->header.transform.translation.z } );
+  }
+  else
+  {
+    player.setRot( PI - PI / 2 );
+    player.setPos( { 0.f, 0.f, 0.f } );
+  }
+}
+
 void Sapphire::InstanceContent::onBeforePlayerZoneIn( Sapphire::Entity::Player& player )
 {
   // remove any players from the instance who aren't bound on zone in
@@ -463,30 +578,7 @@ void Sapphire::InstanceContent::onBeforePlayerZoneIn( Sapphire::Entity::Player& 
   // if a player has already spawned once inside this instance, don't move them if they happen to zone in again
   if( !hasPlayerPreviouslySpawned( player ) )
   {
-    auto& exdData = Common::Service< Data::ExdData >::ref();
-    auto& instanceObjectCache = Common::Service< InstanceObjectCache >::ref();
-    auto contentInfo = exdData.getRow< Excel::InstanceContent >( m_instanceContentId );
-
-    auto rect = instanceObjectCache.getEventRange( contentInfo->data().EntranceRect );
-
-    if( m_pEntranceEObj != nullptr )
-    {
-      if( rect )
-        player.setRot( Util::eulerToDirection( { rect->header.transform.rotation.x, rect->header.transform.rotation.y, rect->header.transform.rotation.z } ) );
-      else
-        player.setRot( PI );
-      player.setPos( m_pEntranceEObj->getPos() );
-    }
-    else if( rect )
-    {
-      player.setRot( Util::eulerToDirection( { rect->header.transform.rotation.x, rect->header.transform.rotation.y, rect->header.transform.rotation.z } ) );
-      player.setPos( { rect->header.transform.translation.x, rect->header.transform.translation.y, rect->header.transform.translation.z } );
-    }
-    else
-    {
-      player.setRot( PI );
-      player.setPos( { 0.f, 0.f, 0.f } );
-    }
+    movePlayerToEntrance( player );
   }
 
   player.resetObjSpawnIndex();
@@ -499,6 +591,17 @@ Sapphire::Entity::EventObjectPtr Sapphire::InstanceContent::getEObjByName( const
     return nullptr;
 
   return it->second;
+}
+
+Sapphire::Entity::EventObjectPtr Sapphire::InstanceContent::getEObjById( uint32_t eobjId )
+{
+  Entity::EventObjectPtr pEObj = nullptr;
+
+  for( auto& eobj : m_eventIdToObjectMap )
+    if( eobj.second->getObjectId() == eobjId )
+      return pEObj;
+
+  return nullptr;
 }
 
 void Sapphire::InstanceContent::onTalk( Sapphire::Entity::Player& player, uint32_t eventId, uint64_t actorId )
@@ -514,13 +617,12 @@ void Sapphire::InstanceContent::onTalk( Sapphire::Entity::Player& player, uint32
   else
     PlayerMgr::sendDebug( player, "No onTalk handler found for interactable eobj with EObjID#{0}, eventId#{1}",
                           it->second->getObjectId(), eventId );*/
-                        
+
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   scriptMgr.onTalk( player, actorId, eventId );
 }
 
-void
-Sapphire::InstanceContent::onEnterTerritory( Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 )
+void Sapphire::InstanceContent::onEnterTerritory( Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 )
 {
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
@@ -529,17 +631,15 @@ Sapphire::InstanceContent::onEnterTerritory( Entity::Player& player, uint32_t ev
   if( !hasPlayerPreviouslySpawned( player ) )
   {
     m_spawnedPlayers.insert( player.getId() );
-    eventMgr.playScene( player, getDirectorId(), DirectorSceneId::SetupEventArgsOnStart, NO_DEFAULT_CAMERA | CONDITION_CUTSCENE |
-                        HIDE_HOTBAR | SILENT_ENTER_TERRI_BGM | SILENT_ENTER_TERRI_SE | SILENT_ENTER_TERRI_ENV |
-                        DISABLE_STEALTH | 0x00100000 | LOCK_HUD | LOCK_HOTBAR | DISABLE_CANCEL_EMOTE,
-                       { 0/*bgm*/, 0/*StringendoMode*/, 0/*Unknown*/, 0/*Option param*/, 0/*Unknown*/,
-                        getOptionFlags()/*Option bitFlag*/ } );
+    eventMgr.playScene( player, getDirectorId(), DirectorSceneId::SetupEventArgsOnStart, NO_DEFAULT_CAMERA | CONDITION_CUTSCENE | HIDE_HOTBAR | SILENT_ENTER_TERRI_BGM | SILENT_ENTER_TERRI_SE | SILENT_ENTER_TERRI_ENV | DISABLE_STEALTH | 0x00100000 | LOCK_HUD | LOCK_HOTBAR | DISABLE_CANCEL_EMOTE,
+                        { 0 /*bgm*/, 0 /*StringendoMode*/, 0 /*Unknown*/, 0 /*Option param*/, 0 /*Unknown*/,
+                          getOptionFlags() /*Option bitFlag*/ } );
   }
   else
   {
     eventMgr.playScene( player, getDirectorId(), DirectorSceneId::SetupEventArgsInProgress, NO_DEFAULT_CAMERA | HIDE_HOTBAR,
-                        { getCurrentBGM()/*bgm*/, 0/*StringendoMode*/, 0/*Unknown*/, 0/*Option param*/,
-                        0/*Unknown*/, getOptionFlags(),/*Option bitFlag*/ getExpireValue() /*Time remaining*/ } );
+                        { getCurrentBGM() /*bgm*/, 0 /*StringendoMode*/, 0 /*Unknown*/, 0 /*Option param*/,
+                          0 /*Unknown*/, getOptionFlags(), /*Option bitFlag*/ getExpireValue() /*Time remaining*/ } );
   }
 }
 
@@ -552,8 +652,8 @@ void Sapphire::InstanceContent::setCurrentBGM( uint16_t bgmIndex )
   {
     auto player = playerIt.second;
     server.queueForPlayer( player->getCharacterId(),
-      makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
-                            DirectorEventId::BattleGroundMusic, bgmIndex ) );
+                           makeActorControlSelf( player->getId(), DirectorUpdate, getDirectorId(),
+                                                 DirectorEventId::BGM, bgmIndex ) );
   }
 }
 
@@ -561,7 +661,7 @@ void Sapphire::InstanceContent::setPlayerBGM( Sapphire::Entity::Player& player, 
 {
   auto& server = Common::Service< World::WorldServer >::ref();
   server.queueForPlayer( player.getCharacterId(), makeActorControlSelf( player.getId(), DirectorUpdate, getDirectorId(),
-                                                                           DirectorEventId::BattleGroundMusic, bgmId ) );
+                                                                        DirectorEventId::BGM, bgmId ) );
 }
 
 uint16_t Sapphire::InstanceContent::getCurrentBGM() const
@@ -670,8 +770,8 @@ void Sapphire::InstanceContent::sendDutyFailed( bool force )
     eventMgr.eventStart( *player, player->getId(), getDirectorId(), Event::EventHandler::EventType::GameProgress, 0, 0 );
     eventMgr.playScene( *player, getDirectorId(), DirectorSceneId::DutyFailed,
                         NO_DEFAULT_CAMERA | CONDITION_CUTSCENE |
-                        HIDE_HOTBAR | SILENT_ENTER_TERRI_BGM | SILENT_ENTER_TERRI_SE | SILENT_ENTER_TERRI_ENV |
-                        DISABLE_STEALTH | 0x00100000 | LOCK_HUD | LOCK_HOTBAR | DISABLE_CANCEL_EMOTE,
+                                HIDE_HOTBAR | SILENT_ENTER_TERRI_BGM | SILENT_ENTER_TERRI_SE | SILENT_ENTER_TERRI_ENV |
+                                DISABLE_STEALTH | 0x00100000 | LOCK_HUD | LOCK_HOTBAR | DISABLE_CANCEL_EMOTE,
                         { 1 }, nullptr );
   }
 }
@@ -684,4 +784,19 @@ void Sapphire::InstanceContent::setExpireValue( uint32_t value )
 size_t Sapphire::InstanceContent::getInstancePlayerCount() const
 {
   return m_boundPlayerIds.size();
+}
+
+std::set< uint32_t > Sapphire::InstanceContent::getSpawnedPlayerIds() const
+{
+  return m_spawnedPlayers;
+}
+
+void Sapphire::InstanceContent::setEncounter( Sapphire::EncounterFightPtr pEncounter )
+{
+  m_pEncounter = pEncounter;
+}
+
+Sapphire::EncounterFightPtr Sapphire::InstanceContent::getEncounter()
+{
+  return m_pEncounter;
 }

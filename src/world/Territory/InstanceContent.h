@@ -1,10 +1,11 @@
 #ifndef SAPPHIRE_INSTANCECONTENT_H
 #define SAPPHIRE_INSTANCECONTENT_H
 
-#include "Territory.h"
 #include "Event/Director.h"
 #include "Forwards.h"
+#include "Territory.h"
 #include <Exd/Structs.h>
+#include <memory>
 
 namespace Sapphire
 {
@@ -36,6 +37,7 @@ namespace Sapphire
       0x4000000E - INSTANCE_CONTENT_ORDER_SYSTEM_Unknown - no args - some timer set */
     enum DirectorEventId : uint32_t
     {
+      // 2.3
       DEBUG_TimeSync = 0xC0000001,
       DutyCommence = 0x40000001,
       DutyComplete = 0x40000002,
@@ -43,7 +45,7 @@ namespace Sapphire
       SetDutyTime = 0x40000004,
       LoadingScreen = 0x40000005,
       Forward = 0x40000006,
-      BattleGroundMusic = 0x40000007,
+      //BattleGroundMusic = 0x40000007,
       InvalidateTodoList = 0x40000008,
       VoteState = 0x40000009,
       VoteStart = 0x4000000A,
@@ -52,15 +54,23 @@ namespace Sapphire
       FirstTimeNotify = 0x4000000D,
       TreasureVoteRefresh = 0x4000000E,
       SetSharedGroupId = 0x4000000F,
+      // 3.3x onwards
+      Sync = 0x80000000,
+      BGM = 0x80000001,
+      SyncDutyTimer = 0x80000003,
+      // some vote stuff here
+      StartEventCutscene = 0x80000008,
+      EndEventCutscene = 0x80000009,
+      StartQTE = 0x8000000A
     };
 
     enum EventHandlerOrderId : uint32_t
     {
       SheetDataReady = 0x80000000,
-      AbortContent = 0x40000001, //forceFlag
-      LuaOnStartCutscene = 0x40000002, //returnCode
-      VoteRequest = 0x40000003, //voteType
-      VoteReplay = 0x40000004 //voteType, accept
+      AbortContent = 0x40000001,      //forceFlag
+      LuaOnStartCutscene = 0x40000002,//returnCode
+      VoteRequest = 0x40000003,       //voteType
+      VoteReplay = 0x40000004         //voteType, accept
     };
 
     enum DirectorSceneId
@@ -121,6 +131,8 @@ namespace Sapphire
 
     void sendDutyCommence();
 
+    void sendDutyReset();
+
     void sendForward();
 
     void sendDutyFailed( bool force );
@@ -166,6 +178,8 @@ namespace Sapphire
 
     Entity::EventObjectPtr getEObjByName( const std::string& name );
 
+    Entity::EventObjectPtr getEObjById( uint32_t eobjId );
+
     /*! binds a player to the instance */
     bool bindPlayer( uint32_t playerId );
 
@@ -191,6 +205,14 @@ namespace Sapphire
     bool isTerminationReady() const;
 
     size_t getInstancePlayerCount() const;
+
+    std::set< uint32_t > getSpawnedPlayerIds() const;
+
+    void movePlayerToEntrance( Entity::Player& player );
+
+    void setEncounter( EncounterFightPtr pEncounter );
+    EncounterFightPtr getEncounter();
+
   private:
     std::shared_ptr< Excel::ExcelStruct< Excel::InstanceContent > > m_instanceConfiguration;
     std::shared_ptr< Excel::ExcelStruct< Excel::ContentFinderCondition > > m_contentFinderCondition;
@@ -202,6 +224,8 @@ namespace Sapphire
     uint32_t m_instanceExpireTime;
     uint64_t m_instanceTerminateTime;
     uint64_t m_instanceCommenceTime;
+    uint64_t m_instanceResetTime;
+    uint64_t m_instanceResetFinishTime;
 
     bool m_voteState;
     bool m_instanceTerminate;
@@ -214,7 +238,9 @@ namespace Sapphire
 
     // the players which are bound to the instance, regardless of inside or offline
     std::set< uint32_t > m_boundPlayerIds;
+
+    EncounterFightPtr m_pEncounter;
   };
 
-}
-#endif //SAPPHIRE_INSTANCECONTENT_H
+}// namespace Sapphire
+#endif//SAPPHIRE_INSTANCECONTENT_H
