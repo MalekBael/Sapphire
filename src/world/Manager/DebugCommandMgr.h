@@ -30,6 +30,8 @@ namespace Sapphire::World::Manager
     // help command
     void help( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
+    void pos( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
+
     // command handler callbacks
     void set( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
@@ -52,6 +54,9 @@ namespace Sapphire::World::Manager
 
     void instance( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
     void questBattle( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
+
+    //chocobo debug
+    void rental( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
     void housing( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 

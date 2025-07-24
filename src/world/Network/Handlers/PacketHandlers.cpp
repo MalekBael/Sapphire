@@ -47,6 +47,10 @@
 #include "WorldServer.h"
 #include "Forwards.h"
 
+/* Chocobo Rental*/
+#include "Manager/ChocoboMgr.h"
+
+
 using namespace Sapphire::Common;
 using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
@@ -355,6 +359,9 @@ void Sapphire::Network::GameConnection::setLanguageHandler( const Packets::FFXIV
   auto pCurrentZone = teriMgr.getTerritoryByGuId( player.getTerritoryId() );
 
   pCurrentZone->onFinishLoading( player );
+
+  // Check for pending rental chocobo mounts after player finishes loading
+  World::Manager::ChocoboMgr::checkAndMountPlayer( player );
 
   // player is done zoning
   player.setLoadingComplete( true );

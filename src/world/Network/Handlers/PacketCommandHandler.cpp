@@ -29,6 +29,8 @@
 #include <Manager/PlayerMgr.h>
 #include <Manager/RNGMgr.h>
 
+#include "Manager/ChocoboMgr.h"
+
 using namespace Sapphire::Common;
 using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
@@ -588,13 +590,17 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
 
       break;
     }
-    case PacketCommand::FINISH_LOADING: // Finish zoning
+    case PacketCommand::FINISH_LOADING:// Finish zoning
     {
       auto& warpMgr = Service< WarpMgr >::ref();
       warpMgr.finishWarp( player );
       player.setLoadingComplete( true );
       if( player.isLogin() )
         player.setIsLogin( false );
+
+      // CRITICAL: Check for pending/persistent mounts after loading is complete
+      World::Manager::ChocoboMgr::checkAndMountPlayerAfterLoading( player );
+
       break;
     }
     case PacketCommand::ACHIEVEMENT_REQUEST_RATE:

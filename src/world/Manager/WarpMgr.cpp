@@ -1,25 +1,25 @@
 #include <Service.h>
 
 #include "TaskMgr.h"
-#include "WarpMgr.h"
 #include "TerritoryMgr.h"
+#include "WarpMgr.h"
 
-#include <WorldServer.h>
-#include <Logging/Logger.h>
 #include <Exd/ExdData.h>
+#include <Logging/Logger.h>
+#include <WorldServer.h>
 
 #include "Task/MoveTerritoryTask.h"
 #include "Task/WarpTask.h"
 
 #include <Network/CommonActorControl.h>
-#include <Network/PacketWrappers/ActorControlSelfPacket.h>
 #include <Network/PacketWrappers/ActorControlPacket.h>
+#include <Network/PacketWrappers/ActorControlSelfPacket.h>
 #include <Network/Util/PacketUtil.h>
 
-#include <Manager/PlayerMgr.h>
+#include "WorldServer.h"
 #include <Manager/MapMgr.h>
 #include <Manager/MgrUtil.h>
-#include "WorldServer.h"
+#include <Manager/PlayerMgr.h>
 
 #include "Actor/Player.h"
 #include <Territory/InstanceObjectCache.h>
@@ -47,7 +47,7 @@ void WarpMgr::requestMoveTerritory( Entity::Player& player, Common::WarpType war
   m_entityIdToWarpInfoMap[ player.getId() ] = { targetTerritoryId, warpType, targetPos, targetRot };
 
   player.updatePrevTerritory();
-  
+
   // create warp task
   auto& taskMgr = Common::Service< TaskMgr >::ref();
   taskMgr.queueTask( makeMoveTerritoryTask( player, warpType, targetTerritoryId, targetPos, targetRot, 1000 ) );
@@ -180,15 +180,15 @@ void WarpMgr::requestPlayerTeleport( Entity::Player& player, uint16_t aetheryteI
 
   WarpType warpType = WarpType::WARP_TYPE_NORMAL;
   // TODO: should teleport type be a separate enum?
-  if( teleportType == 1 || teleportType == 2 ) // teleport
+  if( teleportType == 1 || teleportType == 2 )// teleport
   {
     warpType = WarpType::WARP_TYPE_TELEPO;
   }
-  else if( teleportType == 3 ) // return
+  else if( teleportType == 3 )// return
   {
     warpType = WarpType::WARP_TYPE_EXIT_RANGE;
   }
-  else if( teleportType == 4 ) // return dead
+  else if( teleportType == 4 )// return dead
   {
     warpType = WarpType::WARP_TYPE_EXIT_RANGE;
   }

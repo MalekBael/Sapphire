@@ -22,6 +22,7 @@
 #include "Territory/Land.h"
 #include "Territory/House.h"
 #include "Territory/Housing/HousingInteriorTerritory.h"
+#include "ChocoboMgr.h"
 
 using namespace Sapphire;
 using namespace Sapphire::World::Manager;
@@ -607,6 +608,7 @@ bool TerritoryMgr::movePlayer( Sapphire::Territory& teri, Entity::Player& player
   m_playerIdToInstanceMap[ player.getId() ] = teri.getGuId();
 
   teri.onBeforePlayerZoneIn( player );
+
   playerMgr.onMoveZone( player );
   partyMgr.onMoveZone( player );
 
@@ -709,5 +711,8 @@ bool TerritoryMgr::joinWorld( Entity::Player& player )
 
   return true;
 }
+
+
+
 
 

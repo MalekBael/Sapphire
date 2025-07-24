@@ -82,6 +82,8 @@ DebugCommandMgr::DebugCommandMgr()
   registerCommand( "ew", &DebugCommandMgr::easyWarp, "Easy warping", 1 );
   registerCommand( "reload", &DebugCommandMgr::hotReload, "Reloads a resource", 1 );
   registerCommand( "facing", &DebugCommandMgr::facing, "Checks if you are facing an actor", 1 );
+  registerCommand( "rental", &DebugCommandMgr::rental, "Simulate finish of chocobo rental warp (mount player)", 1 );
+  registerCommand( "pos", &DebugCommandMgr::pos, "Sends current position)", 1 );
 }
 
 // clear all loaded commands
@@ -1531,4 +1533,35 @@ void DebugCommandMgr::facing( char* data, Sapphire::Entity::Player& player, std:
       PlayerMgr::sendDebug( player, "Player facing target {0}: {1}", bnpc->getLayoutId(), player.isFacingTarget( *bnpc->getAsChara(), threshold ) );
     }
   }
+}
+
+void DebugCommandMgr::rental( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command )
+{
+  // Set player status to Mounted
+  player.setStatus( Common::ActorStatus::Mounted );
+
+  // Set the mount (use the correct rental chocobo ID for your server)
+  constexpr uint32_t rentalChocoboId = 1;
+  player.setMount( rentalChocoboId );
+
+  // Send the mount packet to the client
+  auto mountPacket = makeZonePacket< FFXIVIpcMount >( player.getId() );
+  mountPacket->data().id = rentalChocoboId;
+  Common::Service< World::WorldServer >::ref().queueForPlayer( player.getCharacterId(), mountPacket );
+
+  PlayerMgr::sendDebug( player, "Simulated chocobo rental finish: status set to Mounted, mount packet sent." );
+}
+
+void DebugCommandMgr::pos(char* data, Entity::Player& player, std::shared_ptr<DebugCommand> command)
+{
+    // Print the player's current world position and rotation
+    PlayerMgr::sendServerNotice(
+        player,
+        "Current Position:\n X: {0}\n Y: {1}\n Z: {2}\n Rot: {3}\n TerritoryTypeId: {4}",
+        player.getPos().x,
+        player.getPos().y,
+        player.getPos().z,
+        player.getRot(),
+        player.getTerritoryTypeId()
+    );
 }

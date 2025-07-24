@@ -1,12 +1,13 @@
 #pragma once
 
-#include <Network/PacketDef/Zone/ServerZoneDef.h>
-#include <Network/GamePacket.h>
-#include <Util/Util.h>
 #include "Actor/Player.h"
 #include "Forwards.h"
 #include "Inventory/Item.h"
 #include "StatusEffect/StatusEffect.h"
+#include <Network/GamePacket.h>
+#include <Network/PacketDef/Zone/ServerZoneDef.h>
+#include <Util/Util.h>
+#include <Util/UtilMath.h>
 
 namespace Sapphire::Network::Packets::WorldPackets::Server
 {
@@ -17,8 +18,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   class PlayerSpawnPacket : public ZoneChannelPacket< FFXIVIpcPlayerSpawn >
   {
   public:
-    PlayerSpawnPacket( Entity::Player& player, Entity::Player& target ) :
-      ZoneChannelPacket< FFXIVIpcPlayerSpawn >( player.getId(), target.getId() )
+    PlayerSpawnPacket( Entity::Player& player, Entity::Player& target ) : ZoneChannelPacket< FFXIVIpcPlayerSpawn >( player.getId(), target.getId() )
     {
       initialize( player, target );
     };
@@ -30,7 +30,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       m_data.ClassJob = static_cast< uint8_t >( player.getClass() );
       //m_data.status = static_cast< uint8_t >( pPlayer->getStatus() );
 
-// TODO: world id from server
+      // TODO: world id from server
       m_data.WorldId = 67;
       //m_data.homeWorldId = 67;
 
@@ -81,6 +81,12 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
 
       m_data.Companion = player.getCurrentCompanion();
       m_data.Mount.Id = player.getCurrentMount();
+      /* Chocobo test*/
+      m_data.Mount.EquipmentHead = player.getMountEquipmentHead();
+      m_data.Mount.EquipmentBody = player.getMountEquipmentBody();
+      m_data.Mount.EquipmentLeg = player.getMountEquipmentLeg();
+      m_data.Mount.Stain = player.getMountStain();
+      m_data.Mount.Time = 0.0f;
 
       m_data.OnlineStatus = static_cast< uint8_t >( player.getOnlineStatus() );
       m_data.PermissionInvisibility = 0;
@@ -135,7 +141,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         m_data.Customize[ 0xC ] = m_data.Customize[ 0xC ] | 1 << 7;
       }
 
-     // m_data.currentMount = player.getCurrentMount();
+      //m_data.currentMount = player.getCurrentMount();
 
       m_data.MainTarget = player.getTargetId();
       //m_data.type = 1;
@@ -150,13 +156,13 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       {
         m_data.Status[ effect.first ].Id = effect.second->getId();
         m_data.Status[ effect.first ].Time = static_cast< float >( effect.second->getDuration() -
-                                                                       ( currentTimeMs -
-                                                                         effect.second->getStartTimeMs() ) ) / 1000;
+                                                                   ( currentTimeMs -
+                                                                     effect.second->getStartTimeMs() ) ) /
+                                             1000;
         m_data.Status[ effect.first ].Source = effect.second->getSrcActorId();
         m_data.Status[ effect.first ].SystemParam = effect.second->getParam();
       }
-
     };
   };
 
-}
+}// namespace Sapphire::Network::Packets::WorldPackets::Server

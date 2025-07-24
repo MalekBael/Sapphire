@@ -40,6 +40,13 @@ namespace Sapphire::Entity
     using ExpList = std::array< uint32_t, Common::ARRSIZE_CLASSJOB >;
     using BorrowAction = std::array< uint32_t, Common::ARRSIZE_BORROWACTION >;
 
+    // Mount equipment methods
+    void setMountEquipment( uint8_t head, uint8_t body, uint8_t leg, uint8_t stain );
+    uint8_t getMountEquipmentHead() const { return m_mountEquipmentHead; }
+    uint8_t getMountEquipmentBody() const { return m_mountEquipmentBody; }
+    uint8_t getMountEquipmentLeg() const { return m_mountEquipmentLeg; }
+    uint8_t getMountStain() const { return m_mountStain; }
+
     struct AchievementData {
       std::array< uint8_t, 2048 / 8 > unlockList;
       std::unordered_map< uint32_t, uint32_t > progressData;
@@ -805,6 +812,13 @@ namespace Sapphire::Entity
     uint64_t m_characterId; // This id will be the name of the folder for character settings in "My Games"
 
     uint8_t m_mode{};
+
+    // Mount equipment storage
+    uint8_t m_mountEquipmentHead{ 0 };
+    uint8_t m_mountEquipmentBody{ 0 };
+    uint8_t m_mountEquipmentLeg{ 0 };
+    uint8_t m_mountStain{ 0 };
+        
 
     // falling logic
     bool m_falling;

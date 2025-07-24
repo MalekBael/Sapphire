@@ -1004,6 +1004,15 @@ void Player::hateListRemove( const BNpc& bnpc )
   }
 }
 
+// Chocobro equipment
+void Player::setMountEquipment( uint8_t head, uint8_t body, uint8_t leg, uint8_t stain )
+{
+  m_mountEquipmentHead = head;
+  m_mountEquipmentBody = body;
+  m_mountEquipmentLeg = leg;
+  m_mountStain = stain;
+}
+
 bool Player::hateListHasEntry( const BNpc& bnpc )
 {
   return std::any_of( m_actorIdTohateSlotMap.begin(), m_actorIdTohateSlotMap.end(),
