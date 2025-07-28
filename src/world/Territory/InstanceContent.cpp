@@ -28,6 +28,8 @@
 #include "InstanceContent.h"
 #include "InstanceObjectCache.h"
 
+#include "Network/PacketWrappers/ConditionPacket.h"
+#include "Network/Util/PacketUtil.h"
 
 using namespace Sapphire::Common;
 using namespace Sapphire::Network::Packets;
@@ -601,20 +603,51 @@ bool Sapphire::InstanceContent::isPlayerBound( uint32_t playerId ) const
 
 void Sapphire::InstanceContent::unbindPlayer( uint32_t playerId )
 {
+  Logger::debug( "[InstanceContent::unbindPlayer] Unbinding player #{}", playerId );
+
   m_boundPlayerIds.erase( playerId );
 
-  auto it = m_playerMap.find( playerId );
-  if( it != m_playerMap.end() )
-    playerMgr().onExitInstance( *it->second );
+  // NOTE: Don't call onExitInstance() here to avoid infinite loop
+  // The exit process should be handled by the calling context
+  Logger::debug( "[InstanceContent::unbindPlayer] Successfully unbound player #{}", playerId );
 }
 
 void Sapphire::InstanceContent::clearDirector( Entity::Player& player )
 {
-  sendDirectorClear( player );
+  Logger::info( "[InstanceContent::clearDirector] Starting clear director for player #{} ({})", player.getId(), player.getName() );
 
-  player.setDirectorInitialized( false );
-  // remove "bound by duty" state
-  player.removeCondition( PlayerCondition::BoundByDuty );
+  try
+  {
+    Logger::debug( "[InstanceContent::clearDirector] Sending director clear packet" );
+    sendDirectorClear( player );
+
+    Logger::debug( "[InstanceContent::clearDirector] Setting director initialized to false" );
+    player.setDirectorInitialized( false );
+
+    // Check if player has condition before removing it
+    if( player.hasCondition( PlayerCondition::BoundByDuty ) )
+    {
+      Logger::debug( "[InstanceContent::clearDirector] Removing BoundByDuty condition" );
+      player.removeCondition( PlayerCondition::BoundByDuty );
+
+      Logger::debug( "[InstanceContent::clearDirector] Creating and sending condition packet" );
+      auto& server = Common::Service< World::WorldServer >::ref();
+      auto conditionPacket = std::make_shared< ConditionPacket >( player );
+      server.queueForPlayer( player.getCharacterId(), conditionPacket );
+
+      Logger::debug( "[InstanceContent::clearDirector] Successfully sent condition packet" );
+    }
+    else
+    {
+      Logger::warn( "[InstanceContent::clearDirector] Player #{} does not have BoundByDuty condition", player.getId() );
+    }
+
+    Logger::info( "[InstanceContent::clearDirector] Successfully completed clear director for player #{}", player.getId() );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[InstanceContent::clearDirector] Exception during clear director: {}", e.what() );
+    throw;
+  }
 }
 
 uint32_t Sapphire::InstanceContent::getExpireValue()

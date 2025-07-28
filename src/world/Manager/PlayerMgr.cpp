@@ -3,31 +3,36 @@
 #include <Service.h>
 
 #include <Exd/ExdData.h>
-#include <Util/Util.h>
 #include <Territory/Land.h>
+#include <Util/Util.h>
 
 #include <Manager/AchievementMgr.h>
-#include <Manager/TerritoryMgr.h>
 #include <Manager/HousingMgr.h>
-#include <Manager/QuestMgr.h>
-#include <Manager/WarpMgr.h>
 #include <Manager/MapMgr.h>
+#include <Manager/QuestMgr.h>
+#include <Manager/TerritoryMgr.h>
+#include <Manager/WarpMgr.h>
 
-#include <Script/ScriptMgr.h>
 #include <Common.h>
+#include <Script/ScriptMgr.h>
 
-#include <Database/ZoneDbConnection.h>
 #include <Database/DbWorkerPool.h>
+#include <Database/ZoneDbConnection.h>
 
 #include <Network/CommonActorControl.h>
 #include <Network/Util/PacketUtil.h>
 
-#include <Actor/Player.h>
 #include <Actor/BNpc.h>
+#include <Actor/Player.h>
 
 #include <Inventory/Item.h>
 
 #include <Util/UtilMath.h>
+
+#include "ContentFinder/ContentFinder.h"
+#include "Territory/InstanceContent.h"
+
+#include <Network/PacketWrappers/ActorControlSelfPacket.h>
 
 using namespace Sapphire;
 using namespace Sapphire::World::Manager;
@@ -230,11 +235,11 @@ void PlayerMgr::sendLoginMessage( Entity::Player& player )
   }
 }
 
-void PlayerMgr::onLogin( Entity::Player &player )
+void PlayerMgr::onLogin( Entity::Player& player )
 {
 }
 
-void PlayerMgr::onLogout( Entity::Player &player )
+void PlayerMgr::onLogout( Entity::Player& player )
 {
 }
 
@@ -246,63 +251,102 @@ void PlayerMgr::onDeath( Entity::Player& player )
 
 void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
 {
+  Logger::info( "[onMoveZone] Starting zone transition for player #{} ({})", player.getId(), player.getName() );
+
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto& housingMgr = Common::Service< HousingMgr >::ref();
 
   auto pZone = teriMgr.getTerritoryByGuId( player.getTerritoryId() );
   if( !pZone )
   {
-    Logger::error( "Territory GuID#{} not found!", player.getTerritoryId() );
+    Logger::error( "[onMoveZone] Territory GuID#{} not found!", player.getTerritoryId() );
     return;
   }
   auto& teri = *pZone;
 
+  Logger::debug( "[onMoveZone] Found territory: {} (Type: #{})", teri.getName(), teri.getTerritoryTypeId() );
+
+  Logger::debug( "[onMoveZone] Sending login packet" );
   Network::Util::Packet::sendLogin( player );
 
+  Logger::debug( "[onMoveZone] Sending inventory" );
   player.sendInventory();
 
   if( player.isLogin() )
   {
+    Logger::debug( "[onMoveZone] Sending login-specific packets" );
     Network::Util::Packet::sendActorControlSelf( player, player.getId(), SetConfigFlags, player.getConfigFlags(), 1 );
     Network::Util::Packet::sendActorControlSelf( player, player.getId(), SetMaxGearSets, player.getMaxGearSets() );
   }
 
-  // set flags, will be reset automatically by zoning ( only on client side though )
-  //setStateFlag( PlayerStateFlag::BetweenAreas );
-  //setStateFlag( PlayerStateFlag::BetweenAreas1 );
-
+  Logger::debug( "[onMoveZone] Sending hunting log" );
   Network::Util::Packet::sendHuntingLog( player );
 
   if( player.isLogin() )
+  {
+    Logger::debug( "[onMoveZone] Sending player setup" );
     Network::Util::Packet::sendPlayerSetup( player );
+  }
 
+  // Log player conditions before sending condition packet
+  Logger::debug( "[onMoveZone] Player conditions before sendCondition: BoundByDuty={}, BetweenAreas={}",
+                 player.hasCondition( Common::PlayerCondition::BoundByDuty ),
+                 player.hasCondition( Common::PlayerCondition::BetweenAreas ) );
+
+  // Send condition packet BEFORE other packets to ensure client knows player state
+  Logger::debug( "[onMoveZone] Sending condition packet" );
+  try
+  {
+    Network::Util::Packet::sendCondition( player );
+    Logger::debug( "[onMoveZone] Successfully sent condition packet" );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[onMoveZone] Exception sending condition packet: {}", e.what() );
+    throw;
+  }
+
+  Logger::debug( "[onMoveZone] Sending recast groups and base params" );
   Network::Util::Packet::sendRecastGroups( player );
   Network::Util::Packet::sendBaseParams( player );
   Network::Util::Packet::sendActorControl( player, player.getId(), SetItemLevel, player.getItemLevel() );
+
   if( player.isLogin() )
   {
+    Logger::debug( "[onMoveZone] Sending additional login packets" );
     Network::Util::Packet::sendChangeClass( player );
-    Network::Util::Packet::sendActorControl( player, player.getId(), 0x112, 0x24 ); // unknown
-    Network::Util::Packet::sendContentAttainFlags( player );
+    Network::Util::Packet::sendActorControl( player, player.getId(), 0x112, 0x24 );// unknown
     player.clearSoldItems();
   }
 
-  housingMgr.sendLandFlags( player );
+  // ALWAYS send ContentAttainFlags - this is critical for ContentFinder functionality
+  Logger::debug( "[onMoveZone] Sending ContentAttainFlags packet" );
+  Network::Util::Packet::sendContentAttainFlags( player );
 
+  Logger::debug( "[onMoveZone] Sending housing and zone init" );
+  housingMgr.sendLandFlags( player );
   Network::Util::Packet::sendInitZone( player );
 
   if( player.isLogin() )
   {
+    Logger::debug( "[onMoveZone] Sending final login packets" );
     Network::Util::Packet::sendDailyQuests( player );
     Network::Util::Packet::sendQuestRepeatFlags( player );
 
-    auto &questMgr = Common::Service< World::Manager::QuestMgr >::ref();
+    auto& questMgr = Common::Service< World::Manager::QuestMgr >::ref();
     questMgr.sendQuestsInfo( player );
     Network::Util::Packet::sendGrandCompany( player );
   }
 
-  teri.onPlayerZoneIn( player );
-
+  Logger::debug( "[onMoveZone] Calling territory onPlayerZoneIn" );
+  try
+  {
+    teri.onPlayerZoneIn( player );
+    Logger::info( "[onMoveZone] Successfully completed zone transition for player #{}", player.getId() );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[onMoveZone] Exception during onPlayerZoneIn: {}", e.what() );
+    throw;
+  }
 }
 
 void PlayerMgr::onUpdate( Entity::Player& player, uint64_t tickCount )
@@ -347,7 +391,6 @@ void PlayerMgr::checkAutoAttack( Entity::Player& player, uint64_t tickCount ) co
       player.autoAttack( actor->getAsChara() );
     }
   }
-
 }
 
 void PlayerMgr::onGainExp( Entity::Player& player, uint32_t exp )
@@ -380,7 +423,6 @@ void PlayerMgr::onGainExp( Entity::Player& player, uint32_t exp )
       onLevelChanged( player, level + 1 );
 
     player.setCurrentExp( exp );
-
   }
   else
     player.setCurrentExp( currentExp + exp );
@@ -433,8 +475,8 @@ void PlayerMgr::onDiscoverArea( Entity::Player& player, int16_t mapId, int16_t s
   {
     discoveredAreas = ( discovery[ offset + 3 ] << 24 ) |
                       ( discovery[ offset + 2 ] << 16 ) |
-                      ( discovery[ offset + 1 ] << 8  ) |
-                        discovery[ offset ];
+                      ( discovery[ offset + 1 ] << 8 ) |
+                      discovery[ offset ];
   }
 
   bool allDiscovered = ( ( discoveredAreas & mask ) == mask );
@@ -448,17 +490,17 @@ void PlayerMgr::onDiscoverArea( Entity::Player& player, int16_t mapId, int16_t s
 
 ////////// Helper ///////////
 
-void PlayerMgr::sendServerNotice( Entity::Player& player, const std::string& message ) //Purple Text
+void PlayerMgr::sendServerNotice( Entity::Player& player, const std::string& message )//Purple Text
 {
   Network::Util::Packet::sendServerNotice( player, message );
 }
 
-void PlayerMgr::sendUrgent( Entity::Player& player, const std::string& message ) //Red Text
+void PlayerMgr::sendUrgent( Entity::Player& player, const std::string& message )//Red Text
 {
   Network::Util::Packet::sendChat( player, Common::ChatType::ServerUrgent, message );
 }
 
-void PlayerMgr::sendDebug( Entity::Player& player, const std::string& message ) //Grey Text
+void PlayerMgr::sendDebug( Entity::Player& player, const std::string& message )//Grey Text
 {
   Network::Util::Packet::sendChat( player, Common::ChatType::SystemMessage, message );
 }
@@ -540,14 +582,118 @@ void PlayerMgr::onUpdateHuntingLog( Entity::Player& player, uint8_t id )
 
 void PlayerMgr::onExitInstance( Entity::Player& player )
 {
+  Logger::info( "[onExitInstance] Starting exit for player #{} ({})", player.getId(), player.getName() );
+
+  auto& teriMgr = Common::Service< TerritoryMgr >::ref();
   auto& warpMgr = Common::Service< WarpMgr >::ref();
 
+  Logger::debug( "[onExitInstance] Player current territory: #{}", player.getTerritoryId() );
+
+  auto pCurrentTerritory = teriMgr.getTerritoryByGuId( player.getTerritoryId() );
+  if( pCurrentTerritory && pCurrentTerritory->getTerritoryTypeId() > 0 )
+  {
+    Logger::debug( "[onExitInstance] Found current territory, type: #{}", pCurrentTerritory->getTerritoryTypeId() );
+
+    auto pInstance = std::dynamic_pointer_cast< InstanceContent >( pCurrentTerritory );
+    if( pInstance )
+    {
+      Logger::debug( "[onExitInstance] Territory is InstanceContent, clearing director only" );
+
+      try
+      {
+        pInstance->clearDirector( player );
+        Logger::debug( "[onExitInstance] Successfully cleared director" );
+      } catch( const std::exception& e )
+      {
+        Logger::error( "[onExitInstance] Exception during director clear: {}", e.what() );
+        throw;
+      }
+    }
+    else
+    {
+      Logger::warn( "[onExitInstance] Current territory is not InstanceContent" );
+    }
+  }
+  else
+  {
+    Logger::warn( "[onExitInstance] No current territory found or invalid territory type" );
+  }
+
+  // Clean up any ContentFinder registrations
+  Logger::debug( "[onExitInstance] Cleaning up ContentFinder registrations" );
+  try
+  {
+    auto& contentFinder = Common::Service< World::ContentFinder >::ref();
+
+    // Simply call withdraw - it will handle checking if player is registered
+    Logger::debug( "[onExitInstance] Attempting to withdraw player from ContentFinder" );
+    contentFinder.withdraw( player );
+    Logger::debug( "[onExitInstance] Successfully withdrew from ContentFinder" );
+
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[onExitInstance] Exception during ContentFinder cleanup: {}", e.what() );
+    // Don't throw here - this shouldn't block the exit process
+  }
+
+  Logger::debug( "[onExitInstance] Checking player conditions before HP/MP reset" );
+  if( player.hasCondition( Common::PlayerCondition::BoundByDuty ) )
+  {
+    Logger::warn( "[onExitInstance] Player still has BoundByDuty condition!" );
+  }
+  else
+  {
+    Logger::debug( "[onExitInstance] Player BoundByDuty condition correctly removed" );
+  }
+
+  Logger::debug( "[onExitInstance] Sending critical state reset packets before territory change" );
+  try
+  {
+    Network::Util::Packet::sendCondition( player );
+    Logger::debug( "[onExitInstance] Sent condition packet" );
+
+    Network::Util::Packet::sendContentAttainFlags( player );
+    Logger::debug( "[onExitInstance] Sent ContentAttainFlags packet" );
+
+    if( pCurrentTerritory )
+    {
+      auto pInstance = std::dynamic_pointer_cast< InstanceContent >( pCurrentTerritory );
+      if( pInstance )
+      {
+        auto& server = Common::Service< World::WorldServer >::ref();
+        auto directorClearPacket = std::make_shared< ActorControlSelfPacket >(
+                player.getId(), DirectorClear, pInstance->getDirectorId() );
+        server.queueForPlayer( player.getCharacterId(), directorClearPacket );
+        Logger::debug( "[onExitInstance] Sent additional director clear packet" );
+      }
+    }
+
+    Logger::debug( "[onExitInstance] Successfully sent all state reset packets" );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[onExitInstance] Exception during state reset: {}", e.what() );
+    // Don't throw - continue with exit process
+  }
+
+  Logger::debug( "[onExitInstance] Resetting player HP/MP" );
   player.resetHp();
   player.resetMp();
 
-  warpMgr.requestMoveTerritory( player, Common::WarpType::WARP_TYPE_CONTENT_END_RETURN,
-                                player.getPrevTerritoryId(), player.getPrevPos(), player.getPrevRot() );
+  Logger::debug( "[onExitInstance] Requesting territory move - Prev Territory: #{}, Pos: ({}, {}, {})",
+                 player.getPrevTerritoryId(), player.getPrevPos().x, player.getPrevPos().y, player.getPrevPos().z );
 
+  try
+  {
+    warpMgr.requestMoveTerritory( player, Common::WarpType::WARP_TYPE_CONTENT_END_RETURN,
+                                  player.getPrevTerritoryId(), player.getPrevPos(), player.getPrevRot() );
+    Logger::info( "[onExitInstance] Successfully requested territory move for player #{}", player.getId() );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[onExitInstance] Exception during territory move request: {}", e.what() );
+    throw;
+  }
+
+  Logger::info( "[onExitInstance] Completed exit process for player #{}", player.getId() );
 }
 
 void PlayerMgr::onClassJobChanged( Entity::Player& player, Common::ClassJob classJob )
@@ -590,6 +736,3 @@ void PlayerMgr::onSongLearned( Entity::Player& player, uint8_t songId, uint32_t 
   player.learnSong( songId, itemId );
   Network::Util::Packet::sendActorControlSelf( player, player.getId(), ToggleOrchestrionUnlock, songId, 1, itemId );
 }
-
-
-

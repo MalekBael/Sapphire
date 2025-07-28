@@ -119,10 +119,32 @@ void World::ContentFinder::registerContentsRequest( Entity::Player &player, cons
   completeRegistration( player );
 }
 
-void World::ContentFinder::registerContentRequest( Entity::Player &player, uint32_t contentId, uint8_t flags )
+void World::ContentFinder::registerContentRequest( Entity::Player& player, uint32_t contentId, uint8_t flags )
 {
-  queueForContent( player, { contentId } );
-  completeRegistration( player, flags );
+  Logger::info( "[ContentFinder::registerContentRequest] Starting registration for player #{} ({}), contentId: #{}, flags: {}",
+                player.getId(), player.getName(), contentId, flags );
+
+  // Check player state before registration
+  Logger::debug( "[ContentFinder::registerContentRequest] Player conditions: BoundByDuty={}, BetweenAreas={}, InNpcEvent={}",
+                 player.hasCondition( PlayerCondition::BoundByDuty ),
+                 player.hasCondition( PlayerCondition::BetweenAreas ),
+                 player.hasCondition( PlayerCondition::InNpcEvent ) );
+
+  Logger::debug( "[ContentFinder::registerContentRequest] Player level: {}, class: {}, role: {}",
+                 player.getLevel(), static_cast< uint32_t >( player.getClass() ), static_cast< uint32_t >( player.getRole() ) );
+
+  try
+  {
+    queueForContent( player, { contentId } );
+    Logger::debug( "[ContentFinder::registerContentRequest] Successfully queued for content" );
+
+    completeRegistration( player, flags );
+    Logger::info( "[ContentFinder::registerContentRequest] Successfully completed registration for player #{}", player.getId() );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[ContentFinder::registerContentRequest] Exception during registration: {}", e.what() );
+    throw;
+  }
 }
 
 void World::ContentFinder::registerRandomContentRequest( Entity::Player &player, uint32_t randomContentTypeId )
@@ -183,19 +205,33 @@ void World::ContentFinder::completeRegistration( const Entity::Player &player, u
   }
 }
 
-void World::ContentFinder::queueForContent( Entity::Player &player, const std::vector< uint32_t >& contentIds )
+void World::ContentFinder::queueForContent( Entity::Player& player, const std::vector< uint32_t >& contentIds )
 {
+  Logger::debug( "[ContentFinder::queueForContent] Queuing player #{} for {} content(s)", player.getId(), contentIds.size() );
+
+  // Check if player is already queued
+  auto qPlayerIt = m_queuedPlayer.find( player.getId() );
+  if( qPlayerIt != m_queuedPlayer.end() )
+  {
+    Logger::warn( "[ContentFinder::queueForContent] Player #{} is already queued! Active register ID: {}",
+                  player.getId(), qPlayerIt->second->getActiveRegisterId() );
+    // Clear the existing registration first
+    withdraw( player );
+  }
+
   for( auto contentId : contentIds )
   {
+    Logger::debug( "[ContentFinder::queueForContent] Processing contentId: #{}", contentId );
+
     auto contentList = getMatchingContentList( player, contentId );
 
     if( contentList.empty() )
     {
-      Logger::error( "[ContentFinder] No matching content could be found or generated." );
+      Logger::error( "[ContentFinder::queueForContent] No matching content could be found or generated for contentId: #{}", contentId );
       return;
     }
 
-    for( auto &content : contentList )
+    for( auto& content : contentList )
     {
       Logger::info( "[{2}][ContentFinder] Content registered, contentId#{0} registerId#{1}", contentId, content->getRegisterId(), player.getId() );
       PlayerMgr::sendDebug( player, "Content registered, contentId#{0} registerId#{1}", contentId, content->getRegisterId() );
@@ -206,10 +242,12 @@ void World::ContentFinder::queueForContent( Entity::Player &player, const std::v
       {
         auto pQPlayer = std::make_shared< QueuedPlayer >( player, content->getRegisterId() );
         m_queuedPlayer[ player.getId() ] = pQPlayer;
+        Logger::debug( "[ContentFinder::queueForContent] Created new QueuedPlayer for player #{}", player.getId() );
       }
       else
       {
         m_queuedPlayer[ player.getId() ]->setActiveRegisterId( content->getRegisterId() );
+        Logger::debug( "[ContentFinder::queueForContent] Updated existing QueuedPlayer register ID for player #{}", player.getId() );
       }
       content->queuePlayer( m_queuedPlayer[ player.getId() ] );
     }

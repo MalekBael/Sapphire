@@ -45,20 +45,43 @@ void Sapphire::Network::GameConnection::requestBonus( const Packets::FFXIVARR_PA
 
 void Sapphire::Network::GameConnection::findContent( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
+  Logger::info( "[CFHandlers::findContent] Starting content registration for player #{} ({})", player.getId(), player.getName() );
+
   auto& teriMgr = Common::Service< TerritoryMgr >::ref();
   auto& contentFinder = Common::Service< World::ContentFinder >::ref();
 
   const auto packet = ZoneChannelPacket< Client::FFXIVIpcFindContent >( inPacket );
+
+  Logger::debug( "[CFHandlers::findContent] Received FindContent request - territoryType: #{}, flags: {}",
+                 packet.data().territoryType, packet.data().flags );
+
+  // Check player conditions
+  Logger::debug( "[CFHandlers::findContent] Player conditions: BoundByDuty={}, BetweenAreas={}, InNpcEvent={}",
+                 player.hasCondition( PlayerCondition::BoundByDuty ),
+                 player.hasCondition( PlayerCondition::BetweenAreas ),
+                 player.hasCondition( PlayerCondition::InNpcEvent ) );
 
   PlayerMgr::sendDebug( player, "Duty register request for terriId#{0}", packet.data().territoryType );
 
   auto contentId = teriMgr.getInstanceContentId( packet.data().territoryType );
 
   if( contentId == 0 )
+  {
+    Logger::error( "[CFHandlers::findContent] No content ID found for territory type #{}", packet.data().territoryType );
     return;
+  }
 
-  contentFinder.registerContentRequest( player, contentId, packet.data().flags );
+  Logger::debug( "[CFHandlers::findContent] Found contentId: #{}", contentId );
 
+  try
+  {
+    contentFinder.registerContentRequest( player, contentId, packet.data().flags );
+    Logger::info( "[CFHandlers::findContent] Successfully registered content request for player #{}", player.getId() );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "[CFHandlers::findContent] Exception during content registration: {}", e.what() );
+    throw;
+  }
 }
 
 void Sapphire::Network::GameConnection::find5Contents( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
