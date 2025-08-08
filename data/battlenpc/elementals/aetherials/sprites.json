@@ -1,0 +1,379 @@
+{
+  "sprites": {
+    "WaterSprite": {
+      "baseId": 59,
+      "nameId": 56,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 971,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Water"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "TaintedWaterSprite": {
+      "baseId": 297,
+      "nameId": 136,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 971,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Water"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "DeepStainedWaterSprite": {
+      "baseId": 1937,
+      "nameId": 2043,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 971,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Water"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "WindSprite": {
+      "baseId": 133,
+      "nameId": 115,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Aero"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "CrazedSprite": {
+      "baseId": 1722,
+      "nameId": 1939,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Aero"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "DeepStainedWindSprite": {
+      "baseId": 1939,
+      "nameId": 2045,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Aero"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "TaintedWindSprite": {
+      "baseId": 296,
+      "nameId": 135,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 969,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Aero"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "FireSprite": {
+      "baseId": 134,
+      "nameId": 116,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "FlameShiver": {
+      "baseId": 1515,
+      "nameId": 1970,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 966,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "LightningSprite": {
+      "baseId": 135,
+      "nameId": 117,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 968,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "DeepStainedLightningSprite": {
+      "baseId": 1938,
+      "nameId": 2044,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 968,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Fire"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "IceSprite": {
+      "baseId": 132,
+      "nameId": 114,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "StoneShiver": {
+      "baseId": 2204,
+      "nameId": 1882,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 967,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Blizzard"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "EarthSprite": {
+      "baseId": 131,
+      "nameId": 113,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 970,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Stone"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    },
+    "TaintedEarthSprite": {
+      "baseId": 768,
+      "nameId": 134,
+      "isRanged": true,
+      "attackRange": 20.0,
+      "gambitPack": {
+        "loopCount": -1,
+        "timeLines": [
+          {
+            "condition": "TopHateTarget",
+            "actionId": 970,
+            "actionParam": 0,
+            "timing": 0,
+            "description": "Stone"
+          },
+          {
+            "condition": "None",
+            "actionId": 0,
+            "actionParam": 0,
+            "timing": 3,
+            "description": "Wait"
+          }
+        ]
+      }
+    }
+  }
+}
