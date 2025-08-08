@@ -29,15 +29,17 @@ namespace Sapphire::Entity
     Dead,
   };
 
-  enum BNpcFlag
+  enum BNpcFlag /*updated this from those_who_fight*/
   {
-    None = 0,
-    Immobile = 1,
-    TurningDisabled = 2,
-    Invincible = 4,
-    InvincibleRefill = 8,
-    NoDeaggro = 16,
-    Untargetable = 32,
+    Immobile = 0x001,
+    TurningDisabled = 0x002,
+    Invincible = 0x004,
+    StayAlive = 0x008,
+    NoDeaggro = 0x010,
+    Untargetable = 0x020,
+    AutoAttackDisabled = 0x040,
+    Invisible = 0x080,
+    NoRoam = 0x100,
   };
 
   const std::array< uint32_t, 50 > BnpcBaseHp =
@@ -165,6 +167,36 @@ namespace Sapphire::Entity
     const Common::FFXIVARR_POSITION3& getRoamTargetPos() const;
     const Common::FFXIVARR_POSITION3& getSpawnPos() const;
 
+    /*BNpc Gambit*/
+    void setBNpcBaseId( uint32_t baseId )
+    {
+      m_bNpcBaseId = baseId;
+    }
+
+    void setBNpcNameId( uint32_t nameId )
+    {
+      m_bNpcNameId = nameId;
+    }
+    void setIsRanged( bool isRanged ) { m_isRanged = isRanged; }
+    bool isRanged() const { return m_isRanged; }
+    void setAttackRange( float range ) { m_attackRange = range; }
+    float getAttackRange() const { return m_attackRange; }
+
+
+    void setIsMagical( bool isMagical )
+    {
+      if( isMagical )
+        setFlag( AutoAttackDisabled );
+      else
+        removeFlag( AutoAttackDisabled );
+    }
+
+    void setGambitPack( std::shared_ptr< World::AI::GambitPack > gambitPack )
+    {
+      m_pGambitPack = gambitPack;
+    }
+    /*BNpc Gambit*/
+
   private:
     uint32_t m_bNpcBaseId;
     uint32_t m_bNpcNameId;
@@ -210,6 +242,17 @@ namespace Sapphire::Entity
     World::AI::GambitPackPtr m_pGambitPack;
 
     std::shared_ptr< World::AI::Fsm::StateMachine > m_fsm;
+
+    /* BNpcGambit*/
+    bool m_isRanged = false;
+    float m_attackRange = 3.0f;
+
+    // flag things - taken from those_who_fight
+    void resetFlags( uint32_t flags );
+    void removeFlag( uint32_t flag );
+    void clearFlags();
+
+    /* BNpcGambit */
 
   };
 

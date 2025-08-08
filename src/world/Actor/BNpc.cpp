@@ -1,14 +1,14 @@
+#include <Exd/ExdData.h>
+#include <Logging/Logger.h>
+#include <Network/CommonActorControl.h>
+#include <Network/PacketContainer.h>
+#include <Network/PacketWrappers/EffectPacket1.h>
 #include <Util/Util.h>
 #include <Util/UtilMath.h>
-#include <Network/PacketContainer.h>
-#include <Exd/ExdData.h>
 #include <utility>
-#include <Network/CommonActorControl.h>
-#include <Network/PacketWrappers/EffectPacket1.h>
-#include <Logging/Logger.h>
 
-#include "Forwards.h"
 #include "Action/Action.h"
+#include "Forwards.h"
 
 #include "Territory/Territory.h"
 
@@ -16,45 +16,49 @@
 #include "Network/PacketWrappers/ActorControlPacket.h"
 #include "Network/PacketWrappers/ActorControlSelfPacket.h"
 #include "Network/PacketWrappers/ActorControlTargetPacket.h"
-#include "Network/PacketWrappers/NpcSpawnPacket.h"
 #include "Network/PacketWrappers/MoveActorPacket.h"
+#include "Network/PacketWrappers/NpcSpawnPacket.h"
 #include "Network/Util/PacketUtil.h"
 
 #include "Navi/NaviProvider.h"
 
 #include "Math/CalcStats.h"
 
-#include "WorldServer.h"
-#include "Session.h"
-#include "Chara.h"
 #include "BNpc.h"
+#include "Chara.h"
+#include "Session.h"
+#include "WorldServer.h"
 
 #include "Common.h"
 
-#include <Manager/TerritoryMgr.h>
-#include <Manager/RNGMgr.h>
-#include <Manager/PlayerMgr.h>
-#include <Manager/TaskMgr.h>
-#include <Manager/MgrUtil.h>
 #include <Manager/ActionMgr.h>
+#include <Manager/MgrUtil.h>
+#include <Manager/PlayerMgr.h>
+#include <Manager/RNGMgr.h>
+#include <Manager/TaskMgr.h>
+#include <Manager/TerritoryMgr.h>
 #include <Script/ScriptMgr.h>
-#include <Task/RemoveBNpcTask.h>
-#include <Task/FadeBNpcTask.h>
-#include <Task/DelayedEmnityTask.h>
-#include <Task/ActionIntegrityTask.h>
 #include <Service.h>
+#include <Task/ActionIntegrityTask.h>
+#include <Task/DelayedEmnityTask.h>
+#include <Task/FadeBNpcTask.h>
+#include <Task/RemoveBNpcTask.h>
 
-#include <Action/Action.h>
-#include <AI/GambitRule.h>
-#include <AI/GambitPack.h>
-#include <AI/GambitTargetCondition.h>
-#include <AI/Fsm/StateMachine.h>
 #include <AI/Fsm/Condition.h>
-#include <AI/Fsm/StateIdle.h>
-#include <AI/Fsm/StateRoam.h>
 #include <AI/Fsm/StateCombat.h>
-#include <AI/Fsm/StateRetreat.h>
 #include <AI/Fsm/StateDead.h>
+#include <AI/Fsm/StateIdle.h>
+#include <AI/Fsm/StateMachine.h>
+#include <AI/Fsm/StateRetreat.h>
+#include <AI/Fsm/StateRoam.h>
+#include <AI/GambitPack.h>
+#include <AI/GambitRule.h>
+#include <AI/GambitTargetCondition.h>
+#include <Action/Action.h>
+
+/*BNpc Gambit*/
+#include "Script/NativeScriptMgr.h"
+#include <Script/NativeScriptApi.h>
 
 using namespace Sapphire;
 using namespace Sapphire::World;
@@ -95,8 +99,6 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, co
   m_boundInstanceId = pInfo->BoundInstanceID;
   m_flags = 0;
   m_rank = pInfo->BNPCRankId;
-
-
 
   // Striking Dummy
   if( pInfo->NameId == 541 )
@@ -141,7 +143,6 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, co
   memset( m_customize, 0, sizeof( m_customize ) );
   memset( m_modelEquip, 0, sizeof( m_modelEquip ) );
 
-
   m_radius = bNpcBaseData->data().Scale;
   if( bNpcBaseData->data().Customize != 0 )
   {
@@ -180,11 +181,9 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, co
 
   if( m_bnpcType == BNpcType::Friendly )
     m_maxHp *= 5;
-
 }
 
-BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, const Territory& zone, uint32_t hp, Common::BNpcType type ) :
-  Npc( ObjKind::BattleNpc )
+BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, const Territory& zone, uint32_t hp, Common::BNpcType type ) : Npc( ObjKind::BattleNpc )
 {
   m_id = id;
   m_pInfo = pInfo;
@@ -248,7 +247,6 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNPCInstanceObject > pInfo, co
 
   memset( m_customize, 0, sizeof( m_customize ) );
   memset( m_modelEquip, 0, sizeof( m_modelEquip ) );
-
 
   m_radius = bNpcBaseData->data().Scale;
   if( bNpcBaseData->data().Customize != 0 )
@@ -395,7 +393,6 @@ bool BNpc::moveTo( const FFXIVARR_POSITION3& pos )
 
 bool BNpc::moveTo( const Chara& targetChara )
 {
-
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( getTerritoryId() );
 
@@ -487,7 +484,6 @@ uint32_t BNpc::hateListGetHighestValue()
 
   return 0;
 }
-
 
 CharaPtr BNpc::hateListGetHighest()
 {
@@ -621,7 +617,6 @@ void BNpc::aggro( const Sapphire::Entity::CharaPtr& pChara )
     PlayerPtr tmpPlayer = pChara->getAsPlayer();
     tmpPlayer->onMobAggro( *getAsBNpc() );
   }
-
 }
 
 void BNpc::deaggro( const CharaPtr& pChara )
@@ -633,7 +628,7 @@ void BNpc::deaggro( const CharaPtr& pChara )
     notifyPlayerDeaggro( pChara );
 }
 
-void BNpc::notifyPlayerDeaggro(const CharaPtr& pChara)
+void BNpc::notifyPlayerDeaggro( const CharaPtr& pChara )
 {
   PlayerPtr tmpPlayer = pChara->getAsPlayer();
   Network::Util::Packet::sendActorControl( getInRangePlayerIds(), getId(), ToggleWeapon, 0, 1, 1 );
@@ -708,7 +703,7 @@ void BNpc::onDeath()
 
   for( const auto& pHateEntry : m_hateList )
   {
-    // TODO: handle drops 
+    // TODO: handle drops
     auto pPlayer = pHateEntry->m_pChara->getAsPlayer();
     if( pPlayer )
     {
@@ -740,7 +735,6 @@ void BNpc::checkAggro()
 
   if( pClosestChara && pClosestChara->isAlive() && ( getEnemyType() != 0 && pClosestChara->isPlayer() ) )
   {
-
     // will use this range if chara level is lower than bnpc, otherwise diminishing equation applies
     float range = 14.f;
 
@@ -808,7 +802,6 @@ void BNpc::setOwner( const CharaPtr& m_pChara )
 
   if( m_pChara && m_pChara->isPlayer() )
     Network::Util::Packet::sendActorControl( *m_pChara->getAsPlayer(), getId(), SetHateLetter, 1, getId(), 0 );
-
 }
 
 void BNpc::setLevelId( uint32_t levelId )
@@ -830,6 +823,25 @@ void BNpc::setFlag( uint32_t flag )
 {
   m_flags |= flag;
 }
+
+/* BNpc Gambit, taken from those_who_fight*/
+
+void BNpc::removeFlag( uint32_t flag )
+{
+  m_flags &= ~flag;
+}
+
+void BNpc::clearFlags()
+{
+  m_flags = 0;
+}
+
+void BNpc::resetFlags( uint32_t flags )
+{
+  m_flags = flags;
+}
+
+/* BNpc Gambit, taken from those_who_fight*/
 
 void BNpc::autoAttack( CharaPtr pTarget )
 {
@@ -890,7 +902,6 @@ void BNpc::calculateStats()
   setStatValue( BaseParam::AttackPower, str );
   setStatValue( BaseParam::AttackMagicPotency, inte );
   setStatValue( BaseParam::HealingMagicPotency, mnd );
-
 }
 
 uint32_t BNpc::getRank() const
@@ -923,22 +934,40 @@ void BNpc::init()
   //setup a test gambit
   auto testGambitRule = AI::make_GambitRule( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 5000 );
   auto testGambitRule1 = AI::make_GambitRule( AI::make_HPSelfPctLessThanTargetCondition( 50 ), Action::make_Action( getAsChara(), 120, 0 ), 5000 );
-/*
+  /*
   auto gambitPack = AI::make_GambitRuleSetPack();
   gambitPack->addRule( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 5000 );
   gambitPack->addRule( AI::make_HPSelfPctLessThanTargetCondition( 50 ), Action::make_Action( getAsChara(), 120, 0 ), 10000 );
   m_pGambitPack = gambitPack;
 */
 
-  auto gambitPack = AI::make_GambitTimeLinePack( -1 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 2 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 89, 0 ), 4 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 90, 0 ), 6 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 91, 0 ), 8 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 92, 0 ), 10 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 81, 0 ), 12 );
-  gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 82, 0 ), 14 );
-  m_pGambitPack = gambitPack;
+  // Access the Script Manager and NativeScriptMgr
+  auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
+  auto& nativeScriptMgr = scriptMgr.getNativeScriptHandler();
+
+  // Retrieve the BNpcScript using the BNpcBaseId
+  auto* bnpcScript = nativeScriptMgr.getScript< Sapphire::ScriptAPI::BattleNpcScript >( m_bNpcBaseId );
+
+  if( bnpcScript )
+  {
+    //std::cout << "[BNpc] Found script for baseId: " << m_bNpcBaseId << std::endl;
+    // Initialize the BNpc with the specific script
+    bnpcScript->onInit( *this );
+  }
+  else
+  {
+    //std::cout << "[BNpc] No script found for baseId: " << m_bNpcBaseId << ", using default gambit pack" << std::endl;
+    // Use a generic gambit pack if no script is found
+    auto gambitPack = AI::make_GambitTimeLinePack( -1 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 88, 0 ), 2 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 89, 0 ), 4 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 90, 0 ), 6 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 91, 0 ), 8 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 92, 0 ), 10 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 81, 0 ), 12 );
+    gambitPack->addTimeLine( AI::make_TopHateTargetCondition(), Action::make_Action( getAsChara(), 82, 0 ), 14 );
+    m_pGambitPack = gambitPack;
+  }
 
   using namespace AI::Fsm;
   m_fsm = make_StateMachine();

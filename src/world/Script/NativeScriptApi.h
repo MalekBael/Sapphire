@@ -341,6 +341,13 @@ namespace Sapphire::ScriptAPI
   {
   public:
     explicit BattleNpcScript( uint32_t npcId );
+
+    /*!
+    * @brief Called when the BNpc is initialized, allowing custom configuration
+    *
+    * @param bnpc the battle NPC that was just initialized
+    */
+    virtual void onInit( Sapphire::Entity::BNpc& bnpc ) {}
   };
 
   /*!
