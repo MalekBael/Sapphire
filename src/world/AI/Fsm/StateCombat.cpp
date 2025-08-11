@@ -14,14 +14,15 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( bnpc.getTerritoryId() );
   auto pNaviProvider = pZone->getNaviProvider();
-
-  bool hasQueuedAction = bnpc.checkAction();
-
   auto pHatedActor = bnpc.hateListGetHighest();
   if( !pHatedActor )
     return;
 
-  pNaviProvider->updateAgentParameters( bnpc );
+  if( pNaviProvider && bnpc.pathingActive() )
+  {
+    auto state = bnpc.getState();
+    pNaviProvider->updateAgentParameters( bnpc.getAgentId(), bnpc.getRadius(), state == Entity::BNpcState::Retreat || state == Entity::BNpcState::Combat );
+  }
 
   auto distanceOrig = Common::Util::distance( bnpc.getPos(), bnpc.getSpawnPos() );
 
@@ -43,36 +44,25 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   if( !bnpc.hasFlag( Entity::NoDeaggro ) )
   {
+    if( bnpc.hasFlag( Entity::Immobile ) && distance > 40.0f )
+    {
+      bnpc.deaggro( pHatedActor );
+    }
   }
 
-  // Adjust movement logic for ranged BNPCs
-  if( !hasQueuedAction && !bnpc.hasFlag( Entity::Immobile ) )
+  if( !bnpc.hasFlag( Entity::Immobile ) && distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
   {
-    if( bnpc.isRanged() )
-    {
-      // Only move if the target is beyond maximum attack range
-      if( distance > bnpc.getAttackRange() )
-      {
-        if( pNaviProvider )
-          pNaviProvider->setMoveTarget( bnpc, pHatedActor->getPos() );
-
-        bnpc.moveTo( *pHatedActor );
-      }
-    }
-    else
-    {
-      // Melee BNPCs move when outside of melee range
-      if( distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
-      {
-        if( pNaviProvider )
-          pNaviProvider->setMoveTarget( bnpc, pHatedActor->getPos() );
+    if( pNaviProvider )
+      pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
 
         bnpc.moveTo( *pHatedActor );
       }
     }
   }
 
-  pNaviProvider->syncPosToChara( bnpc );
+  auto pos = pNaviProvider->getMovePos( bnpc.getAgentId() );
+  if( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z )
+    bnpc.setPos( pos );
 
   // Process actions when in combat range (adjusted for ranged BNPCs)
   if( !hasQueuedAction && distance < combatRange )
