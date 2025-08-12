@@ -18,6 +18,7 @@ namespace Sapphire::Entity
     uint32_t m_hateAmount;
     CharaPtr m_pChara;
   };
+  using HateListEntryPtr = std::shared_ptr< HateListEntry >;
 
   enum class BNpcState
   {
@@ -29,17 +30,19 @@ namespace Sapphire::Entity
     Dead,
   };
 
-  enum BNpcFlag /*updated this from those_who_fight*/
+  enum BNpcFlag
   {
-    Immobile = 0x001,
-    TurningDisabled = 0x002,
-    Invincible = 0x004,
-    StayAlive = 0x008,
-    NoDeaggro = 0x010,
-    Untargetable = 0x020,
+    Immobile           = 0x001,
+    TurningDisabled    = 0x002,
+    Invincible         = 0x004,
+    StayAlive          = 0x008,
+    NoDeaggro          = 0x010,
+    Untargetable       = 0x020,
     AutoAttackDisabled = 0x040,
-    Invisible = 0x080,
-    NoRoam = 0x100,
+    Invisible          = 0x080,
+    NoRoam             = 0x100,
+
+    Intermission       = 0x77 // for transition phases to ensure boss only moves/acts when scripted
   };
 
   const std::array< uint32_t, 50 > BnpcBaseHp =
@@ -105,6 +108,7 @@ namespace Sapphire::Entity
     BNpcState getState() const;
     void setState( BNpcState state );
 
+    const std::set< std::shared_ptr< HateListEntry > >& getHateList() const;
     void hateListClear();
     uint32_t hateListGetValue( const Sapphire::Entity::CharaPtr& pChara );
     uint32_t hateListGetHighestValue();
@@ -114,7 +118,9 @@ namespace Sapphire::Entity
     void hateListUpdate( const CharaPtr& pChara, int32_t hateAmount );
     void hateListRemove( const CharaPtr& pChara );
     bool hateListHasActor( const CharaPtr& pChara );
-
+    std::vector< CharaPtr > getHateList() override;
+    void hateListUpdatePlayers();
+    
     void aggro( const CharaPtr& pChara );
     void deaggro( const CharaPtr& pChara );
     void notifyPlayerDeaggro( const CharaPtr& pChara );
@@ -122,7 +128,7 @@ namespace Sapphire::Entity
     void update( uint64_t tickCount ) override;
     void onTick() override;
 
-    void onActionHostile( CharaPtr pSource ) override;
+    void onActionHostile( CharaPtr pSource, int32_t aggro ) override;
 
     void onDeath() override;
 
@@ -130,6 +136,9 @@ namespace Sapphire::Entity
 
     uint32_t getTimeOfDeath() const;
     void setTimeOfDeath( uint32_t timeOfDeath );
+
+    void setPos( const Common::FFXIVARR_POSITION3& pos, bool broadcastUpdate = true ) override;
+    void setPos( float x, float y, float z, bool broadcastUpdate = true ) override;
 
     void restHp();
 
@@ -142,8 +151,12 @@ namespace Sapphire::Entity
     uint32_t getBoundInstanceId() const;
 
     bool hasFlag( uint32_t flag ) const;
-    void resetFlags( uint32_t flags );
     void setFlag( uint32_t flags );
+
+    // resets all flags to the given flags
+    void resetFlags( uint32_t flags );
+    void removeFlag( uint32_t flag );
+    void clearFlags();
 
     void calculateStats() override;
 
@@ -165,8 +178,14 @@ namespace Sapphire::Entity
 
     void setRoamTargetPos( const Common::FFXIVARR_POSITION3& targetPos );
 
+    void updateAggroTarget();
+
     const Common::FFXIVARR_POSITION3& getRoamTargetPos() const;
     const Common::FFXIVARR_POSITION3& getSpawnPos() const;
+    void initFsm();
+
+    bool getCanSwapTarget();
+    void setCanSwapTarget( bool value );
 
     /*BNpc Gambit*/
     void setBNpcBaseId( uint32_t baseId )
@@ -230,9 +249,11 @@ namespace Sapphire::Entity
 
     Common::FFXIVARR_POSITION3 m_spawnPos;
     Common::FFXIVARR_POSITION3 m_roamPos;
+    Common::FFXIVARR_POSITION3 m_lastPos;
 
     BNpcState m_state;
     std::set< std::shared_ptr< HateListEntry > > m_hateList;
+    bool m_canSwapTarget{ true };
 
     uint64_t m_naviLastUpdate;
     std::vector< Common::FFXIVARR_POSITION3 > m_naviLastPath;

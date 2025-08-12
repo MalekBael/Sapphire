@@ -14,6 +14,8 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( bnpc.getTerritoryId() );
   auto pNaviProvider = pZone->getNaviProvider();
+  bool hasQueuedAction = bnpc.checkAction();
+
   auto pHatedActor = bnpc.hateListGetHighest();
   if( !pHatedActor )
     return;
@@ -48,10 +50,17 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     {
       bnpc.deaggro( pHatedActor );
     }
+    else if( distance > 80.0f )
+    {
+      bnpc.deaggro( pHatedActor );
+    }
   }
 
-  if( !bnpc.hasFlag( Entity::Immobile ) && distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+  if( bnpc.pathingActive() && !hasQueuedAction &&
+      !bnpc.hasFlag( Entity::Immobile ) &&
+      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
   {
+
     if( pNaviProvider )
       pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
 
@@ -64,15 +73,13 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   if( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z )
     bnpc.setPos( pos );
 
-  // Process actions when in combat range (adjusted for ranged BNPCs)
-  if( !hasQueuedAction && distance < combatRange )
+  if( !hasQueuedAction && (distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) || !bnpc.pathingActive() ) )
   {
     // todo: dont turn if facing
     if( !bnpc.hasFlag( Entity::TurningDisabled ) )
       bnpc.face( pHatedActor->getPos() );
 
-    if( !hasQueuedAction )
-      bnpc.processGambits( tickCount );
+    bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
     if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) )

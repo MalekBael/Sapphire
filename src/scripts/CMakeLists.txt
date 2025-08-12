@@ -48,7 +48,8 @@ foreach(_scriptDir ${children})
         message("discovered plugin lib: ${_scriptDir} (${_name})")
 
         file(GLOB_RECURSE SCRIPT_BUILD_FILES "${_scriptDir}/*.cpp")
-        file(GLOB_RECURSE SCRIPT_FILES RELATIVE "${_scriptDir}" "${_name}/*.cpp")
+        file(GLOB_RECURSE SCRIPT_FILES "${_name}/*.cpp")
+        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SCRIPT_BUILD_FILES} ${SCRIPT_FILES})
 
         foreach(_script ${SCRIPT_FILES})
             get_filename_component(_scriptname "${_script}" NAME_WE)
@@ -106,9 +107,9 @@ foreach(_scriptDir ${children})
                        MODULE 
                          ${SCRIPT_BUILD_FILES} 
                          "${SCRIPT_INCLUDE_FILES}"
-                         "${_scriptDir}/ScriptLoader.cpp" )
+                         "${_scriptDir}/ScriptLoader.cpp" ) 
 
-        target_link_libraries( "script_${_name}" world )
+        target_link_libraries( "script_${_name}" PRIVATE world ${CMAKE_DL_LIBS} )
 
         target_include_directories("script_${_name}" PUBLIC "${CMAKE_SOURCE_DIR}/src/scripts")
         target_include_directories("script_${_name}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

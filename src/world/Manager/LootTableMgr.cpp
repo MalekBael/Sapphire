@@ -7,7 +7,7 @@
 #include <Service.h>
 #include <Logging/Logger.h>
 
-#include "RNGMgr.h"
+#include <Random/RNGMgr.h>
 #include "LootTableMgr.h"
 
 using namespace Sapphire;
@@ -50,7 +50,7 @@ LootTablePtr LootTableMgr::getLootTableByName( const std::string& name )
 
 LootTableResult LootTableMgr::rollLoot( const std::string& name )
 {
-  auto& RNGMgr = Common::Service< World::Manager::RNGMgr >::ref();
+  auto& RNGMgr = Common::Service< Common::Random::RNGMgr >::ref();
 
   LootTableResult result;
 
@@ -64,7 +64,7 @@ LootTableResult LootTableMgr::rollLoot( const std::string& name )
       if( !pool.enabled )
         continue;
 
-      auto pickCountGen = RNGMgr.getRandGenerator< uint32_t >( pool.pickMin, pool.pickMax );
+      auto pickCountGen = RNGMgr.getRandGenerator< uint32_t >( pool.pick.min, pool.pick.max );
       uint32_t picks = pickCountGen.next();
 
       std::vector< LootTableItem > available = pool.items;
@@ -73,7 +73,10 @@ LootTableResult LootTableMgr::rollLoot( const std::string& name )
       {
         const auto& item = pickWeightedItem( available );
 
-        result.items.push_back( { item.id, 1, item.isHq } );
+        auto itemCountGen = RNGMgr.getRandGenerator< uint32_t >( item.quantity.min, item.quantity.max );
+        uint32_t qty = itemCountGen.next();
+
+        result.items.push_back( { item.id, qty, item.isHq } );
 
         if( !pool.duplicates )
         {
@@ -84,7 +87,7 @@ LootTableResult LootTableMgr::rollLoot( const std::string& name )
       }
     }
 
-    Logger::debug( "LootTableMgr: Rolled total of {0} items", result.count() );
+    Logger::debug( "LootTableMgr: Rolled total of {0} item results", result.count() );
   }
     
   return result;
@@ -92,7 +95,7 @@ LootTableResult LootTableMgr::rollLoot( const std::string& name )
 
 const LootTableItem& LootTableMgr::pickWeightedItem( const std::vector< LootTableItem >& items )
 {
-  auto& RNGMgr = Common::Service< World::Manager::RNGMgr >::ref();
+  auto& RNGMgr = Common::Service< Common::Random::RNGMgr >::ref();
   // calc total weight
   uint32_t totalWeight = 0;
   for( const auto& it : items )

@@ -22,11 +22,11 @@
 #include "Engine/ResourceManager.h"
 #include "Engine/ShaderResource.h"
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_internal.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "imgui/IconsFontAwesome5.h"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 #include <random>
 #include <vector>
 
@@ -625,8 +625,16 @@ void EditorState::render( double deltaTime )
 
 
       ImGui::DockBuilderSplitNode( right_id, ImGuiDir_Left, 0.6, &left1_id, &right1_id );
-      ImGui::DockBuilderDockWindow( "BNPC Information", right1_id );
-      ImGui::DockBuilderDockWindow( "Map Viewer", left1_id );
+      ImGui::DockBuilderDockWindow( "Navmesh Viewer", left1_id );
+
+      unsigned int top_id;
+      unsigned int down_id;
+
+      ImGui::DockBuilderSplitNode( right1_id, ImGuiDir_Down, 0.6, &top_id, &down_id );
+      ImGui::DockBuilderDockWindow( "Map Viewer", down_id );
+      ImGui::DockBuilderDockWindow( "BNPC Information", top_id );
+
+
       dockInitialized = true;
     }
   }
@@ -639,8 +647,6 @@ void EditorState::render( double deltaTime )
     first_time = false;
     //  setupDockingLayout( dockspace_id );
   }
-
-  ImGui::End();
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 }
@@ -664,14 +670,14 @@ ImGuiID EditorState::setupDockspace( bool& p_open, ImGuiIO& io ) const
 
   ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.0f, 0.0f ) );
   ImGui::Begin( "DockSpace", &p_open, window_flags );
-  ImGui::PopStyleVar( 2 );
+  ImGui::PopStyleVar( 3 );
 
   ImGuiID dockspace_id = ImGui::GetID( "DockSpace" );
   //if( ImGui::DockBuilderGetNode( dockspace_id ) == NULL )
   {
     ImGui::DockSpace( dockspace_id, ImVec2( 0.0f, 0.0f ), dockspace_flags );
   }
-  ImGui::End();
+
 
 
   return dockspace_id;
