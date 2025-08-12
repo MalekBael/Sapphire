@@ -8,93 +8,91 @@
 #include <Territory/Territory.h>
 
 using namespace Sapphire::World;
+using namespace Sapphire::Entity;
 
-void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
+void AI::Fsm::StateCombat::onUpdate(Entity::BNpc& bnpc, uint64_t tickCount)
 {
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
-  auto pZone = teriMgr.getTerritoryByGuId( bnpc.getTerritoryId() );
+  auto pZone = teriMgr.getTerritoryByGuId(bnpc.getTerritoryId());
   auto pNaviProvider = pZone->getNaviProvider();
   bool hasQueuedAction = bnpc.checkAction();
 
   auto pHatedActor = bnpc.hateListGetHighest();
-  if( !pHatedActor )
+  if (!pHatedActor)
     return;
 
-  if( pNaviProvider && bnpc.pathingActive() )
+  if (pNaviProvider && bnpc.pathingActive())
   {
     auto state = bnpc.getState();
-    pNaviProvider->updateAgentParameters( bnpc.getAgentId(), bnpc.getRadius(), state == Entity::BNpcState::Retreat || state == Entity::BNpcState::Combat );
+    pNaviProvider->updateAgentParameters(bnpc.getAgentId(), bnpc.getRadius(), state == Entity::BNpcState::Retreat || state == Entity::BNpcState::Combat);
   }
 
-  auto distanceOrig = Common::Util::distance( bnpc.getPos(), bnpc.getSpawnPos() );
+  auto distanceOrig = Common::Util::distance(bnpc.getPos(), bnpc.getSpawnPos());
 
-  if( !pHatedActor->isAlive() || bnpc.getTerritoryId() != pHatedActor->getTerritoryId() )
+  if (!pHatedActor->isAlive() || bnpc.getTerritoryId() != pHatedActor->getTerritoryId())
   {
-    bnpc.hateListRemove( pHatedActor );
+    bnpc.hateListRemove(pHatedActor);
     pHatedActor = bnpc.hateListGetHighest();
   }
 
-  if( !pHatedActor )
+  if (!pHatedActor)
     return;
 
-  auto distance = Common::Util::distance( bnpc.getPos(), pHatedActor->getPos() );
+  auto distance = Common::Util::distance(bnpc.getPos(), pHatedActor->getPos());
   float combatRange = bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius();
 
   // For ranged BNPCs, use their attack range instead
-  if( bnpc.isRanged() )
+  if (bnpc.isRanged())
     combatRange = bnpc.getAttackRange();
 
-  if( !bnpc.hasFlag( Entity::NoDeaggro ) )
+  if (!bnpc.hasFlag(Entity::NoDeaggro))
   {
-    if( bnpc.hasFlag( Entity::Immobile ) && distance > 40.0f )
+    if (bnpc.hasFlag(Entity::Immobile) && distance > 40.0f)
     {
-      bnpc.deaggro( pHatedActor );
+      bnpc.deaggro(pHatedActor);
     }
-    else if( distance > 80.0f )
+    else if (distance > 80.0f)
     {
-      bnpc.deaggro( pHatedActor );
+      bnpc.deaggro(pHatedActor);
     }
   }
 
-  if( bnpc.pathingActive() && !hasQueuedAction &&
-      !bnpc.hasFlag( Entity::Immobile ) &&
-      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+  if (bnpc.pathingActive() && !hasQueuedAction &&
+    !bnpc.hasFlag(Entity::Immobile) &&
+    distance > (bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius()))
   {
+    if (pNaviProvider)
+      pNaviProvider->setMoveTarget(bnpc.getAgentId(), pHatedActor->getPos());
 
-    if( pNaviProvider )
-      pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
-
-        bnpc.moveTo( *pHatedActor );
-      }
-    }
+    bnpc.moveTo(*pHatedActor);
   }
 
-  auto pos = pNaviProvider->getMovePos( bnpc.getAgentId() );
-  if( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z )
-    bnpc.setPos( pos );
+  auto pos = pNaviProvider->getMovePos(bnpc.getAgentId());
+  if (pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z)
+    bnpc.setPos(pos);
 
-  if( !hasQueuedAction && (distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) || !bnpc.pathingActive() ) )
+  if (!hasQueuedAction && (distance < (bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius()) || !bnpc.pathingActive()))
   {
     // todo: dont turn if facing
-    if( !bnpc.hasFlag( Entity::TurningDisabled ) )
-      bnpc.face( pHatedActor->getPos() );
+    if (!bnpc.hasFlag(Entity::TurningDisabled))
+      bnpc.face(pHatedActor->getPos());
 
-    bnpc.processGambits( tickCount );
+    bnpc.processGambits(tickCount);
 
     // in combat range. ATTACK!
-    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) )
-      bnpc.autoAttack( pHatedActor );
+    if (!bnpc.hasFlag(Entity::BNpcFlag::AutoAttackDisabled))
+      bnpc.autoAttack(pHatedActor);
   }
 }
 
-void AI::Fsm::StateCombat::onEnter( Entity::BNpc& bnpc )
+void AI::Fsm::StateCombat::onEnter(Entity::BNpc& bnpc)
 {
 }
 
-void AI::Fsm::StateCombat::onExit( Entity::BNpc& bnpc )
+void AI::Fsm::StateCombat::onExit(Entity::BNpc& bnpc)
 {
   bnpc.hateListClear();
-  bnpc.changeTarget( Common::INVALID_GAME_OBJECT_ID64 );
-  bnpc.setStance( Common::Stance::Passive );
-  bnpc.setOwner( nullptr );
+  bnpc.changeTarget(Common::INVALID_GAME_OBJECT_ID64);
+  bnpc.setStance(Common::Stance::Passive);
+  bnpc.setOwner(nullptr);
 }

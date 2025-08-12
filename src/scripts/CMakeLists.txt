@@ -48,14 +48,14 @@ foreach(_scriptDir ${children})
         message("discovered plugin lib: ${_scriptDir} (${_name})")
 
         file(GLOB_RECURSE SCRIPT_BUILD_FILES "${_scriptDir}/*.cpp")
-        file(GLOB_RECURSE SCRIPT_FILES "${_name}/*.cpp")
+        file(GLOB_RECURSE SCRIPT_FILES "${_scriptDir}/*.cpp")
         source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SCRIPT_BUILD_FILES} ${SCRIPT_FILES})
 
         foreach(_script ${SCRIPT_FILES})
             get_filename_component(_scriptname "${_script}" NAME_WE)
 
             if(NOT ${_scriptname} MATCHES "ScriptLoader")
-                set(_fullpath "${_scriptDir}/${_script}")
+                set(_fullpath "${_script}")
                 
                 file(READ "${_fullpath}" _contents)
                 set(_has_multiple_scripts FALSE)

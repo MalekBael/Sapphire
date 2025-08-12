@@ -268,12 +268,6 @@ namespace Sapphire::Entity
     /* BNpcGambit*/
     bool m_isRanged = false;
     float m_attackRange = 3.0f;
-
-    // flag things - taken from those_who_fight
-    void resetFlags( uint32_t flags );
-    void removeFlag( uint32_t flag );
-    void clearFlags();
-
     /* BNpcGambit */
 
   };
