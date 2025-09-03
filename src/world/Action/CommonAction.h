@@ -8,6 +8,7 @@ namespace Sapphire::World::Action
 {
   enum ActionSkill
   {
+    Flash = 14,
     SkullSunder = 35,
     Maim = 37,
     StormsPath = 42,
@@ -35,6 +36,9 @@ namespace Sapphire::World::Action
     ArmysPaeon = 116,
     RainOfDeath = 117,
     BattleVoice = 118,
+    ClericStance = 122,
+    Protect = 123,
+    Triangulate = 210,
     EmpyrealArrow = 3558,
     TheWanderersMinuet = 3559,
     IronJaws = 3560,
@@ -69,6 +73,9 @@ namespace Sapphire::World::Action
     FoeRequiemAura = 139,
     FoeRequiemStatus = 140,
     BattleVoiceStatus = 141,
+    ClericStanceStatus = 145,
+    ProtectCnjStatus = 146,
+    TriangulateStatus = 217,
     RainOfDeathStatus = 247,
     FlamingArrowStatus = 249,
     InnerBeast = 411,

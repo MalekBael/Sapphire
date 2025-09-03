@@ -133,7 +133,14 @@ public:
   void onEnterTerritory( QuestBattle& instance, Entity::Player& player, uint32_t eventId, uint16_t param1,
                          uint16_t param2 ) override
   {
-
+    // spawn wave 1:
+    //    3x lv8 duskwight freelancer north entrance
+    // spawn wave 2:
+    //    2x lv8 1x lv9 south entrance
+    // npc talk center screen
+    // spawn boss:
+    //    1x duskwight freelancer captain lv10
+    // duty complete
   }
 
 };
