@@ -9,6 +9,7 @@ namespace Sapphire::World::Action
   enum ActionSkill
   {
     Flash = 14,
+    FightOrFlight = 20,
     SkullSunder = 35,
     Maim = 37,
     StormsPath = 42,
@@ -49,6 +50,8 @@ namespace Sapphire::World::Action
   enum ActionStatus
   {
     Bind = 13,
+    Blind = 15,
+    FightOrFlightStatus = 76,
     Defiance = 91,
     Unchained = 92,
     Wrath = 93,

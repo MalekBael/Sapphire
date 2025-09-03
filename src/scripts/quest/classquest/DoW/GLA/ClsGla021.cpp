@@ -6,6 +6,7 @@
 #include "Manager/EventMgr.h"
 #include <ScriptObject.h>
 #include <Service.h>
+#include <Actor/BNpc.h>
 
 // Quest Script: ClsGla021_00286
 // Quest Name: My First Gladius
