@@ -5,10 +5,10 @@
 
 using namespace Sapphire;
 
-class ActionTeleport5 : public Sapphire::ScriptAPI::ActionScript
+class ActionTeleport : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionTeleport5() : Sapphire::ScriptAPI::ActionScript( 5 )
+  ActionTeleport() : Sapphire::ScriptAPI::ActionScript( Teleport )
   {
   }
 
@@ -37,4 +37,4 @@ public:
   }
 };
 
-EXPOSE_SCRIPT( ActionTeleport5 );
+EXPOSE_SCRIPT( ActionTeleport );

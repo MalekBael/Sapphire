@@ -33,16 +33,13 @@ public:
     {
       auto pTarget = pActor->getAsChara();
 
-      if( pTarget->isFriendly( *pSource ) )
+      if( pTarget->isFriendly( *pSource ) || Common::Util::distance( pSource->getPos(), pTarget->getPos() ) > Radius )
         continue;
 
-      if( Common::Util::distance( pSource->getPos(), pTarget->getPos() ) > Radius )
-        continue;
-
-      if( pSource->getLevel() >= 20 )
+      if( pSource->getClass() == Common::ClassJob::Gladiator && pSource->getLevel() >= 20 )
         pActionBuilder->applyStatusEffect( pTarget, Blind, ( Duration * 1000 ), 0, true );
 
-      pActor->getAsBNpc()->hateListUpdate( pSource, 30 );
+      pActor->getAsBNpc()->hateListUpdate( pSource, 30 /* Find real value */ );
     }
   }
 };

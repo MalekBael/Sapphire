@@ -25,7 +25,7 @@ public:
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
     auto pSource = action.getSourceChara();
-    auto pCenter = action.getHitChara();
+    auto pCenter = action.getHitChara(); // Todo: this is always empty on players, why?
     auto pActionBuilder = action.getActionResultBuilder();
 
     if( !pActionBuilder )

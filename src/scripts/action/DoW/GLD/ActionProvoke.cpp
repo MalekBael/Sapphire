@@ -11,23 +11,24 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionFightOrFlight : public Sapphire::ScriptAPI::ActionScript
+class ActionProvoke : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionFightOrFlight() : Sapphire::ScriptAPI::ActionScript( FightOrFlight )
+  ActionProvoke() : Sapphire::ScriptAPI::ActionScript( Provoke )
   {
   }
-
-  static constexpr auto Duration = 30;
-  static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
     auto pSource = action.getSourceChara();
+    auto pTarget = action.getHitChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( FightOrFlightStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    if( !pTarget || !pActionBuilder || pTarget->isFriendly( *pSource ) )
+      return;
+
+    pTarget->getAsBNpc()->hateListAdd( pSource, ( pTarget->getAsBNpc()->hateListGetHighestValue() + 1 ) );
   }
 };
 
-EXPOSE_SCRIPT( ActionFightOrFlight );
+EXPOSE_SCRIPT( ActionProvoke );

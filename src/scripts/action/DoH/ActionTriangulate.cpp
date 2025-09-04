@@ -11,10 +11,10 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionClericStance : public Sapphire::ScriptAPI::ActionScript
+class ActionTriangulate : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionClericStance() : Sapphire::ScriptAPI::ActionScript( ClericStance )
+  ActionTriangulate() : Sapphire::ScriptAPI::ActionScript( Triangulate )
   {
   }
 
@@ -26,11 +26,11 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    if( pSource->hasStatusEffect( ClericStanceStatus ) )
-      pSource->removeSingleStatusEffectById( ClericStanceStatus );
+    if( pSource->hasStatusEffect( TriangulateStatus ) )
+      pSource->removeSingleStatusEffectById( TriangulateStatus );
     else
-      pActionBuilder->applyStatusEffectSelf( ClericStanceStatus, 0, 0, {}, Flags, false );
+      pActionBuilder->applyStatusEffectSelf( TriangulateStatus, 0, 0, {}, Flags, false );
   }
 };
 
-EXPOSE_SCRIPT( ActionClericStance );
+EXPOSE_SCRIPT( ActionTriangulate );

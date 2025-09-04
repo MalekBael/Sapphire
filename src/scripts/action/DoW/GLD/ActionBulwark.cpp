@@ -11,14 +11,14 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionFightOrFlight : public Sapphire::ScriptAPI::ActionScript
+class ActionBulwark : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionFightOrFlight() : Sapphire::ScriptAPI::ActionScript( FightOrFlight )
+  ActionBulwark() : Sapphire::ScriptAPI::ActionScript( Bulwark )
   {
   }
 
-  static constexpr auto Duration = 30;
+  static constexpr auto Duration = 15;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,8 +26,8 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( FightOrFlightStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    pActionBuilder->applyStatusEffectSelf( BulwarkStatus, ( Duration * 1000 ), 0, {}, Flags, true );
   }
 };
 
-EXPOSE_SCRIPT( ActionFightOrFlight );
+EXPOSE_SCRIPT( ActionBulwark );

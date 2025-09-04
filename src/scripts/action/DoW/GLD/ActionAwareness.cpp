@@ -11,23 +11,27 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionFightOrFlight : public Sapphire::ScriptAPI::ActionScript
+class ActionAwareness : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionFightOrFlight() : Sapphire::ScriptAPI::ActionScript( FightOrFlight )
+  ActionAwareness() : Sapphire::ScriptAPI::ActionScript( Awareness )
   {
   }
 
-  static constexpr auto Duration = 30;
+  static constexpr auto Duration = 20;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
+    auto duration = Duration;
 
-    pActionBuilder->applyStatusEffectSelf( FightOrFlightStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    if( pSource->getClass() == Common::ClassJob::Gladiator && pSource->getLevel() >= 44 )// Todo: check for parity
+      duration += 5;
+
+    pActionBuilder->applyStatusEffectSelf( AwarenessStatus, ( duration * 1000 ), 0, {}, Flags, true );
   }
 };
 
-EXPOSE_SCRIPT( ActionFightOrFlight );
+EXPOSE_SCRIPT( ActionAwareness );

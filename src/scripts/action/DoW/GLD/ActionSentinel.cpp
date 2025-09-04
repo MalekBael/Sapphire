@@ -11,14 +11,14 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionFightOrFlight : public Sapphire::ScriptAPI::ActionScript
+class ActionSentinel : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionFightOrFlight() : Sapphire::ScriptAPI::ActionScript( FightOrFlight )
+  ActionSentinel() : Sapphire::ScriptAPI::ActionScript( Sentinel )
   {
   }
 
-  static constexpr auto Duration = 30;
+  static constexpr auto Duration = 10;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,8 +26,11 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( FightOrFlightStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    if( pSource->getClass() == Common::ClassJob::Gladiator && pSource->getLevel() >= 48 )// Todo: check for parity
+    {}// Todo: lv48 sets effect to 40%
+
+    pActionBuilder->applyStatusEffectSelf( SentinelStatus, ( Duration * 1000 ), 0, {}, Flags, true );
   }
 };
 
-EXPOSE_SCRIPT( ActionFightOrFlight );
+EXPOSE_SCRIPT( ActionSentinel );

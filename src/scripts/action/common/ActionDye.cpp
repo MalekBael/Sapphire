@@ -3,10 +3,12 @@
 #include <Action/Action.h>
 #include <Inventory/Item.h>
 
-class ActionDye2472 : public Sapphire::ScriptAPI::ActionScript
+using namespace Sapphire;
+
+class ActionDye : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionDye2472() : Sapphire::ScriptAPI::ActionScript( 2472 )
+  ActionDye() : Sapphire::ScriptAPI::ActionScript( Dye )
   {
   }
 
@@ -22,4 +24,4 @@ public:
   }
 };
 
-EXPOSE_SCRIPT(ActionDye2472);
+EXPOSE_SCRIPT( ActionDye );
