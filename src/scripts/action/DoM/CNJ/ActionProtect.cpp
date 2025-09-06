@@ -44,7 +44,11 @@ public:
       if( Common::Util::distance( pSource->getPos(), pTarget->getPos() ) > Radius )
         continue;
 
-      pActionBuilder->applyStatusEffect( pTarget, ProtectCnjStatus, ( Duration * 1000 ), 0, {}, Flags, false, true );
+      pActionBuilder->applyStatusEffect( pTarget, ProtectCnjStatus, ( Duration * 1000 ), 0,
+        {
+          StatusModifier{ Common::ParamModifier::DefensePercent, 10 }
+        },
+        Flags, false, true );
     }
   }
 };

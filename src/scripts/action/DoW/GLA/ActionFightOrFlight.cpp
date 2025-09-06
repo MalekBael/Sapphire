@@ -18,7 +18,7 @@ public:
   {
   }
 
-  static constexpr auto Duration = 30;
+  static constexpr auto Duration = 20;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,7 +26,17 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( FightOrFlightStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    auto duration = Duration;
+    if( ( pSource->getClass() == Common::ClassJob::Gladiator || pSource->getClass() == Common::ClassJob::Paladin ) && pSource->getLevel() >= 28 )// Todo: check for parity
+      duration += 10;
+
+    auto currentPercent = pSource->getModifier( Common::ParamModifier::DamageDealtPercent );
+
+    pActionBuilder->applyStatusEffectSelf( FightOrFlightStatus, ( duration * 1000 ), 0,
+      {
+        StatusModifier{ Common::ParamModifier::DamageDealtPercent, ( static_cast< int >(std::floor( currentPercent + 30 ) ) ) }
+      },
+      Flags, true );
   }
 };
 

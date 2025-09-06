@@ -51,7 +51,7 @@ class ClsGla101 : public Sapphire::ScriptAPI::QuestScript
     static constexpr Common::QuestEobject Eobject0 = { 2001756, 141, { 27.219801, 13.000000, 51.848900 }, 1.000000 }; // Destination
     static constexpr auto EventActionWaiting2Middle = 12;
     static constexpr auto LocActor0 = 1004302; // Bruce
-    static constexpr auto Questbattle0 = 49;
+    static constexpr auto Questbattle0 = 19;
     static constexpr auto Territorytype0 = 253;
 
   public:

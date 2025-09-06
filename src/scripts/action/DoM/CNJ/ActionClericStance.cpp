@@ -18,8 +18,7 @@ public:
   {
   }
 
-  static constexpr auto Flags = static_cast< int32_t >( Common::StatusEffectFlag::Permanent ) |
-                                static_cast< int32_t >( Common::StatusEffectFlag::CanStatusOff );
+  static constexpr auto Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
@@ -27,9 +26,23 @@ public:
     auto pActionBuilder = action.getActionResultBuilder();
 
     if( pSource->hasStatusEffect( ClericStanceStatus ) )
+    {
+
       pSource->removeSingleStatusEffectById( ClericStanceStatus );
+    }
     else
-      pActionBuilder->applyStatusEffectSelf( ClericStanceStatus, 0, 0, {}, Flags, false );
+    {
+      // Todo: do i need to swap the stats manually or is that handled on client?
+      auto currentPercent0 = pSource->getModifier( Common::ParamModifier::AttackMagicPotency );
+      auto currentPercent1 = pSource->getModifier( Common::ParamModifier::HealingMagicPotency );
+
+      pActionBuilder->applyStatusEffectSelf( ClericStanceStatus, 0, 0,
+        {
+          StatusModifier{ Common::ParamModifier::AttackMagicPotency, 500 },  // Todo: still dont know if these are right
+          StatusModifier{ Common::ParamModifier::HealingMagicPotency, 100 } //
+        },
+        Flags, false );
+    }
   }
 };
 

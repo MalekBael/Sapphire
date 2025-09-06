@@ -19,6 +19,7 @@ public:
   }
 
   static constexpr auto Duration = 20;
+  static constexpr auto Percentage = 10;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,7 +27,17 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( RampartStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    auto percentage = Percentage;
+    if( ( pSource->getClass() == Common::ClassJob::Gladiator || pSource->getClass() == Common::ClassJob::Paladin ) && pSource->getLevel() >= 14 )// Todo: check for parity
+      percentage += 10;
+
+    auto currentPercent = pSource->getModifier( Common::ParamModifier::DamageTakenPercent );
+
+    pActionBuilder->applyStatusEffectSelf( RampartStatus, ( Duration * 1000 ), 0,
+      {
+        StatusModifier{ Common::ParamModifier::DamageTakenPercent, ( static_cast< int >( std::floor( currentPercent - percentage ) ) ) }
+      },
+      Flags, true );
   }
 };
 

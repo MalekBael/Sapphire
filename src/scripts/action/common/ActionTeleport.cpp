@@ -2,8 +2,10 @@
 #include <ScriptObject.h>
 #include <Actor/Player.h>
 #include <Action/Action.h>
+#include <Action/CommonAction.h>
 
 using namespace Sapphire;
+using namespace Sapphire::World::Action;
 
 class ActionTeleport : public Sapphire::ScriptAPI::ActionScript
 {

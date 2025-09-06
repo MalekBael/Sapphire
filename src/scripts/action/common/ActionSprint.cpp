@@ -3,8 +3,10 @@
 #include <Action/Action.h>
 
 #include <Math/CalcStats.h>
+#include <Action/CommonAction.h>
 
 using namespace Sapphire;
+using namespace Sapphire::World::Action;
 
 class ActionSprint : public Sapphire::ScriptAPI::ActionScript
 {

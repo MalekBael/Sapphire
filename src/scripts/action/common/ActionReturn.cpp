@@ -4,8 +4,10 @@
 #include <Action/Action.h>
 #include <Manager/PlayerMgr.h>
 #include <Service.h>
+#include <Action/CommonAction.h>
 
 using namespace Sapphire;
+using namespace Sapphire::World::Action;
 
 class ActionReturn : public Sapphire::ScriptAPI::ActionScript
 {

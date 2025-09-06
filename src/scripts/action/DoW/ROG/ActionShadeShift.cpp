@@ -11,14 +11,14 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionTemperedWill : public Sapphire::ScriptAPI::ActionScript
+class ActionShadeShift : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionTemperedWill() : Sapphire::ScriptAPI::ActionScript( TemperedWill )
+  ActionShadeShift() : Sapphire::ScriptAPI::ActionScript( ShadeShift )
   {
   }
 
-  static constexpr auto Duration = 10;
+  static constexpr auto Duration = 20;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,8 +26,12 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( TemperedWillStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    pActionBuilder->applyStatusEffectSelf( ShadeShiftStatus, ( Duration * 1000 ), 0,
+      {
+        StatusModifier{ Common::ParamModifier::DamageTakenPercent, 80 }// Todo: this is wrong
+      },
+      Flags, false );
   }
 };
 
-EXPOSE_SCRIPT( ActionTemperedWill );
+EXPOSE_SCRIPT( ActionShadeShift );

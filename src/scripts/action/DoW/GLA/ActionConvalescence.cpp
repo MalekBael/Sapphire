@@ -19,6 +19,7 @@ public:
   }
 
   static constexpr auto Duration = 20;
+  static constexpr auto Percentage = 20;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,10 +27,17 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    if( pSource->getClass() == Common::ClassJob::Gladiator && pSource->getLevel() >= 32 )// Todo: check for parity
-    {}// Todo: lv32 sets effect to 30%
+    auto percentage = Percentage;
+    if( ( pSource->getClass() == Common::ClassJob::Gladiator || pSource->getClass() == Common::ClassJob::Paladin ) && pSource->getLevel() >= 32 )// Todo: check for parity
+      percentage += 10;
 
-    pActionBuilder->applyStatusEffectSelf( ConvalescenceStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    auto currentPercent = pSource->getModifier( Common::ParamModifier::HealingMagicRecoveryPercent ); // Todo: correct paramMod??
+
+    pActionBuilder->applyStatusEffectSelf( ConvalescenceStatus, ( Duration * 1000 ), 0,
+      {
+        StatusModifier{ Common::ParamModifier::HealingMagicRecoveryPercent, ( static_cast< int >( std::floor( currentPercent + 20 ) ) ) }
+      },
+      Flags, true );
   }
 };
 

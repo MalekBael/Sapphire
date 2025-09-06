@@ -11,14 +11,14 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionBulwark : public Sapphire::ScriptAPI::ActionScript
+class ActionTemperedWill : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionBulwark() : Sapphire::ScriptAPI::ActionScript( Bulwark )
+  ActionTemperedWill() : Sapphire::ScriptAPI::ActionScript( TemperedWill )
   {
   }
 
-  static constexpr auto Duration = 15;
+  static constexpr auto Duration = 10;
   static constexpr uint32_t Flags = static_cast< uint32_t >( Common::StatusEffectFlag::BuffCategory );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
@@ -26,8 +26,14 @@ public:
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    pActionBuilder->applyStatusEffectSelf( BulwarkStatus, ( Duration * 1000 ), 0, {}, Flags, true );
+    if( pSource->hasStatusEffect( Blind ) )
+      pSource->removeSingleStatusEffectById( Blind );
+
+    if( pSource->hasStatusEffect( Heavy ) )
+      pSource->removeSingleStatusEffectById( Heavy );
+
+    pActionBuilder->applyStatusEffectSelf( TemperedWillStatus, ( Duration * 1000 ), 0, {}, Flags, true ); // Todo figure out how to add knockback/draw-in resistance
   }
 };
 
-EXPOSE_SCRIPT( ActionBulwark );
+EXPOSE_SCRIPT( ActionTemperedWill );

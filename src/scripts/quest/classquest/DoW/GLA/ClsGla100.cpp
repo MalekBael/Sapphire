@@ -52,7 +52,7 @@ class ClsGla100 : public Sapphire::ScriptAPI::QuestScript
     static constexpr Common::QuestEobject Eobject0 = { 2001426, 141, { 27.219801, 13.000000, 51.848900 }, 1.000000 }; // Destination
     static constexpr auto EventActionWaiting = 10;
     static constexpr auto LocActor0 = 1004302; // Bruce
-    static constexpr auto Questbattle0 = 49; // was 19
+    static constexpr auto Questbattle0 = 19;
     static constexpr auto Territorytype0 = 253;
     static constexpr auto UnlockCheckLeveReward = 5;
     static constexpr auto UnlockImageClassCange = 22;
@@ -81,7 +81,7 @@ class ClsGla100 : public Sapphire::ScriptAPI::QuestScript
       }
       case Actor1:
       {
-        if( quest.getSeq() == Seq1 )
+        if( quest.getSeq() == Seq1 && !checkAlive( player, Enemy0 ) && !checkAlive( player, Enemy1 ) )
           Scene00001( quest, player );
         else if( quest.getSeq() == Seq2 )
           Scene00002( quest, player );
@@ -127,14 +127,6 @@ class ClsGla100 : public Sapphire::ScriptAPI::QuestScript
     }
   }
 
-  void onEnterTerritory( World::Quest& quest, Entity::Player& player, uint16_t param1, uint16_t param2 ) override
-  {
-    if( quest.getSeq() == Seq4 )
-    {
-      //quest.setSeq( Seq5 );
-    }
-  }
-
   private:
   void checkQuestCompletion( World::Quest& quest, Entity::Player& player )
   {
@@ -146,6 +138,14 @@ class ClsGla100 : public Sapphire::ScriptAPI::QuestScript
       eventMgr().sendEventNotice( player, getId(), 0, 0, 0, 0 ); // search for the freelanders in stonesthrow completion message
       quest.setSeq( Seq2 );
     }
+  }
+
+  bool checkAlive( Entity::Player& player, uint32_t layoutId )
+  {
+    auto bnpc = teriMgr().getTerritoryByGuId( player.getTerritoryId() )->getActiveBNpcByLayoutId( layoutId );
+    if( bnpc && bnpc->getTriggerOwnerId() == player.getId() && bnpc->isAlive() )
+      return true;
+    return false;
   }
   //////////////////////////////////////////////////////////////////////
   // Available Scenes in this quest, not necessarly all are used
@@ -236,7 +236,10 @@ class ClsGla100 : public Sapphire::ScriptAPI::QuestScript
   {
     if( result.getResult( 0 ) == 1 )
     {
-      Scene00006( quest, player );
+      auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+
+      eventMgr().eventFinish( player, result.eventId, 0 );
+      pTeriMgr.createAndJoinQuestBattle( player, Questbattle0 );
     }
   }
 
@@ -249,12 +252,7 @@ class ClsGla100 : public Sapphire::ScriptAPI::QuestScript
 
   void Scene00006Return( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result )
   {
-    auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
-
-    eventMgr().eventFinish( player, result.eventId, 0 ); // Needed?
-    pTeriMgr.createAndJoinQuestBattle( player, Questbattle0 ); // Todo: implement
-
-    quest.setSeq( Seq5 );
+    // Empty
   }
 
   //////////////////////////////////////////////////////////////////////

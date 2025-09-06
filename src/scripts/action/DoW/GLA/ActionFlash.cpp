@@ -29,6 +29,8 @@ public:
     if( !pActionBuilder )
       return;
 
+    auto dmg = action.calcDamage( 600 );
+
     for( auto& pActor : pSource->getInRangeActors() )
     {
       auto pTarget = pActor->getAsChara();
@@ -36,10 +38,11 @@ public:
       if( pTarget->isFriendly( *pSource ) || Common::Util::distance( pSource->getPos(), pTarget->getPos() ) > Radius )
         continue;
 
-      if( pSource->getClass() == Common::ClassJob::Gladiator && pSource->getLevel() >= 20 )
+      if( ( pSource->getClass() == Common::ClassJob::Gladiator || pSource->getClass() == Common::ClassJob::Paladin ) && pSource->getLevel() >= 20 )
         pActionBuilder->applyStatusEffect( pTarget, Blind, ( Duration * 1000 ), 0, true );
 
-      pActor->getAsBNpc()->hateListUpdate( pSource, 30 /* Find real value */ );
+      pActor->getAsBNpc()->hateListUpdate( pSource, dmg.first ); // Todo: check for parity
+      // it appears this works and hits with calculated enmity but hits for a second 215 seemingly out of nowhere
     }
   }
 };

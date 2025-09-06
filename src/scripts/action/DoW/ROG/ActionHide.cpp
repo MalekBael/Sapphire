@@ -11,26 +11,24 @@
 using namespace Sapphire;
 using namespace Sapphire::World::Action;
 
-class ActionTriangulate : public Sapphire::ScriptAPI::ActionScript
+class ActionHide : public Sapphire::ScriptAPI::ActionScript
 {
 public:
-  ActionTriangulate() : Sapphire::ScriptAPI::ActionScript( Triangulate )
+  ActionHide() : Sapphire::ScriptAPI::ActionScript( Hide )
   {
   }
 
   static constexpr auto Flags = static_cast< uint32_t >( Common::StatusEffectFlag::Permanent ) |
-                                static_cast< uint32_t >( Common::StatusEffectFlag::CanStatusOff );
+                                static_cast< uint32_t >( Common::StatusEffectFlag::Invisibilty ) |
+                                static_cast< uint32_t >( Common::StatusEffectFlag::RemoveOnActionUse );
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
     auto pSource = action.getSourceChara();
     auto pActionBuilder = action.getActionResultBuilder();
 
-    if( pSource->hasStatusEffect( TriangulateStatus ) )
-      pSource->removeSingleStatusEffectById( TriangulateStatus );
-    else
-      pActionBuilder->applyStatusEffectSelf( TriangulateStatus, 0, 0, {}, Flags, false );// Todo: missing something...
+    pActionBuilder->applyStatusEffectSelf( HiddenStatus, 0, 0, {}, Flags, false );
   }
 };
 
-EXPOSE_SCRIPT( ActionTriangulate );
+EXPOSE_SCRIPT( ActionHide );

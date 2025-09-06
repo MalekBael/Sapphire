@@ -2,8 +2,10 @@
 #include <Actor/Player.h>
 #include <Action/Action.h>
 #include <Inventory/Item.h>
+#include <Action/CommonAction.h>
 
 using namespace Sapphire;
+using namespace Sapphire::World::Action;
 
 class ActionDye : public Sapphire::ScriptAPI::ActionScript
 {

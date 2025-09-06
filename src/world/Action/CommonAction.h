@@ -50,6 +50,12 @@ namespace Sapphire::World::Action
     ClericStance = 122,
     Protect = 123,
     Triangulate = 210,
+    ShadeShift = 2241,
+    KissOfTheWasp = 2243,
+    Hide = 2245,
+    SneakAttack = 2250,
+    KissOfTheViper = 2252,
+    DeathBlossom = 2254,
     Glamour = 2471,
     Dye = 2472,
     EmpyrealArrow = 3558,
@@ -61,7 +67,9 @@ namespace Sapphire::World::Action
 
   enum ActionStatus
   {
+    Stun = 2,
     Bind = 13,
+    Heavy = 14,
     Blind = 15,
     SprintStatus = 50,
     RampartStatus = 71,
@@ -101,8 +109,12 @@ namespace Sapphire::World::Action
     RainOfDeathStatus = 247,
     FlamingArrowStatus = 249,
     InnerBeast = 411,
+    ShadeShiftStatus = 488,
+    KissOfTheWaspStatus = 489,
+    KissOfTheViperStatus = 490,
     Deliverance = 729,
     TheWanderersMinuetStatus = 865,
-    TheWardensPaeanStatus = 866
+    TheWardensPaeanStatus = 866,
+    HiddenStatus = 1108
   };
 }
