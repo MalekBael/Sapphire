@@ -418,21 +418,8 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
     handlerId = ( player.getId() & 0xFFFF ) | 0x1A00;
   }
   
-  // ========== Step 1: Send 0x01AA RetainerList (tiny 8-byte packet) ==========
-  auto listPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerList >( player.getId() );
-  auto& listData = listPacket->data();
-  std::memset( &listData, 0, sizeof( listData ) );
-  
-  listData.handlerId = handlerId;
-  listData.maxSlots = 8;  // Standard max slots
-  listData.retainerCount = static_cast< uint8_t >( retainers.size() );
-  listData.padding = 0;
-  
-  Logger::info( "RetainerMgr: Sending RetainerList 0x01AA - handlerId: 0x{:04X}, maxSlots: {}, count: {}, size: {} bytes",
-                handlerId, listData.maxSlots, listData.retainerCount, sizeof( listData ) );
-  server.queueForPlayer( player.getCharacterId(), listPacket );
-  
-  // ========== Step 2: Send 8x 0x01AB RetainerInfo packets (one per slot) ==========
+  // ========== Step 1: Send 8x 0x01AB RetainerData packets (one per slot) ==========
+  // NOTE: Retail sends RetainerData BEFORE RetainerList (based on packet capture)
   for( uint8_t slot = 0; slot < 8; slot++ )
   {
     auto infoPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerData >( player.getId() );
@@ -453,7 +440,7 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
       const auto& r = *it->second;
       info.retainerIdLow = static_cast< uint32_t >( r.retainerId );
       info.unknown2 = 23;        // Unknown, but 23 for filled slots in capture
-      info.level = r.level > 0 ? r.level : 1;
+      info.unknown3 = 0x78;      // Retail shows 0x78 for filled - NOT level, purpose unknown
       info.ownerIdHigh = static_cast< uint32_t >( player.getCharacterId() >> 32 ) | 0x6800;
       info.unknown4 = 11;        // Unknown, but 11 for filled slots
       info.unknown5 = 1;         // 1 = ACTIVE slot (this is the IsCurrentRetainerActive check!)
@@ -479,7 +466,21 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
     server.queueForPlayer( player.getCharacterId(), infoPacket );
   }
   
-  Logger::info( "RetainerMgr: Sent 1x RetainerList + 8x RetainerInfo packets (count: {})", retainers.size() );
+  // ========== Step 2: Send 0x01AA RetainerList (tiny 8-byte packet) AFTER the data packets ==========
+  auto listPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerList >( player.getId() );
+  auto& listData = listPacket->data();
+  std::memset( &listData, 0, sizeof( listData ) );
+  
+  listData.handlerId = handlerId;
+  listData.maxSlots = 8;  // Standard max slots
+  listData.retainerCount = static_cast< uint8_t >( retainers.size() );
+  listData.padding = 0;
+  
+  Logger::info( "RetainerMgr: Sending RetainerList 0x01AA - handlerId: 0x{:04X}, maxSlots: {}, count: {}, size: {} bytes",
+                handlerId, listData.maxSlots, listData.retainerCount, sizeof( listData ) );
+  server.queueForPlayer( player.getCharacterId(), listPacket );
+  
+  Logger::info( "RetainerMgr: Sent 8x RetainerData + 1x RetainerList packets (count: {})", retainers.size() );
 }
 
 void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId, 
@@ -508,7 +509,7 @@ void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId,
   data.unknown1 = 0xFFFFFFFF;  // Always -1
   data.retainerIdLow = static_cast< uint32_t >( retainer->retainerId );
   data.unknown2 = 23;
-  data.level = retainer->level > 0 ? retainer->level : 1;
+  data.unknown3 = 0x78;  // Retail shows 0x78 for filled slots - NOT level, purpose unknown
   data.ownerIdHigh = static_cast< uint32_t >( player.getCharacterId() >> 32 ) | 0x6800;
   data.unknown4 = 11;
   data.unknown5 = 1;

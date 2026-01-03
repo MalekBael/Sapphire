@@ -2251,23 +2251,23 @@ struct FFXIVIpcEorzeaTimeOffset : FFXIVIpcBasePacket< TimeOffset >
    * Server -> Client: Individual retainer slot info
    * Opcode: 0x01AB (RetainerData)
    * Size: 72 bytes payload
-   * Sent 8 times (once per slot) after RetainerList
+   * Sent 8 times (once per slot) BEFORE RetainerList (0x01AA)
    */
   struct FFXIVIpcRetainerData : FFXIVIpcBasePacket< RetainerData >
   {
     uint32_t handlerId;       // +0  Same handler ID as RetainerList
     uint32_t unknown1;        // +4  Always 0xFFFFFFFF (-1)
     uint32_t retainerIdLow;   // +8  Lower 32 bits of retainer ID (0 if empty slot)
-    uint16_t unknown2;        // +12 Unknown (23 for filled, 0 for empty)
-    uint16_t level;           // +14 Retainer level (0 if empty)
+    uint16_t unknown2;        // +12 Unknown (23 for filled, 0 for empty) - possibly slot type flags
+    uint16_t unknown3;        // +14 NOT level! Retail shows 0x78=120 for lv60 retainer. City/status?
     uint32_t ownerIdHigh;     // +16 High bits of owner ID or flags
     uint32_t unknown4;        // +20 Unknown (11 for filled, 0 for empty)
-    uint8_t  unknown5;        // +24 Unknown (1 for filled, 0 for empty)
+    uint8_t  unknown5;        // +24 Active slot flag (1 for filled, 0 for empty/inactive)
     uint8_t  classJob;        // +25 Class/Job ID (0 if empty)
     uint8_t  unknown6;        // +26 Always 0
     uint8_t  unknown7;        // +27 Always 57 (0x39)
     uint32_t createTime;      // +28 Creation timestamp (0 if empty)
-    uint8_t  hireOrder;       // +32 Slot index (0-7)
+    uint8_t  hireOrder;       // +32 Slot index (1-indexed for filled, 0 for empty)
     uint8_t  personality;     // +33 Personality type (0x99 = 153)
     char     name[32];        // +34 Retainer name (null-terminated, empty if no retainer)
     uint8_t  trailing[6];     // +66 Trailing data (copy of some IDs)
