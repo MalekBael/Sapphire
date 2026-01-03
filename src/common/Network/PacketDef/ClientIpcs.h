@@ -222,6 +222,8 @@ namespace Sapphire::Network::Packets
       RequestBonus = 0x2CC,
       Logout = 0x269,
 
+      RequestRetainerData = 0x350,  // Client requests retainer count/list data
+
       HousingHouseName = 0x026A,
       HousingGreeting = 0x026B,
       HousingChangeLayout = 0x026C,

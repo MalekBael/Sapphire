@@ -4,6 +4,8 @@
 #include <Network/PacketDef/Zone/ServerZoneDef.h>
 #include "Actor/Player.h"
 #include "Forwards.h"
+#include "Manager/RetainerMgr.h"
+#include <Service.h>
 
 namespace Sapphire::Network::Packets::WorldPackets::Server
 {
@@ -70,6 +72,10 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       // possibly max level or current level
    //   m_data.maxLevel = Common::MAX_PLAYER_LEVEL;
       m_data.ExpansionLevel = Common::CURRENT_EXPANSION_ID;
+
+      // Set retainer count from database
+      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+      m_data.RetainerCount = retainerMgr.getRetainerCount( player );
 
       // df stuff
       // todo: actually do this properly

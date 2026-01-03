@@ -422,4 +422,43 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
                     "DELETE FROM fcmember WHERE FcMemberId = ?;",
                     CONNECTION_BOTH );
 
+  /// RETAINER
+  prepareStatement( CHARA_RETAINER_INS,
+                    "INSERT INTO chararetainerinfo ( CharacterId, DisplayOrder, Name, Personality, "
+                    "Customize, CreateTime ) VALUES ( ?, ?, ?, ?, ?, ? );",
+                    CONNECTION_SYNC );
+
+  prepareStatement( CHARA_RETAINER_SEL,
+                    "SELECT RetainerId, CharacterId, DisplayOrder, Name, Personality, Level, ClassJob, "
+                    "Exp, CityId, Gil, ItemCount, SellingCount, VentureId, VentureComplete, "
+                    "VentureStartTime, VentureCompleteTime, Customize, IsActive, IsRename, Status, CreateTime "
+                    "FROM chararetainerinfo WHERE RetainerId = ?;",
+                    CONNECTION_SYNC );
+
+  prepareStatement( CHARA_RETAINER_SEL_BY_CHARID,
+                    "SELECT RetainerId, CharacterId, DisplayOrder, Name, Personality, Level, ClassJob, "
+                    "Exp, CityId, Gil, ItemCount, SellingCount, VentureId, VentureComplete, "
+                    "VentureStartTime, VentureCompleteTime, Customize, IsActive, IsRename, Status, CreateTime "
+                    "FROM chararetainerinfo WHERE CharacterId = ? ORDER BY DisplayOrder ASC;",
+                    CONNECTION_SYNC );
+
+  prepareStatement( CHARA_RETAINER_SEL_BY_NAME,
+                    "SELECT RetainerId FROM chararetainerinfo WHERE Name = ?;",
+                    CONNECTION_SYNC );
+
+  prepareStatement( CHARA_RETAINER_UP,
+                    "UPDATE chararetainerinfo SET Level = ?, ClassJob = ?, Exp = ?, CityId = ?, "
+                    "Gil = ?, ItemCount = ?, SellingCount = ?, VentureId = ?, VentureComplete = ?, "
+                    "VentureStartTime = ?, VentureCompleteTime = ?, IsActive = ?, IsRename = ?, Status = ? "
+                    "WHERE RetainerId = ?;",
+                    CONNECTION_ASYNC );
+
+  prepareStatement( CHARA_RETAINER_DEL,
+                    "DELETE FROM chararetainerinfo WHERE RetainerId = ?;",
+                    CONNECTION_ASYNC );
+
+  prepareStatement( CHARA_RETAINER_COUNT,
+                    "SELECT COUNT(*) AS cnt FROM chararetainerinfo WHERE CharacterId = ?;",
+                    CONNECTION_SYNC );
+
 }

@@ -1714,3 +1714,40 @@ const CharaLandData& Entity::Player::getCharaLandData( Common::LandFlagsSlot slo
 {
   return m_charaLandData[ slot ];
 }
+
+// Retainer creation support
+void Player::setPendingRetainerCustomize( uint8_t modelType, const uint8_t* customize, uint8_t personality )
+{
+  m_pendingRetainerCustomize.hasPendingData = true;
+  m_pendingRetainerCustomize.modelType = modelType;
+  m_pendingRetainerCustomize.personality = personality;
+  std::memcpy( m_pendingRetainerCustomize.customize, customize, 26 );
+}
+
+bool Player::hasPendingRetainerCustomize() const
+{
+  return m_pendingRetainerCustomize.hasPendingData;
+}
+
+const uint8_t* Player::getPendingRetainerCustomize() const
+{
+  return m_pendingRetainerCustomize.customize;
+}
+
+uint8_t Player::getPendingRetainerModelType() const
+{
+  return m_pendingRetainerCustomize.modelType;
+}
+
+uint8_t Player::getPendingRetainerPersonality() const
+{
+  return m_pendingRetainerCustomize.personality;
+}
+
+void Player::clearPendingRetainerCustomize()
+{
+  m_pendingRetainerCustomize.hasPendingData = false;
+  m_pendingRetainerCustomize.modelType = 0;
+  m_pendingRetainerCustomize.personality = 1;
+  std::memset( m_pendingRetainerCustomize.customize, 0, 26 );
+}

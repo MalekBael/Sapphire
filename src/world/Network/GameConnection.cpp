@@ -168,6 +168,10 @@ GameConnection::GameConnection( Sapphire::Network::HivePtr pHive, Sapphire::Netw
   setZoneHandler( BlacklistRemove, "BlacklistRemove", &GameConnection::blacklistRemoveHandler );
 
   setZoneHandler( GetFcInviteList, "GetFcInviteList", &GameConnection::getFcInviteListHandler );
+
+  setZoneHandler( RetainerCustomize, "RetainerCustomize", &GameConnection::retainerCustomizeHandler );
+
+  setZoneHandler( RequestRetainerData, "RequestRetainerData", &GameConnection::requestRetainerDataHandler );
 }
 
 GameConnection::~GameConnection() = default;

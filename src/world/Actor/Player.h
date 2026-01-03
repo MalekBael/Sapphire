@@ -798,6 +798,14 @@ namespace Sapphire::Entity
 
     const Common::CharaLandData& getCharaLandData( Common::LandFlagsSlot slot ) const;
 
+    // Retainer creation support
+    void setPendingRetainerCustomize( uint8_t modelType, const uint8_t* customize, uint8_t personality );
+    bool hasPendingRetainerCustomize() const;
+    const uint8_t* getPendingRetainerCustomize() const;
+    uint8_t getPendingRetainerModelType() const;
+    uint8_t getPendingRetainerPersonality() const;
+    void clearPendingRetainerCustomize();
+
   private:
     using InventoryMap = std::map< uint16_t, ItemContainerPtr >;
 
@@ -859,6 +867,16 @@ namespace Sapphire::Entity
       bool isRename;
       uint8_t status;
     } m_retainerInfo[8]{};
+
+    // Pending retainer creation data (stored during CharaMake until yieldId 5)
+    // needs confirmation from the client that this works
+    struct PendingRetainerCustomize
+    {
+      bool hasPendingData{ false };
+      uint8_t modelType{ 0 };         // 0=male, 1=female
+      uint8_t customize[26]{ 0 };     // Appearance data
+      uint8_t personality{ 1 };       // 1-6, selected during creation
+    } m_pendingRetainerCustomize{};
 
     AchievementData m_achievementData{};
     

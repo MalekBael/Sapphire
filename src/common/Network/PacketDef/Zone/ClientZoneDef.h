@@ -723,4 +723,18 @@ struct FFXIVIpcGetFcHierarchy : FFXIVIpcBasePacket< GetFcHierarchy >
   uint8_t ListType;
 };
 
+/**
+ * Client -> Server: Retainer character customization data
+ * Opcode: 0x1A6 (RetainerCustomize) (we need to confirm the opcode)
+ * Sent during retainer creation with appearance data
+ * Based on 3.35 binary analysis (see RETAINER_DATABASE_FLOW.md)
+ * we need to match this with actual packets.
+ */
+struct FFXIVIpcRetainerCustomize : FFXIVIpcBasePacket< RetainerCustomize >
+{
+  uint8_t modelType;                // Model type/gender (0=male, 1=female)
+  uint8_t customize[26];            // 26 bytes of character customization data
+  uint8_t __padding1[5];            // Padding to 32 bytes
+};
+
 }

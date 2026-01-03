@@ -53,6 +53,7 @@
 #include "Manager/WarpMgr.h"
 #include "Manager/FreeCompanyMgr.h"
 #include "Manager/MapMgr.h"
+#include "Manager/RetainerMgr.h"
 #include "Action/ActionLutData.h"
 #include "Action/ActionShapeLutData.h"
 
@@ -404,6 +405,13 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
   Common::Service< Manager::BlacklistMgr >::set( pBlacklistMgr );
   Common::Service< ContentFinder >::set( contentFinder );
   Common::Service< Manager::TaskMgr >::set( taskMgr );
+
+  auto pRetainerMgr = std::make_shared< Manager::RetainerMgr >();
+  Common::Service< Manager::RetainerMgr >::set( pRetainerMgr );
+  if( !pRetainerMgr->init() )
+  {
+    Logger::error( "Failed to initialize RetainerMgr - retainer functionality may be limited" );
+  }
 
   Logger::debug( "Initialization took {0}ms", Common::Util::getTimeMs() - start );
 

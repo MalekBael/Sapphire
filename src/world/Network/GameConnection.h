@@ -246,6 +246,10 @@ namespace Sapphire::Network
     DECLARE_HANDLER( blacklistRemoveHandler );
 
     DECLARE_HANDLER( getFcInviteListHandler );
+
+    DECLARE_HANDLER( retainerCustomizeHandler );
+
+    DECLARE_HANDLER( requestRetainerDataHandler );
   };
 
 }

@@ -849,6 +849,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   * Structural representation of the packet sent by the server to initialize
   * the client UI upon initial connection.
   */
+#pragma pack(push, 1)
   struct FFXIVIpcPlayerStatus : FFXIVIpcBasePacket< PlayerStatus >
   {
     uint64_t CharaId;
@@ -964,6 +965,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
 
     uint8_t padding[100];
   };
+#pragma pack(pop)
 
 
   /**
@@ -2219,5 +2221,55 @@ struct FFXIVIpcEorzeaTimeOffset : FFXIVIpcBasePacket< TimeOffset >
     uint8_t MaelstromRank;
     uint8_t TwinAdderRank;
     uint8_t ImmortalFlamesRank;
+  };
+
+  /**
+   * Retainer System Packets - 3.35 Protocol
+   * Based on actual packet captures from retail 3.3-3.35
+   * 
+   * Flow when talking to retainer bell:
+   *   1. Send 0x01AA RetainerList (tiny 8-byte packet with slot counts)
+   *   2. Send 8x 0x01AB RetainerData packets (one per slot, 72 bytes each)
+   *   3. Client displays retainer selection UI
+   */
+
+  /**
+   * Server -> Client: Retainer slot summary
+   * Opcode: 0x01AA (RetainerList)
+   * Size: 8 bytes payload
+   * Sent once, followed by 8x RetainerData packets
+   */
+  struct FFXIVIpcRetainerList : FFXIVIpcBasePacket< RetainerList >
+  {
+    uint32_t handlerId;       // +0  Event handler ID from EventPlay context
+    uint8_t  maxSlots;        // +4  Maximum retainer slots (usually 8)
+    uint8_t  retainerCount;   // +5  Number of active retainers (0-10)
+    uint16_t padding;         // +6  Padding
+  };
+
+  /**
+   * Server -> Client: Individual retainer slot info
+   * Opcode: 0x01AB (RetainerData)
+   * Size: 72 bytes payload
+   * Sent 8 times (once per slot) after RetainerList
+   */
+  struct FFXIVIpcRetainerData : FFXIVIpcBasePacket< RetainerData >
+  {
+    uint32_t handlerId;       // +0  Same handler ID as RetainerList
+    uint32_t unknown1;        // +4  Always 0xFFFFFFFF (-1)
+    uint32_t retainerIdLow;   // +8  Lower 32 bits of retainer ID (0 if empty slot)
+    uint16_t unknown2;        // +12 Unknown (23 for filled, 0 for empty)
+    uint16_t level;           // +14 Retainer level (0 if empty)
+    uint32_t ownerIdHigh;     // +16 High bits of owner ID or flags
+    uint32_t unknown4;        // +20 Unknown (11 for filled, 0 for empty)
+    uint8_t  unknown5;        // +24 Unknown (1 for filled, 0 for empty)
+    uint8_t  classJob;        // +25 Class/Job ID (0 if empty)
+    uint8_t  unknown6;        // +26 Always 0
+    uint8_t  unknown7;        // +27 Always 57 (0x39)
+    uint32_t createTime;      // +28 Creation timestamp (0 if empty)
+    uint8_t  hireOrder;       // +32 Slot index (0-7)
+    uint8_t  personality;     // +33 Personality type (0x99 = 153)
+    char     name[32];        // +34 Retainer name (null-terminated, empty if no retainer)
+    uint8_t  trailing[6];     // +66 Trailing data (copy of some IDs)
   };
 }

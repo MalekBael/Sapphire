@@ -37,6 +37,7 @@
 #include "Manager/ItemMgr.h"
 #include "Manager/FreeCompanyMgr.h"
 #include "Manager/MgrUtil.h"
+#include "Manager/RetainerMgr.h"
 
 #include "Action/Action.h"
 
@@ -650,4 +651,27 @@ void Sapphire::Network::GameConnection::marketBoardRequestItemListings( const Pa
 void Sapphire::Network::GameConnection::getRequestItemListHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
 
+}
+
+void Sapphire::Network::GameConnection::retainerCustomizeHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
+{
+  const auto packet = ZoneChannelPacket< Client::FFXIVIpcRetainerCustomize >( inPacket );
+  
+  Logger::debug( "RetainerCustomize received - modelType: {}", packet.data().modelType );
+  
+  // Store the customize data on the player for later use in retainer creation
+  // The personality is set separately via yieldId 5 (resultInt)
+  // this all needs confirmation
+  player.setPendingRetainerCustomize( packet.data().modelType, packet.data().customize, 1 );
+}
+
+void Sapphire::Network::GameConnection::requestRetainerDataHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
+{
+  // Client sends opcode 0x350 when Lua calls retainercount()
+  // Respond by sending the retainer list packet
+  // this all needs confirmation, especially the opcode
+  Logger::debug( "RequestRetainerData (0x350) received from player {}", player.getId() );
+  
+  auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+  retainerMgr.sendRetainerList( player );
 }
