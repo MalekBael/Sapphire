@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <map>
 #include <optional>
 #include "ForwardsZone.h"
 
@@ -323,6 +324,40 @@ namespace Sapphire::World::Manager
      */
     void sendSalesHistory( Entity::Player& player, uint64_t retainerId );
 
+    // ========== NPC Spawning ==========
+
+    /**
+     * @brief Spawn a retainer NPC in the world
+     * 
+     * Creates a temporary retainer actor visible to the summoning player.
+     * The retainer will be positioned near the player facing them.
+     * 
+     * @param player The player summoning the retainer
+     * @param retainerId The retainer to spawn
+     * @return Actor ID of spawned retainer, or 0 on failure
+     */
+    uint32_t spawnRetainer( Entity::Player& player, uint64_t retainerId );
+
+    /**
+     * @brief Despawn a retainer NPC
+     * 
+     * Removes the retainer actor from the world and sends despawn packet.
+     * Called when player dismisses retainer, logs out, or zones.
+     * 
+     * @param player The player who summoned the retainer
+     * @param retainerActorId The actor ID of the spawned retainer
+     */
+    void despawnRetainer( Entity::Player& player, uint32_t retainerActorId );
+
+    /**
+     * @brief Get the spawned actor ID for a retainer
+     * 
+     * @param player The player who summoned it
+     * @param retainerId The retainer database ID
+     * @return Actor ID if spawned, or 0 if not currently spawned
+     */
+    uint32_t getSpawnedRetainerActorId( Entity::Player& player, uint64_t retainerId );
+
   private:
     /**
      * @brief Load retainer data from database
@@ -347,6 +382,10 @@ namespace Sapphire::World::Manager
      * @return Next available slot (0-9), or 255 if full
      */
     uint8_t getNextAvailableSlot( Entity::Player& player );
+
+    // Tracking of spawned retainers per player
+    // Map: PlayerId -> Map: RetainerId -> ActorId
+    std::map< uint32_t, std::map< uint64_t, uint32_t > > m_spawnedRetainers;
   };
 
 }

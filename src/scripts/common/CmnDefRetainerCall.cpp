@@ -43,22 +43,77 @@ public:
       {
         uint8_t retainerCount = retainerMgr.getRetainerCount( player );
         if( retainerCount == 0 )
+        {
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 444 } );
+        }
         else
+        {
+          // Send the retainer list packets so client can display them
+          retainerMgr.sendRetainerList( player );
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
+        }
         break;
       }
 
       case YIELD_CALL_RETAINER:
       {
-        // TODO: Spawn retainer actor with PlayerSpawn packet (0x0190)
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // 1 = failure
+        // Extract retainer slot/index from resultInt (0-7)
+        uint8_t retainerSlot = static_cast< uint8_t >( resultInt & 0xFF );
+        
+        // Get retainers for this player
+        auto retainers = retainerMgr.getRetainers( player );
+        
+        // Find retainer in the specified slot
+        uint64_t retainerId = 0;
+        for( const auto& retainer : retainers )
+        {
+          if( retainer.displayOrder == retainerSlot )
+          {
+            retainerId = retainer.retainerId;
+            break;
+          }
+        }
+
+        if( retainerId == 0 )
+        {
+          // No retainer in that slot
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // failure
+          break;
+        }
+
+        // Spawn the retainer NPC
+        uint32_t actorId = retainerMgr.spawnRetainer( player, retainerId );
+        
+        if( actorId == 0 )
+        {
+          // Spawn failed
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // failure
+        }
+        else
+        {
+          // Spawn successful
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } ); // success
+        }
         break;
       }
 
       case YIELD_DEPOP_RETAINER:
+      {
+        // Despawn any currently spawned retainers for this player
+        // For now, we'll despawn all retainers - could be more specific based on resultInt
+        auto retainers = retainerMgr.getRetainers( player );
+        for( const auto& retainer : retainers )
+        {
+          uint32_t actorId = retainerMgr.getSpawnedRetainerActorId( player, retainer.retainerId );
+          if( actorId != 0 )
+          {
+            retainerMgr.despawnRetainer( player, actorId );
+          }
+        }
+        
         eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
         break;
+      }
 
       case YIELD_RETAINER_MAIN_MENU:
         eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 11 } );

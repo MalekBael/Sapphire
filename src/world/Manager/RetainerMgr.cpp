@@ -6,8 +6,11 @@
 #include <Logging/Logger.h>
 #include <Network/GamePacket.h>
 #include <Network/PacketDef/Zone/ServerZoneDef.h>
+#include <Network/PacketWrappers/RetainerSpawnPacket.h>
+#include <Network/Util/PacketUtil.h>
 
 #include <map>
+#include <cmath>
 
 #include "Actor/Player.h"
 #include "Network/GameConnection.h"
@@ -402,6 +405,13 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
   Logger::info( "RetainerMgr: getRetainers returned {} retainers", retainers.size() );
   
   auto& server = Common::Service< World::WorldServer >::ref();
+  const auto maxSlots = getMaxRetainerSlots( player );
+  const auto currentCount = static_cast< uint8_t >( retainers.size() );
+  
+  // ========== Step 0: Send ActorControl to set retainer count ==========
+  // This updates the client's internal count for GetRetainerEmployedCount()
+  Network::Util::Packet::sendActorControlSelf( player, player.getId(), 0x98 /* SetRetainerCount */,
+                                                static_cast<uint32_t>(retainers.size()) );
   
   // Build a map of slot -> retainer for quick lookup
   std::map< uint8_t, const RetainerData* > slotMap;
@@ -452,8 +462,8 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
       std::strncpy( info.name, r.name.c_str(), 31 );
       info.name[31] = '\0';
       
-      Logger::info( "RetainerMgr: Slot {} - '{}' (id: {}, classJob: {}, level: {}, unknown5: {}, hireOrder: {})", 
-                    slot, r.name, r.retainerId, r.classJob, r.level, info.unknown5, info.hireOrder );
+      Logger::info( "RetainerMgr: Slot {} - '{}' (id: {}, DB_classJob: {}, PACKET_classJob: {}, level: {}, unknown5: {}, hireOrder: {})", 
+                    slot, r.name, r.retainerId, static_cast<int>(r.classJob), static_cast<int>(info.classJob), static_cast<int>(r.level), static_cast<int>(info.unknown5), static_cast<int>(info.hireOrder) );
     }
     else
     {
@@ -472,12 +482,13 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
   std::memset( &listData, 0, sizeof( listData ) );
   
   listData.handlerId = handlerId;
-  listData.maxSlots = 8;  // Standard max slots
-  listData.retainerCount = static_cast< uint8_t >( retainers.size() );
+  listData.maxSlots = maxSlots;
+  // Client-side available slots are driven off this field; send max slots, not current count.
+  listData.retainerCount = maxSlots;
   listData.padding = 0;
   
-  Logger::info( "RetainerMgr: Sending RetainerList 0x01AA - handlerId: 0x{:04X}, maxSlots: {}, count: {}, size: {} bytes",
-                handlerId, listData.maxSlots, listData.retainerCount, sizeof( listData ) );
+  Logger::info( "RetainerMgr: Sending RetainerList 0x01AA - handlerId: 0x{:04X}, maxSlots: {}, current: {}, size: {} bytes",
+                handlerId, listData.maxSlots, currentCount, sizeof( listData ) );
   server.queueForPlayer( player.getCharacterId(), listPacket );
   
   Logger::info( "RetainerMgr: Sent 8x RetainerData + 1x RetainerList packets (count: {})", retainers.size() );
@@ -545,21 +556,161 @@ void RetainerMgr::sendSalesHistory( Entity::Player& player, uint64_t retainerId 
   // TODO: Send sales history packets
 }
 
+// ========== NPC Spawning ==========
+
+uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId )
+{
+  // Load retainer data
+  auto retainerOpt = getRetainer( retainerId );
+  if( !retainerOpt )
+  {
+    Logger::error( "RetainerMgr::spawnRetainer - Retainer {} not found", retainerId );
+    return 0;
+  }
+
+  auto& retainerData = *retainerOpt;
+
+  // Verify ownership
+  if( retainerData.ownerId != player.getId() )
+  {
+    Logger::error( "RetainerMgr::spawnRetainer - Player {} tried to spawn retainer {} owned by {}",
+                   player.getId(), retainerId, retainerData.ownerId );
+    return 0;
+  }
+
+  // Check if already spawned
+  auto existingActor = getSpawnedRetainerActorId( player, retainerId );
+  if( existingActor != 0 )
+  {
+    Logger::warn( "RetainerMgr::spawnRetainer - Retainer {} already spawned as actor {}",
+                  retainerId, existingActor );
+    return existingActor;
+  }
+
+  // Generate unique actor ID for this retainer spawn
+  // Retainer actor IDs use pattern: 0x40000000 + (player low 16 bits << 8) + retainer slot
+  // This ensures they're unique per player and don't clash with other actors
+  uint32_t retainerActorId = 0x40000000 | ( ( player.getId() & 0xFFFF ) << 8 ) | ( retainerData.displayOrder & 0xFF );
+
+  // Calculate spawn position (2 yalms in front of player)
+  auto playerPos = player.getPos();
+  auto playerRot = player.getRot();
+  
+  Common::FFXIVARR_POSITION3 spawnPos;
+  spawnPos.x = playerPos.x + ( std::sin( playerRot ) * 2.0f );
+  spawnPos.y = playerPos.y;
+  spawnPos.z = playerPos.z + ( std::cos( playerRot ) * 2.0f );
+
+  // Face retainer towards player
+  float retainerRot = playerRot + 3.14159265f; // 180 degrees opposite
+
+  // Send spawn packet
+  auto& server = Common::Service< World::WorldServer >::ref();
+  auto spawnPacket = std::make_shared< WorldPackets::Server::RetainerSpawnPacket >(
+    retainerActorId,
+    retainerData,
+    spawnPos,
+    retainerRot,
+    player
+  );
+
+  server.queueForPlayer( player.getCharacterId(), spawnPacket );
+
+  // Track spawned retainer
+  m_spawnedRetainers[ player.getId() ][ retainerId ] = retainerActorId;
+
+  Logger::info( "RetainerMgr::spawnRetainer - Spawned retainer {} '{}' as actor {} for player {}",
+                retainerId, retainerData.name, retainerActorId, player.getId() );
+
+  return retainerActorId;
+}
+
+void RetainerMgr::despawnRetainer( Entity::Player& player, uint32_t retainerActorId )
+{
+  // TODO: Send ActorFreeSpawn packet to remove retainer from world
+  // For now, just remove from tracking
+  
+  auto playerIt = m_spawnedRetainers.find( player.getId() );
+  if( playerIt == m_spawnedRetainers.end() )
+    return;
+
+  // Find and remove the retainer
+  for( auto it = playerIt->second.begin(); it != playerIt->second.end(); ++it )
+  {
+    if( it->second == retainerActorId )
+    {
+      Logger::info( "RetainerMgr::despawnRetainer - Despawned retainer actor {} for player {}",
+                    retainerActorId, player.getId() );
+      playerIt->second.erase( it );
+      break;
+    }
+  }
+
+  // Clean up player entry if no more spawned retainers
+  if( playerIt->second.empty() )
+  {
+    m_spawnedRetainers.erase( playerIt );
+  }
+}
+
+uint32_t RetainerMgr::getSpawnedRetainerActorId( Entity::Player& player, uint64_t retainerId )
+{
+  auto playerIt = m_spawnedRetainers.find( player.getId() );
+  if( playerIt == m_spawnedRetainers.end() )
+    return 0;
+
+  auto retainerIt = playerIt->second.find( retainerId );
+  if( retainerIt == playerIt->second.end() )
+    return 0;
+
+  return retainerIt->second;
+}
+
 // ========== Private Methods ==========
 
 std::optional< RetainerData > RetainerMgr::loadRetainerFromDb( uint64_t retainerId )
 {
-  // TODO: Query database
-  // auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
-  // auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_SEL );
-  // stmt->setUInt64( 1, retainerId );
-  // auto res = db.query( stmt );
-  // if( res->next() )
-  // {
-  //   RetainerData data;
-  //   // ... populate from result set
-  //   return data;
-  // }
+  auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+  auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_SEL );
+  stmt->setUInt64( 1, retainerId );
+  auto res = db.query( stmt );
+  
+  if( res && res->next() )
+  {
+    RetainerData data;
+    data.retainerId = res->getUInt64( "RetainerId" );
+    data.ownerId = res->getUInt( "CharacterId" );
+    data.displayOrder = static_cast< uint8_t >( res->getUInt( "DisplayOrder" ) );
+    data.name = res->getString( "Name" );
+    data.personality = static_cast< RetainerPersonality >( res->getUInt( "Personality" ) );
+    data.level = static_cast< uint8_t >( res->getUInt( "Level" ) );
+    data.classJob = static_cast< uint8_t >( res->getUInt( "ClassJob" ) );
+    data.exp = res->getUInt( "Exp" );
+    data.cityId = static_cast< uint8_t >( res->getUInt( "CityId" ) );
+    data.gil = res->getUInt( "Gil" );
+    data.itemCount = static_cast< uint8_t >( res->getUInt( "ItemCount" ) );
+    data.sellingCount = static_cast< uint8_t >( res->getUInt( "SellingCount" ) );
+    data.ventureId = res->getUInt( "VentureId" );
+    data.ventureComplete = res->getUInt( "VentureComplete" ) != 0;
+    data.ventureStartTime = res->getUInt( "VentureStartTime" );
+    data.ventureCompleteTime = res->getUInt( "VentureCompleteTime" );
+    data.isActive = res->getUInt( "IsActive" ) != 0;
+    data.isRename = res->getUInt( "IsRename" ) != 0;
+    data.status = static_cast< uint8_t >( res->getUInt( "Status" ) );
+    data.createTime = res->getUInt( "CreateTime" );
+    
+    // Get customize data if present
+    if( !res->isNull( "Customize" ) )
+    {
+      auto blobData = res->getBlobVector( "Customize" );
+      if( blobData.size() == 26 )
+      {
+        data.customize.assign( blobData.begin(), blobData.end() );
+      }
+    }
+    
+    return data;
+  }
 
   return std::nullopt;
 }

@@ -53,12 +53,12 @@ public:
       retainerMgr.sendRetainerList( player );
 
       // Scene 0, yieldId 37: Get retainer list data
-      // Returns: currentRetainerCount, maxRetainers (order matters for Lua script)
+      // Returns: maxRetainers, currentRetainerCount (Lua expects max first)
       uint8_t maxRetainers = retainerMgr.getMaxRetainerSlots( player );
       uint8_t currentCount = retainerMgr.getRetainerCount( player );
       // Use player debug channel; Logger is not available in script DLLs
-      playerMgr().sendDebug( player, "RetainerDesk: yieldId 37 - current: {} max: {}", currentCount, maxRetainers );
-      eventMgr().resumeScene( player, eventId, sceneId, yieldId, { currentCount, maxRetainers } );
+      playerMgr().sendDebug( player, "RetainerDesk: yieldId 37 - max: {} current: {}", maxRetainers, currentCount );
+      eventMgr().resumeScene( player, eventId, sceneId, yieldId, { maxRetainers, currentCount } );
     }
     else if( sceneId == 1 )
     {

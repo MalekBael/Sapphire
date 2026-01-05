@@ -4,7 +4,7 @@
 -- Main retainer information table
 CREATE TABLE IF NOT EXISTS `chararetainerinfo` (
   `RetainerId` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `CharacterId` INT(20) NOT NULL,
+  `CharacterId` BIGINT(20) UNSIGNED NOT NULL,
   `DisplayOrder` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Slot index 0-9',
   `Name` VARCHAR(32) NOT NULL,
   `Personality` TINYINT(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1-6: Cheerful/Wild/Coolheaded/Carefree/Problematic/Playful',
@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `chararetainerinfo` (
   `UPDATE_DATE` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`RetainerId`),
   INDEX `idx_character` (`CharacterId`),
+  INDEX `idx_character_order` (`CharacterId`, `DisplayOrder`),
   UNIQUE INDEX `idx_name` (`Name`) COMMENT 'Retainer names must be unique per world'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Retainer information for player characters';
 
