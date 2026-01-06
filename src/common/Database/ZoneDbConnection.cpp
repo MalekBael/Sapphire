@@ -453,6 +453,10 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
                     "WHERE RetainerId = ?;",
                     CONNECTION_ASYNC );
 
+  prepareStatement( CHARA_RETAINER_UP_CITY,
+                    "UPDATE chararetainerinfo SET CityId = ? WHERE RetainerId = ?;",
+                    CONNECTION_SYNC );
+
   prepareStatement( CHARA_RETAINER_DEL,
                     "DELETE FROM chararetainerinfo WHERE RetainerId = ?;",
                     CONNECTION_SYNC );

@@ -239,6 +239,16 @@ namespace Sapphire::World::Manager
     // ========== Market Board ==========
 
     /**
+     * @brief Register a retainer to sell at a city's market
+     * 
+     * @param player The retainer's owner
+     * @param retainerId The retainer
+     * @param cityId City ID (1=Limsa, 2=Gridania, 3=Ul'dah, 4=Ishgard)
+     * @return 0 on success, 463 if already registered to this city, other error codes for failures
+     */
+    uint32_t registerToMarket( Entity::Player& player, uint64_t retainerId, uint8_t cityId );
+
+    /**
      * @brief List an item on the market board
      * 
      * @param player The retainer's owner

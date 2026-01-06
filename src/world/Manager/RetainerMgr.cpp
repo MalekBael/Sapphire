@@ -375,6 +375,51 @@ RetainerError RetainerMgr::cancelVenture( Entity::Player& player, uint64_t retai
 
 // ========== Market Board ==========
 
+uint32_t RetainerMgr::registerToMarket( Entity::Player& player, uint64_t retainerId, uint8_t cityId )
+{
+  auto retainer = getRetainer( retainerId );
+  if( !retainer.has_value() )
+  {
+    Logger::warn( "RetainerMgr::registerToMarket - Retainer {} not found", retainerId );
+    return 1; // Generic error
+  }
+
+  if( retainer->ownerId != player.getId() )
+  {
+    Logger::warn( "RetainerMgr::registerToMarket - Player {} doesn't own retainer {}", 
+                  player.getId(), retainerId );
+    return 1; // Generic error
+  }
+
+  // Check if already registered to this city
+  if( retainer->cityId == cityId && cityId != 0 )
+  {
+    Logger::debug( "RetainerMgr::registerToMarket - Retainer {} already registered to city {}", 
+                   retainerId, cityId );
+    return 463; // Already registered at this city
+  }
+
+  // Update cityId in database
+  auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+  auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_UP_CITY );
+  stmt->setUInt( 1, cityId );
+  stmt->setUInt64( 2, retainerId );
+  
+  try
+  {
+    db.directExecute( stmt );
+  }
+  catch( const std::exception& e )
+  {
+    Logger::error( "RetainerMgr::registerToMarket - DB error: {}", e.what() );
+    return 1; // Generic error
+  }
+
+  Logger::info( "RetainerMgr::registerToMarket - Registered retainer {} '{}' to city {}", 
+                retainerId, retainer->name, cityId );
+  return 0; // Success
+}
+
 RetainerError RetainerMgr::listItem( Entity::Player& player, uint64_t retainerId,
                                      uint32_t itemId, uint32_t price, uint32_t stack )
 {

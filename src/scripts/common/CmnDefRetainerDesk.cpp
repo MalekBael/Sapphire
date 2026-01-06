@@ -20,6 +20,11 @@
  *   9  = RemoveRetainer - deletes the retainer, returns 0 success or error code
  *   (SetCurrentRetainerIndex, IsCurrentRetainerActive, GetRetainerName do NOT yield)
  * 
+ * Yield IDs (Scene 6 - Dispatch Retainer to Market):
+ *   13 = SelectRetainer - opens retainer selection UI, returns index (1-8) or 444 (none)
+ *   10 = MarketRegister - registers retainer to city market, returns 0 success, 463 already registered, or error
+ *   (SetCurrentRetainerIndex, IsCurrentRetainerActive, GetRetainerName do NOT yield)
+ * 
  * Yield IDs (Scene 7 - Market Tax Rates):
  *   38 = GetMarketSellTaxRates - returns 5 values: limsa, gridania, uldah, ishgard, taxInterval
  */
@@ -167,6 +172,11 @@ public:
       // Scene 2: Release (dismiss) retainer flow
       handleScene02Yield( eventId, yieldId, player, resultString, resultInt );
     }
+    else if( sceneId == 6 )
+    {
+      // Scene 6: Dispatch retainer (register to market)
+      handleScene06Yield( eventId, yieldId, player, resultString, resultInt );
+    }
     else if( sceneId == 7 )
     {
       // Scene 7: View market tax rates
@@ -198,6 +208,10 @@ public:
     {
       case 1: // Hire retainer
         Scene00001( player );
+        break;
+      
+      case 2: // Dispatch retainer (register to market)
+        Scene00006( player );
         break;
       
       case 3: // Release (dismiss) retainer
@@ -437,6 +451,114 @@ public:
     {
       // Back to main menu
       Scene00000( player );
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Scene 00006 - Dispatch Retainer (Register to Market)
+  //////////////////////////////////////////////////////////////////////
+
+  void Scene00006( Entity::Player& player )
+  {
+    playerMgr().sendDebug( player, "RetainerDesk: Playing Scene00006 (dispatch retainer)" );
+    eventMgr().playScene( player, getId(), 6, HIDE_HOTBAR, bindSceneReturn( &CmnDefRetainerDesk::Scene00006Return ) );
+  }
+
+  void Scene00006Return( Entity::Player& player, const Event::SceneResult& result )
+  {
+    auto status = result.getResult( 0 );
+    playerMgr().sendDebug( player, "RetainerDesk: Scene00006Return - status={}", status );
+    
+    // The Lua returns:
+    // 0 = Player cancelled or no retainers, back to main menu
+    // 1 = Successfully registered retainer, back to main menu
+    Scene00000( player );
+  }
+
+  /**
+   * @brief Handle yields for Scene 6 (Dispatch Retainer to Market)
+   * 
+   * This scene registers a retainer to sell at a specific city's market.
+   * The city is determined by which NPC the player talked to.
+   * 
+   * Yields:
+   *   13 = SelectRetainer - opens retainer selection UI
+   *   10 = MarketRegister(cityId, retainerIndex) - registers to market
+   */
+  void handleScene06Yield( uint32_t eventId, uint8_t yieldId, Entity::Player& player,
+                           const std::string& resultString, uint64_t resultInt )
+  {
+    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+    
+    // Extract packed args: low 32 bits = arg#0, high 32 bits = arg#1
+    uint32_t arg0 = static_cast< uint32_t >( resultInt & 0xFFFFFFFF );
+    uint32_t arg1 = static_cast< uint32_t >( resultInt >> 32 );
+    
+    playerMgr().sendDebug( player, "RetainerDesk Scene06: yieldId={} arg0={} arg1={}", yieldId, arg0, arg1 );
+    
+    switch( yieldId )
+    {
+      case 13: // SelectRetainer - open retainer selection UI
+      {
+        // Send fresh retainer list so the UI has data
+        retainerMgr.sendRetainerList( player );
+        
+        auto retainers = retainerMgr.getRetainers( player );
+        if( retainers.empty() )
+        {
+          playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - no retainers, returning 444" );
+          m_selectedRetainerIndex = 0;
+          m_selectedRetainerId = 0;
+          eventMgr().resumeScene( player, eventId, 6, yieldId, { 444 } );
+        }
+        else
+        {
+          // Return index 1 to let Lua proceed; the client handles selection UI
+          m_selectedRetainerIndex = 1;
+          m_selectedRetainerId = retainers[ 0 ].retainerId;
+          playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - {} retainers available", retainers.size() );
+          eventMgr().resumeScene( player, eventId, 6, yieldId, { m_selectedRetainerIndex } );
+        }
+        break;
+      }
+
+      case 10: // MarketRegister - register retainer to city market
+      {
+        // arg0 = cityId (1=Limsa, 2=Gridania, 3=Ul'dah, 4=Ishgard from Lua constants)
+        // arg1 = retainer index
+        uint32_t cityId = arg0;
+        uint32_t retainerIndex = arg1;
+        
+        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - cityId={} retainerIndex={}", 
+                               cityId, retainerIndex );
+        
+        // Get the retainer by index
+        auto retainers = retainerMgr.getRetainers( player );
+        if( retainerIndex == 0 || retainerIndex > retainers.size() )
+        {
+          playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - invalid retainer index" );
+          eventMgr().resumeScene( player, eventId, 6, yieldId, { 1 } ); // Generic error
+          break;
+        }
+        
+        auto& retainer = retainers[ retainerIndex - 1 ]; // Convert to 0-indexed
+        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - registering '{}' to city {}", 
+                               retainer.name, cityId );
+        
+        // Register to market and get result code
+        // Return codes: 0 = success, 463 = already registered at this city, other = error
+        uint32_t result = retainerMgr.registerToMarket( player, retainer.retainerId, 
+                                                        static_cast< uint8_t >( cityId ) );
+        
+        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - result={}", result );
+        eventMgr().resumeScene( player, eventId, 6, yieldId, { result } );
+        break;
+      }
+
+      default:
+        playerMgr().sendDebug( player, "RetainerDesk: *** UNKNOWN Scene06 yieldId {} *** - returning 0", yieldId );
+        eventMgr().resumeScene( player, eventId, 6, yieldId, { 0 } );
+        break;
     }
   }
 
