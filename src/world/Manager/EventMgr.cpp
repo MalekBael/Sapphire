@@ -343,8 +343,21 @@ void EventMgr::handleYieldEventScene( Entity::Player& player, uint32_t eventId, 
     PlayerMgr::sendDebug( player, "arg#{0}: {1} ({1:08X})", index++, r );
   }
 
+  // Pass results[1] as resultInt if available (many yields use arg#1 for the actual value)
+  // Combine results[0] and results[1] into a 64-bit value if both exist
+  uint64_t resultInt = 0;
+  if( results.size() >= 2 )
+  {
+    // Pack both args: low 32 bits = results[0], high 32 bits = results[1]
+    resultInt = static_cast< uint64_t >( results[0] ) | ( static_cast< uint64_t >( results[1] ) << 32 );
+  }
+  else if( results.size() >= 1 )
+  {
+    resultInt = results[0];
+  }
+
   std::string tmp{};
-  if( !scriptMgr.onYield( player, eventId, sceneId, resumeId, tmp, 0 ) )
+  if( !scriptMgr.onYield( player, eventId, sceneId, resumeId, tmp, resultInt ) )
   {
     PlayerMgr::sendDebug( player, "Yield not implemented in script, sending default" );
   }

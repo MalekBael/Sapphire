@@ -455,7 +455,7 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
 
   prepareStatement( CHARA_RETAINER_DEL,
                     "DELETE FROM chararetainerinfo WHERE RetainerId = ?;",
-                    CONNECTION_ASYNC );
+                    CONNECTION_SYNC );
 
   prepareStatement( CHARA_RETAINER_COUNT,
                     "SELECT COUNT(*) AS cnt FROM chararetainerinfo WHERE CharacterId = ?;",

@@ -5,7 +5,7 @@
  * Event ID: 720905 (0x000B0009)
  * Client Script: cmndefretainerdesk_00009.luab
  * 
- * Yield IDs (Scene 0):
+ * Yield IDs (Scene 0 - Main Menu):
  *   37 = Get retainer list / menu data
  * 
  * Yield IDs (Scene 1 - Retainer Creation):
@@ -16,16 +16,12 @@
  *   36 = PromptName / CreateRetainer final submit with name
  * 
  * Yield IDs (Scene 2 - Release Retainer):
- *   7  = SelectRetainer - opens retainer selection UI, returns index (1-8) or 444
- *   8  = SetCurrentRetainerIndex - sets the selected retainer context
- *   9  = IsCurrentRetainerActive - checks if retainer is active (not suspended)
- *   10 = GetRetainerName - returns name, sex, hasHouse
- *   34 = RemoveRetainer - deletes the retainer, returns 0 success or error code
+ *   13 = SelectRetainer - opens retainer selection UI, returns index (1-8) or 444 (none)
+ *   9  = RemoveRetainer - deletes the retainer, returns 0 success or error code
+ *   (SetCurrentRetainerIndex, IsCurrentRetainerActive, GetRetainerName do NOT yield)
  * 
  * Yield IDs (Scene 7 - Market Tax Rates):
  *   38 = GetMarketSellTaxRates - returns 5 values: limsa, gridania, uldah, ishgard, taxInterval
- * 
- * NOTE: Yield IDs marked with (?) need verification via debug logging
  */
 
 #include <ScriptObject.h>
@@ -307,90 +303,71 @@ public:
   {
     auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
     
+    // Extract packed args: low 32 bits = arg#0, high 32 bits = arg#1
+    uint32_t arg0 = static_cast< uint32_t >( resultInt & 0xFFFFFFFF );
+    uint32_t arg1 = static_cast< uint32_t >( resultInt >> 32 );
+    
     // Log all yields for discovery
-    playerMgr().sendDebug( player, "RetainerDesk Scene02: yieldId={} resultInt={}", yieldId, resultInt );
+    playerMgr().sendDebug( player, "RetainerDesk Scene02: yieldId={} arg0={} arg1={}", yieldId, arg0, arg1 );
+    
+    // Based on decompiled client analysis:
+    // - SelectRetainer yields with ID 13
+    // - RemoveRetainer yields with ID 9
+    // - SetCurrentRetainerIndex, IsCurrentRetainerActive, GetRetainerName do NOT yield
     
     switch( yieldId )
     {
-      case 7:  // SelectRetainer - open retainer selection UI
+      case 13: // SelectRetainer - open retainer selection UI
       {
         // Send fresh retainer list so the UI has data
         retainerMgr.sendRetainerList( player );
         
-        uint8_t retainerCount = retainerMgr.getRetainerCount( player );
-        if( retainerCount == 0 )
+        auto retainers = retainerMgr.getRetainers( player );
+        if( retainers.empty() )
         {
           // No retainers to select - return 444 (special "none available" code)
           playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - no retainers, returning 444" );
+          m_selectedRetainerIndex = 0;
+          m_selectedRetainerId = 0;
           eventMgr().resumeScene( player, eventId, 2, yieldId, { 444 } );
         }
         else
         {
-          // For now, auto-select first retainer (index 1 in Lua is 1-based)
-          // TODO: This should open a UI and wait for player selection
-          // The client likely handles this via RetainerList UI interaction
-          playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - {} retainers available, returning 1", retainerCount );
+          // Auto-select first retainer (index 1 in Lua is 1-based)
+          // TODO: This should wait for player selection via UI interaction
+          m_selectedRetainerIndex = 1;
+          m_selectedRetainerId = retainers[ 0 ].retainerId;
+          playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - {} retainers, selecting idx={} id={}", 
+                                 retainers.size(), m_selectedRetainerIndex, m_selectedRetainerId );
+          eventMgr().resumeScene( player, eventId, 2, yieldId, { m_selectedRetainerIndex } );
+        }
+        break;
+      }
+
+      case 9:  // RemoveRetainer - actually delete the retainer
+      {
+        // arg1 contains the retainer ID from the Lua script (passed from SelectRetainer result)
+        // Note: arg1 is the retainer ID as sent in our RetainerData packets
+        uint64_t retainerToDelete = arg1;
+        
+        playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer (yield 9) - arg1={} (retainer ID to delete)", 
+                               retainerToDelete );
+        
+        if( retainerToDelete == 0 )
+        {
+          // Fall back to m_selectedRetainerId if arg1 is 0
+          retainerToDelete = m_selectedRetainerId;
+          playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - arg1 was 0, using cached id={}", retainerToDelete );
+        }
+        
+        if( retainerToDelete == 0 )
+        {
+          playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - no retainer selected!" );
           eventMgr().resumeScene( player, eventId, 2, yieldId, { 1 } );
-        }
-        break;
-      }
-
-      case 8:  // SetCurrentRetainerIndex - store the selected retainer
-      {
-        m_selectedRetainerIndex = static_cast< uint8_t >( resultInt );
-        playerMgr().sendDebug( player, "RetainerDesk: SetCurrentRetainerIndex - idx={}", m_selectedRetainerIndex );
-        
-        // Get the retainer ID for this index
-        auto retainers = retainerMgr.getRetainers( player );
-        if( m_selectedRetainerIndex > 0 && m_selectedRetainerIndex <= retainers.size() )
-        {
-          m_selectedRetainerId = retainers[ m_selectedRetainerIndex - 1 ].retainerId;
-          playerMgr().sendDebug( player, "RetainerDesk: Selected retainer ID={}", m_selectedRetainerId );
+          break;
         }
         
-        eventMgr().resumeScene( player, eventId, 2, yieldId, { 0 } ); // Success
-        break;
-      }
-
-      case 9:  // IsCurrentRetainerActive - check if retainer is active
-      {
-        // Return 1 = active, 0 = suspended/inactive
-        auto retainer = retainerMgr.getRetainer( m_selectedRetainerId );
-        uint32_t isActive = ( retainer.has_value() && retainer->isActive ) ? 1 : 0;
-        playerMgr().sendDebug( player, "RetainerDesk: IsCurrentRetainerActive - id={} active={}", 
-                               m_selectedRetainerId, isActive );
-        eventMgr().resumeScene( player, eventId, 2, yieldId, { isActive } );
-        break;
-      }
-
-      case 10: // GetRetainerName - returns name, sex(?), hasHouse
-      {
-        auto retainer = retainerMgr.getRetainer( m_selectedRetainerId );
-        if( retainer.has_value() )
-        {
-          // The Lua expects: name, sex(?), hasHouse
-          // For now: name = string result, sex = 0 (unknown), hasHouse = false
-          playerMgr().sendDebug( player, "RetainerDesk: GetRetainerName - name='{}' id={}", 
-                                 retainer->name, m_selectedRetainerId );
-          // This should be a string yield, not integer - return 0/0/0 for the integer parts
-          // The name is passed via resultString in reverse direction
-          // For now, just return success - the client probably gets the name from RetainerInfo packet
-          eventMgr().resumeScene( player, eventId, 2, yieldId, { 0, 0, 0 } );
-        }
-        else
-        {
-          playerMgr().sendDebug( player, "RetainerDesk: GetRetainerName - retainer not found!" );
-          eventMgr().resumeScene( player, eventId, 2, yieldId, { 0, 0, 0 } );
-        }
-        break;
-      }
-
-      case 34: // RemoveRetainer - actually delete the retainer
-      {
-        playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - deleting retainer idx={} id={}", 
-                               m_selectedRetainerIndex, m_selectedRetainerId );
-        
-        auto error = retainerMgr.deleteRetainer( player, m_selectedRetainerId );
+        auto error = retainerMgr.deleteRetainer( player, retainerToDelete );
         
         if( error == World::Manager::RetainerError::None )
         {
@@ -419,8 +396,9 @@ public:
       }
 
       default:
-        playerMgr().sendDebug( player, "RetainerDesk: Unknown Scene02 yieldId {} - returning 1", yieldId );
-        eventMgr().resumeScene( player, eventId, 2, yieldId, { 1 } );
+        // For unknown yields, try to return a reasonable default
+        playerMgr().sendDebug( player, "RetainerDesk: *** UNKNOWN Scene02 yieldId {} *** - returning 0", yieldId );
+        eventMgr().resumeScene( player, eventId, 2, yieldId, { 0 } );
         break;
     }
   }

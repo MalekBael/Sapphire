@@ -123,13 +123,23 @@ RetainerError RetainerMgr::deleteRetainer( Entity::Player& player, uint64_t reta
     return RetainerError::RetainerBusy;
   }
 
-  // TODO: Delete from database
-  // auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
-  // auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_DEL );
-  // stmt->setUInt64( 1, retainerId );
-  // db.directExecute( stmt );
-
-  Logger::info( "RetainerMgr: Deleted retainer {} for player {}", retainerId, player.getId() );
+  // Delete from database
+  Logger::info( "RetainerMgr: Deleting retainer {} (name: '{}') for player {}", 
+                retainerId, retainer->name, player.getId() );
+  
+  auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+  
+  try
+  {
+    db.directExecute( "DELETE FROM chararetainerinfo WHERE RetainerId = " + std::to_string( retainerId ) );
+  }
+  catch( const std::exception& e )
+  {
+    Logger::error( "RetainerMgr: DELETE failed with exception: {}", e.what() );
+    return RetainerError::NotFound;
+  }
+  
+  Logger::info( "RetainerMgr: Successfully deleted retainer {}", retainerId );
   return RetainerError::None;
 }
 
