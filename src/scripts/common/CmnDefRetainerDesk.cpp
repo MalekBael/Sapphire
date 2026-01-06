@@ -204,6 +204,10 @@ public:
         Scene00002( player );
         break;
       
+      case 4: // Ask about retainers (explanation)
+        Scene00005( player );
+        break;
+      
       case 5: // View market tax rates
         Scene00007( player );
         break;
@@ -333,8 +337,8 @@ public:
         }
         else
         {
-          // Auto-select first retainer (index 1 in Lua is 1-based)
-          // TODO: This should wait for player selection via UI interaction
+          // Return index 1 to let Lua proceed; the client handles selection UI
+          // and sends the actual selected retainer ID in the RemoveRetainer yield (arg1)
           m_selectedRetainerIndex = 1;
           m_selectedRetainerId = retainers[ 0 ].retainerId;
           playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - {} retainers, selecting idx={} id={}", 
@@ -400,6 +404,39 @@ public:
         playerMgr().sendDebug( player, "RetainerDesk: *** UNKNOWN Scene02 yieldId {} *** - returning 0", yieldId );
         eventMgr().resumeScene( player, eventId, 2, yieldId, { 0 } );
         break;
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Scene 00005 - Ask About Retainers (Explanation)
+  //////////////////////////////////////////////////////////////////////
+
+  void Scene00005( Entity::Player& player )
+  {
+    playerMgr().sendDebug( player, "RetainerDesk: Playing Scene00005 (ask about retainers)" );
+    eventMgr().playScene( player, getId(), 5, HIDE_HOTBAR, bindSceneReturn( &CmnDefRetainerDesk::Scene00005Return ) );
+  }
+
+  void Scene00005Return( Entity::Player& player, const Event::SceneResult& result )
+  {
+    auto selection = result.getResult( 0 );
+    playerMgr().sendDebug( player, "RetainerDesk: Scene00005Return - selection={}", selection );
+    
+    // The menu returns:
+    // 1 = What is a retainer?
+    // 2 = About entrusting items/gil
+    // 3 = Summoning retainers
+    // 4 = Back
+    
+    if( selection >= 1 && selection <= 3 )
+    {
+      // After showing explanation, loop back to the explanation menu
+      Scene00005( player );
+    }
+    else
+    {
+      // Back to main menu
+      Scene00000( player );
     }
   }
 
