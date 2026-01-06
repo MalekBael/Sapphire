@@ -2243,7 +2243,10 @@ struct FFXIVIpcEorzeaTimeOffset : FFXIVIpcBasePacket< TimeOffset >
   {
     uint32_t handlerId;       // +0  Event handler ID from EventPlay context
     uint8_t  maxSlots;        // +4  Maximum retainer slots (usually 8)
-    uint8_t  retainerCount;   // +5  Number of active retainers (0-10)
+    // NOTE: Despite the name, this field is stored by client as "available slots"
+    // GetAvailableRetainerSlots() returns this value directly from cache (byte_1417A12B2)
+    // Should be set to: maxSlots - currentlyEmployed
+    uint8_t  retainerCount;   // +5  ACTUALLY available slots (maxSlots - employed)
     uint16_t padding;         // +6  Padding
   };
 
@@ -2252,24 +2255,32 @@ struct FFXIVIpcEorzeaTimeOffset : FFXIVIpcBasePacket< TimeOffset >
    * Opcode: 0x01AB (RetainerData)
    * Size: 72 bytes payload
    * Sent 8 times (once per slot) BEFORE RetainerList (0x01AA)
+   * 
+   * Binary Analysis (sub_1404DAFE0):
+   * - Payload +8 (8 bytes): retainer ID → stored at (slot*64) + 8472
+   * - Payload +16 (1 byte): slot index (0-7)
+   * - Payload +20 (4 bytes): unknown → stored at (slot*64) + 8480
+   * - Payload +24 (1 byte): active flag → stored as bool at (slot*64) + 8484
+   * - Payload +25 (1 byte): classJob → stored at (slot*64) + 8486
+   * - Payload +28 (4 bytes): unknown → stored at (slot*64) + 8492
+   * - Payload +32 (1 byte): unknown flag → stored as bool at (slot*64) + 8485
+   * - Payload +34 (32 bytes): name → strcpy to (slot*64) + 8496
    */
   struct FFXIVIpcRetainerData : FFXIVIpcBasePacket< RetainerData >
   {
-    uint32_t handlerId;       // +0  Same handler ID as RetainerList
+    uint32_t handlerId;       // +0  Event handler ID
     uint32_t unknown1;        // +4  Always 0xFFFFFFFF (-1)
-    uint32_t retainerIdLow;   // +8  Lower 32 bits of retainer ID (0 if empty slot)
-    uint16_t unknown2;        // +12 Unknown (23 for filled, 0 for empty) - possibly slot type flags
-    uint16_t unknown3;        // +14 NOT level! Retail shows 0x78=120 for lv60 retainer. City/status?
-    uint32_t ownerIdHigh;     // +16 High bits of owner ID or flags
-    uint32_t unknown4;        // +20 Unknown (11 for filled, 0 for empty)
-    uint8_t  unknown5;        // +24 Active slot flag (1 for filled, 0 for empty/inactive)
+    uint64_t retainerId;      // +8  Full 64-bit retainer ID (client uses this to count employed!)
+    uint8_t  slotIndex;       // +16 Slot index 0-7 (client uses this for array indexing)
+    uint8_t  padding1[3];     // +17 Padding to align
+    uint32_t unknown2;        // +20 Unknown (11 for filled, 0 for empty)
+    uint8_t  activeFlag;      // +24 Active slot flag (1 for filled, 0 for empty)
     uint8_t  classJob;        // +25 Class/Job ID (0 if empty)
-    uint8_t  unknown6;        // +26 Always 0
-    uint8_t  unknown7;        // +27 Always 57 (0x39)
-    uint32_t createTime;      // +28 Creation timestamp (0 if empty)
-    uint8_t  hireOrder;       // +32 Slot index (1-indexed for filled, 0 for empty)
-    uint8_t  personality;     // +33 Personality type (0x99 = 153)
-    char     name[32];        // +34 Retainer name (null-terminated, empty if no retainer)
-    uint8_t  trailing[6];     // +66 Trailing data (copy of some IDs)
+    uint8_t  padding2[2];     // +26 Padding
+    uint32_t unknown3;        // +28 Unknown (create time? level?)
+    uint8_t  unknown4;        // +32 Unknown flag
+    uint8_t  personality;     // +33 Personality type
+    char     name[32];        // +34 Retainer name (null-terminated)
+    uint8_t  trailing[6];     // +66 Trailing data
   };
 }

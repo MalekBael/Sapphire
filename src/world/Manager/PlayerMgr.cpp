@@ -12,6 +12,7 @@
 #include <Manager/QuestMgr.h>
 #include <Manager/WarpMgr.h>
 #include <Manager/MapMgr.h>
+#include <Manager/RetainerMgr.h>
 
 #include <Script/ScriptMgr.h>
 #include <Common.h>
@@ -297,6 +298,11 @@ void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
     auto &questMgr = Common::Service< World::Manager::QuestMgr >::ref();
     questMgr.sendQuestsInfo( player );
     Network::Util::Packet::sendGrandCompany( player );
+    
+    // Send retainer list on login to populate client's available slots cache (byte_1417A12B2)
+    // This ensures GetAvailableRetainerSlots() returns correct value when talking to Retainer Vocate
+    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+    retainerMgr.sendRetainerList( player );
   }
 
   teri.onPlayerZoneIn( player );

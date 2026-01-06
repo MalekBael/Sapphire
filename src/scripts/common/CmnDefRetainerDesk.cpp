@@ -124,14 +124,22 @@ public:
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
           break;
 
-        case 36: // PromptName / CreateRetainer - final submission with name
-          // resultString contains the retainer name
-          playerMgr().sendDebug( player, "RetainerDesk: yieldId 36 - CreateRetainer name='{}' - returning 1 (success)",
-                         resultString );
-          // TODO: Validate name and create retainer in database
-          // Return 1 = success, 0 = failure
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
+        case 36: // PromptName - client calls GetAvailableRetainerSlotsSync() which yields here
+        {
+          // The client's GetAvailableRetainerSlotsSync() yields with ID 36 and expects
+          // the return value to be the number of available retainer slots.
+          // The Lua check is: if GetAvailableRetainerSlotsSync() <= GetRetainerEmployedCount() then FAIL
+          // So we must return a value > currentCount to allow hiring.
+          auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+          uint8_t maxRetainers = retainerMgr.getMaxRetainerSlots( player );
+          uint8_t currentCount = retainerMgr.getRetainerCount( player );
+          
+          // Return maxRetainers so that: maxRetainers > currentCount allows hiring
+          playerMgr().sendDebug( player, "RetainerDesk: yieldId 36 - GetAvailableRetainerSlotsSync - returning {} (max) to pass check vs employed={}",
+                         maxRetainers, currentCount );
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { maxRetainers } );
           break;
+        }
 
         default:
           // Unknown yield in Scene 1 - return 1 for success

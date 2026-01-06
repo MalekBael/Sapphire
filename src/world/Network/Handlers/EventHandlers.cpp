@@ -453,6 +453,16 @@ void Sapphire::Network::GameConnection::yieldEventString( const Packets::FFXIVAR
 
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventSceneString8 >( inPacket );
   auto& data = packet.data();
+
+  // Focused tracing for RetainerDesk (cmndefretainerdesk_00009)
+  if( data.handlerId == 0x000B0009 )
+  {
+    World::Manager::PlayerMgr::sendUrgent( player,
+      "[RetainerDesk][YieldString] scene={} yieldId={} str='{}'",
+      data.sceneId, data.yieldId, inString );
+    Logger::debug( "[RetainerDesk][YieldString] scene={} yieldId={} str='{}'", data.sceneId, data.yieldId, inString );
+  }
+
   eventMgr.handleYieldStringEventScene( player, data.handlerId, data.sceneId, data.yieldId, inString );
 }
 
@@ -465,6 +475,18 @@ void Sapphire::Network::GameConnection::yieldEventSceneIntAndString( const Packe
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventSceneIntAndString >( inPacket );
   auto& data = packet.data();
   inString = std::string( data.str );
+
+  // Focused tracing for RetainerDesk (cmndefretainerdesk_00009)
+  if( data.handlerId == 0x000B0009 )
+  {
+    const uint32_t low32 = static_cast< uint32_t >( data.integer & 0xFFFFFFFFull );
+    const uint32_t high32 = static_cast< uint32_t >( ( data.integer >> 32 ) & 0xFFFFFFFFull );
+    World::Manager::PlayerMgr::sendUrgent( player,
+      "[RetainerDesk][YieldIntStr] scene={} yieldId={} int=0x{:016X} (lo={} hi={}) str='{}'",
+      data.sceneId, data.yieldId, static_cast< uint64_t >( data.integer ), low32, high32, inString );
+    Logger::debug( "[RetainerDesk][YieldIntStr] scene={} yieldId={} int=0x{:016X} (lo={} hi={}) str='{}'",
+                   data.sceneId, data.yieldId, static_cast< uint64_t >( data.integer ), low32, high32, inString );
+  }
 
   eventMgr.handleYieldStringIntEventScene( player, data.handlerId, data.sceneId, data.yieldId, inString, data.integer );
 }

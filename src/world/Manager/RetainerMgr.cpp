@@ -430,6 +430,7 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
   
   // ========== Step 1: Send 8x 0x01AB RetainerData packets (one per slot) ==========
   // NOTE: Retail sends RetainerData BEFORE RetainerList (based on packet capture)
+  // BINARY ANALYSIS: GetRetainerEmployedCount() counts slots where retainerId != 0 at offset 8472
   for( uint8_t slot = 0; slot < 8; slot++ )
   {
     auto infoPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerData >( player.getId() );
@@ -439,38 +440,32 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
     // Common fields for all slots
     info.handlerId = handlerId;
     info.unknown1 = 0xFFFFFFFF;  // Always -1 in capture
-    info.unknown7 = 57;          // Always 0x39 in capture
-    info.hireOrder = slot;       // Slot index (0-based for empty slots)
-    info.personality = 0x99;     // 153 = default personality value
+    info.slotIndex = slot;        // Slot index 0-7 (client uses this for array indexing!)
+    info.personality = 0x99;      // 153 = default personality value
     
     auto it = slotMap.find( slot );
     if( it != slotMap.end() && it->second )
     {
-      // Filled slot
+      // Filled slot - retainerId MUST be non-zero for client to count as employed!
       const auto& r = *it->second;
-      info.retainerIdLow = static_cast< uint32_t >( r.retainerId );
-      info.unknown2 = 23;        // Unknown, but 23 for filled slots in capture
-      info.unknown3 = 0x78;      // Retail shows 0x78 for filled - NOT level, purpose unknown
-      info.ownerIdHigh = static_cast< uint32_t >( player.getCharacterId() >> 32 ) | 0x6800;
-      info.unknown4 = 11;        // Unknown, but 11 for filled slots
-      info.unknown5 = 1;         // 1 = ACTIVE slot (this is the IsCurrentRetainerActive check!)
+      info.retainerId = r.retainerId;  // Full 64-bit retainer ID (client counts non-zero as employed)
+      info.unknown2 = 11;              // Unknown, 11 for filled slots
+      info.activeFlag = 1;             // 1 = ACTIVE slot
       info.classJob = r.classJob > 0 ? r.classJob : 1;
-      info.createTime = r.createTime;
-      // In retail, hireOrder for filled slots appears to be 1-indexed
-      // Slot 0 in displayOrder -> hireOrder 1
-      info.hireOrder = r.displayOrder + 1;  // 1-indexed for client
+      info.unknown3 = r.createTime;    // Create time or level?
+      info.unknown4 = r.displayOrder + 1;  // 1-indexed display order
       std::strncpy( info.name, r.name.c_str(), 31 );
       info.name[31] = '\0';
       
-      Logger::info( "RetainerMgr: Slot {} - '{}' (id: {}, DB_classJob: {}, PACKET_classJob: {}, level: {}, unknown5: {}, hireOrder: {})", 
-                    slot, r.name, r.retainerId, static_cast<int>(r.classJob), static_cast<int>(info.classJob), static_cast<int>(r.level), static_cast<int>(info.unknown5), static_cast<int>(info.hireOrder) );
+      Logger::debug( "RetainerMgr: Slot {} - '{}' (retainerId: {}, classJob: {})", 
+                     slot, r.name, r.retainerId, static_cast<int>(info.classJob) );
     }
     else
     {
-      // Empty slot - mostly zeros
-      info.ownerIdHigh = static_cast< uint32_t >( player.getCharacterId() >> 32 ) | 0x6801;
-      info.unknown5 = 0;  // Explicitly 0 for empty/inactive slots
-      Logger::debug( "RetainerMgr: Slot {} - empty (unknown5: {})", slot, info.unknown5 );
+      // Empty slot - retainerId must be 0 (client won't count this as employed)
+      info.retainerId = 0;
+      info.activeFlag = 0;
+      Logger::debug( "RetainerMgr: Slot {} - empty (retainerId: 0)", slot );
     }
     
     server.queueForPlayer( player.getCharacterId(), infoPacket );
@@ -482,13 +477,22 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
   std::memset( &listData, 0, sizeof( listData ) );
   
   listData.handlerId = handlerId;
-  listData.maxSlots = maxSlots;
-  // Client-side available slots are driven off this field; send max slots, not current count.
-  listData.retainerCount = maxSlots;
-  listData.padding = 0;
   
-  Logger::info( "RetainerMgr: Sending RetainerList 0x01AA - handlerId: 0x{:04X}, maxSlots: {}, current: {}, size: {} bytes",
-                handlerId, listData.maxSlots, currentCount, sizeof( listData ) );
+  // BINARY ANALYSIS FINDINGS:
+  // The client stores packet byte +5 (our "retainerCount" field) into byte_1417A12B2
+  // GetAvailableRetainerSlots() reads byte_1417A12B2 directly (it's the AVAILABLE slots, not employed count!)
+  // Lua Scene 1 checks: if employedCount <= availableSlots then show "hire up to [availableSlots]"
+  // 
+  // So this field should contain: maxSlots - currentlyEmployed = available slots remaining
+  uint8_t currentEmployed = static_cast< uint8_t >( retainers.size() );
+  uint8_t availableSlots = maxSlots > currentEmployed ? maxSlots - currentEmployed : 0;
+  
+  listData.maxSlots = maxSlots;         // Maximum allowed retainer slots (2)
+  listData.retainerCount = availableSlots;  // ACTUALLY available slots (maxSlots - employed)
+  listData.padding = 0;
+
+  Logger::debug( "RetainerMgr: Sending RetainerList - maxSlots: {}, availableSlots: {} (employed: {})",
+                 maxSlots, availableSlots, currentEmployed );
   server.queueForPlayer( player.getCharacterId(), listPacket );
   
   Logger::info( "RetainerMgr: Sent 8x RetainerData + 1x RetainerList packets (count: {})", retainers.size() );
@@ -515,21 +519,17 @@ void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId,
     handlerId = ( player.getId() & 0xFFFF ) | 0x1A00;
   }
   
-  // Fill packet using new 3.35 structure
+  // Fill packet using corrected 3.35 structure (based on binary analysis)
   data.handlerId = handlerId;
   data.unknown1 = 0xFFFFFFFF;  // Always -1
-  data.retainerIdLow = static_cast< uint32_t >( retainer->retainerId );
-  data.unknown2 = 23;
-  data.unknown3 = 0x78;  // Retail shows 0x78 for filled slots - NOT level, purpose unknown
-  data.ownerIdHigh = static_cast< uint32_t >( player.getCharacterId() >> 32 ) | 0x6800;
-  data.unknown4 = 11;
-  data.unknown5 = 1;
+  data.retainerId = retainer->retainerId;  // Full 64-bit retainer ID
+  data.slotIndex = slotIndex > 0 ? slotIndex : retainer->displayOrder;
+  data.unknown2 = 11;          // Filled slot marker
+  data.activeFlag = 1;         // Active slot
   data.classJob = retainer->classJob > 0 ? retainer->classJob : 1;
-  data.unknown6 = 0;
-  data.unknown7 = 57;  // Always 0x39
-  data.createTime = retainer->createTime;
-  data.hireOrder = slotIndex > 0 ? slotIndex : retainer->displayOrder;
-  data.personality = 0x99;  // 153
+  data.unknown3 = retainer->createTime;
+  data.unknown4 = retainer->displayOrder + 1;
+  data.personality = 0x99;     // 153
   std::strncpy( data.name, retainer->name.c_str(), 31 );
   data.name[31] = '\0';
   
