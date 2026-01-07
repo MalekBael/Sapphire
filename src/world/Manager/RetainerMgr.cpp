@@ -633,13 +633,13 @@ uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId
     return 0;
   }
 
-  // Check if already spawned
+  // Check if already spawned - if so, despawn first (client may have despawned without telling server)
   auto existingActor = getSpawnedRetainerActorId( player, retainerId );
   if( existingActor != 0 )
   {
-    Logger::warn( "RetainerMgr::spawnRetainer - Retainer {} already spawned as actor {}",
-                  retainerId, existingActor );
-    return existingActor;
+    Logger::debug( "RetainerMgr::spawnRetainer - Retainer {} was tracked as spawned, clearing and respawning",
+                  retainerId );
+    despawnRetainer( player, existingActor );
   }
 
   // Generate unique actor ID for this retainer spawn
@@ -682,9 +682,6 @@ uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId
 
 void RetainerMgr::despawnRetainer( Entity::Player& player, uint32_t retainerActorId )
 {
-  // TODO: Send ActorFreeSpawn packet to remove retainer from world
-  // For now, just remove from tracking
-  
   auto playerIt = m_spawnedRetainers.find( player.getId() );
   if( playerIt == m_spawnedRetainers.end() )
     return;
@@ -694,8 +691,12 @@ void RetainerMgr::despawnRetainer( Entity::Player& player, uint32_t retainerActo
   {
     if( it->second == retainerActorId )
     {
-      Logger::info( "RetainerMgr::despawnRetainer - Despawned retainer actor {} for player {}",
+      Logger::info( "RetainerMgr::despawnRetainer - Despawning retainer actor {} for player {}",
                     retainerActorId, player.getId() );
+      
+      // Send ActorFreeSpawn packet to client and free spawn index
+      player.freePlayerSpawnId( retainerActorId );
+      
       playerIt->second.erase( it );
       break;
     }

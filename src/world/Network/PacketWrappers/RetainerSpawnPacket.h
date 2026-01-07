@@ -3,7 +3,9 @@
 #include <Network/PacketDef/Zone/ServerZoneDef.h>
 #include <Network/GamePacket.h>
 #include <Util/Util.h>
+#include <Util/UtilMath.h>
 #include <Common.h>
+#include <Logging/Logger.h>
 #include "Actor/Player.h"
 #include "Forwards.h"
 #include "Manager/RetainerMgr.h"
@@ -56,6 +58,9 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       m_data.ClassJob = retainerData.classJob;
       m_data.Lv = retainerData.level;
       
+      // World ID - required for player-like actor spawns
+      m_data.WorldId = 67;  // TODO: Get from server config
+      
       // Retainers have minimal stats (they don't fight)
       m_data.Hp = 1000;
       m_data.Mp = 1000;
@@ -66,6 +71,14 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       if( retainerData.customize.size() >= 26 )
       {
         memcpy( m_data.Customize, retainerData.customize.data(), 26 );
+        Logger::debug( "RetainerSpawnPacket: Using retainer customize data ({} bytes)", retainerData.customize.size() );
+      }
+      else
+      {
+        // If no customize data, copy from player as fallback
+        memcpy( m_data.Customize, target.getLookArray(), 26 );
+        Logger::warn( "RetainerSpawnPacket: No customize data for retainer '{}', using player appearance as fallback",
+                      retainerData.name );
       }
 
       // Retainer name (max 32 bytes, null-terminated)
@@ -77,17 +90,26 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       m_data.Pos[ 0 ] = position.x;
       m_data.Pos[ 1 ] = position.y;
       m_data.Pos[ 2 ] = position.z;
-      m_data.Dir = static_cast< uint16_t >( rotation * 32767.0f / 3.14159265f );
+      // Use the same conversion as other actors: floatToUInt16Rot
+      m_data.Dir = Common::Util::floatToUInt16Rot( rotation );
 
-      // Object type: Retainer (not a player, not a combat NPC)
-      // ObjKind=4 tells client this is a retainer/treasure/aetheryte/other object
-      m_data.ObjKind = 4;  // Retainer
-      m_data.ObjType = 5;   // Subtype (appears to be 5 for retainers)
+      // Object type: Retainer
+      // ObjKind=0x0A (10) is the Retainer type as defined in Common::ObjKind
+      // Binary analysis confirms the client checks for this specific type
+      m_data.ObjKind = static_cast< uint8_t >( Common::ObjKind::Retainer );  // 0x0A
+      m_data.ObjType = 4;   // Subtype for player-like actors
+      m_data.Battalion = 0; // Friendly NPC (0 = friendly, like event NPCs)
 
       // Spawn index for this player's actor list
       m_data.Index = target.getSpawnIdForActorId( retainerActorId );
       if( !target.isActorSpawnIdValid( m_data.Index ) )
+      {
+        Logger::error( "RetainerSpawnPacket: Failed to get valid spawn index for retainer actor {}", retainerActorId );
         return;
+      }
+      
+      Logger::debug( "RetainerSpawnPacket: Spawning retainer '{}' at ({:.2f}, {:.2f}, {:.2f}), index={}, customizeSize={}",
+                     retainerData.name, position.x, position.y, position.z, m_data.Index, retainerData.customize.size() );
 
       // Owner relationship
       m_data.OwnerId = target.getId();  // Player who owns this retainer

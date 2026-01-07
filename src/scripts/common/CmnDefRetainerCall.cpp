@@ -10,6 +10,7 @@
 #include <Actor/Player.h>
 #include <Manager/RetainerMgr.h>
 #include <Service.h>
+#include <cstdlib>
 
 using namespace Sapphire;
 
@@ -25,12 +26,13 @@ public:
     Scene00000( player );
   }
 
-  static constexpr uint8_t YIELD_SELECT_RETAINER = 7;
-  static constexpr uint8_t YIELD_DEPOP_RETAINER = 8;
-  static constexpr uint8_t YIELD_RETAINER_MAIN_MENU = 12;
-  static constexpr uint8_t YIELD_RETAINER_MAIN_MENU_AFTER = 13;
-  static constexpr uint8_t YIELD_CALL_RETAINER = 17;
-  static constexpr uint8_t YIELD_SET_VENTURE_TUTORIAL_FLAG = 35;
+  // Yield IDs from Lua script (cmndefretainercall_00010.luab)
+  static constexpr uint8_t YIELD_CALL_RETAINER = 7;           // CallRetainer(slot) - spawns retainer
+  static constexpr uint8_t YIELD_DEPOP_RETAINER = 8;          // DepopRetainer() - despawns retainer
+  static constexpr uint8_t YIELD_RETAINER_MAIN_MENU = 12;     // RetainerMainMenu()
+  static constexpr uint8_t YIELD_RETAINER_MAIN_MENU_AFTER = 13; // RetainerMainMenuAfter()
+  static constexpr uint8_t YIELD_SELECT_RETAINER = 17;        // SelectRetainer(count)
+  static constexpr uint8_t YIELD_SET_VENTURE_TUTORIAL_FLAG = 35; // SetVentureTutorialFlag()
 
   void onYield( uint32_t eventId, uint16_t sceneId, uint8_t yieldId, Entity::Player& player,
                 const std::string& resultString, uint64_t resultInt ) override
@@ -57,27 +59,29 @@ public:
 
       case YIELD_CALL_RETAINER:
       {
-        // Extract retainer slot/index from resultInt (0-7)
+        // resultInt packs both args: low 32 bits = slot, high 32 bits = retainerId
         uint8_t retainerSlot = static_cast< uint8_t >( resultInt & 0xFF );
+        uint64_t retainerId = static_cast< uint64_t >( resultInt >> 32 );
         
-        // Get retainers for this player
-        auto retainers = retainerMgr.getRetainers( player );
-        
-        // Find retainer in the specified slot
-        uint64_t retainerId = 0;
-        for( const auto& retainer : retainers )
+        // If retainerId is provided directly, use it; otherwise fall back to slot lookup
+        if( retainerId == 0 )
         {
-          if( retainer.displayOrder == retainerSlot )
+          // Fall back to slot-based lookup
+          auto retainers = retainerMgr.getRetainers( player );
+          for( const auto& retainer : retainers )
           {
-            retainerId = retainer.retainerId;
-            break;
+            if( retainer.displayOrder == retainerSlot )
+            {
+              retainerId = retainer.retainerId;
+              break;
+            }
           }
         }
 
         if( retainerId == 0 )
         {
-          // No retainer in that slot
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // failure
+          // No retainer found - Lua expects { result, actorId, greetingType }
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1, 0, 0 } );
           break;
         }
 
@@ -86,13 +90,16 @@ public:
         
         if( actorId == 0 )
         {
-          // Spawn failed
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // failure
+          // Spawn failed - Lua expects { result, actorId, greetingType }
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1, 0, 0 } );
         }
         else
         {
-          // Spawn successful
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } ); // success
+          // Spawn successful - Lua expects { result, actorId, greetingType }
+          // result=0 (success), actorId for BindRetainer, greetingType 0-2 for greeting variant
+          uint8_t greetingType = static_cast< uint8_t >( std::rand() % 3 ); // Random greeting (0, 1, or 2)
+          eventMgr().resumeScene( player, eventId, sceneId, yieldId, 
+            { 0, static_cast< uint64_t >( actorId ), greetingType } );
         }
         break;
       }
