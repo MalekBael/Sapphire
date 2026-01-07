@@ -613,7 +613,8 @@ void RetainerMgr::sendSalesHistory( Entity::Player& player, uint64_t retainerId 
 
 // ========== NPC Spawning ==========
 
-uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId )
+uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId,
+                                      const Common::FFXIVARR_POSITION3* bellPos )
 {
   // Load retainer data
   auto retainerOpt = getRetainer( retainerId );
@@ -647,17 +648,40 @@ uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId
   // This ensures they're unique per player and don't clash with other actors
   uint32_t retainerActorId = 0x40000000 | ( ( player.getId() & 0xFFFF ) << 8 ) | ( retainerData.displayOrder & 0xFF );
 
-  // Calculate spawn position (2 yalms in front of player)
+  // Calculate spawn position
+  // If bell position is provided, spawn near the bell; otherwise spawn near player
   auto playerPos = player.getPos();
   auto playerRot = player.getRot();
   
   Common::FFXIVARR_POSITION3 spawnPos;
-  spawnPos.x = playerPos.x + ( std::sin( playerRot ) * 2.0f );
-  spawnPos.y = playerPos.y;
-  spawnPos.z = playerPos.z + ( std::cos( playerRot ) * 2.0f );
-
-  // Face retainer towards player
-  float retainerRot = playerRot + 3.14159265f; // 180 degrees opposite
+  float retainerRot;
+  
+  if( bellPos != nullptr )
+  {
+    // Spawn at the bell's position
+    // The retainer will "walk in" via the Lua script animation
+    spawnPos = *bellPos;
+    
+    // Calculate rotation to face the player
+    float dx = playerPos.x - bellPos->x;
+    float dz = playerPos.z - bellPos->z;
+    retainerRot = std::atan2( dx, dz );
+    
+    Logger::debug( "RetainerMgr::spawnRetainer - Using bell position ({:.2f}, {:.2f}, {:.2f})",
+                   bellPos->x, bellPos->y, bellPos->z );
+  }
+  else
+  {
+    // Fallback: spawn 2 yalms in front of player (legacy behavior)
+    spawnPos.x = playerPos.x + ( std::sin( playerRot ) * 2.0f );
+    spawnPos.y = playerPos.y;
+    spawnPos.z = playerPos.z + ( std::cos( playerRot ) * 2.0f );
+    
+    // Face retainer towards player
+    retainerRot = playerRot + 3.14159265f; // 180 degrees opposite
+    
+    Logger::debug( "RetainerMgr::spawnRetainer - No bell position, using player-relative position" );
+  }
 
   // Send spawn packet
   auto& server = Common::Service< World::WorldServer >::ref();

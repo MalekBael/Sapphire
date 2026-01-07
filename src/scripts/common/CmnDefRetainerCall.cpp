@@ -8,7 +8,9 @@
 
 #include <ScriptObject.h>
 #include <Actor/Player.h>
+#include <Actor/EventObject.h>
 #include <Manager/RetainerMgr.h>
+#include <Manager/TerritoryMgr.h>
 #include <Service.h>
 #include <cstdlib>
 
@@ -85,8 +87,29 @@ public:
           break;
         }
 
+        // Get the summoning bell's position from the event
+        const Common::FFXIVARR_POSITION3* bellPos = nullptr;
+        Common::FFXIVARR_POSITION3 bellPosition;
+        
+        auto pEvent = player.getEvent( eventId );
+        if( pEvent )
+        {
+          uint64_t bellActorId = pEvent->getActorId();
+          auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
+          auto pZone = teriMgr.getTerritoryByGuId( player.getTerritoryId() );
+          if( pZone )
+          {
+            auto pBell = pZone->getEObj( static_cast< uint32_t >( bellActorId ) );
+            if( pBell )
+            {
+              bellPosition = pBell->getPos();
+              bellPos = &bellPosition;
+            }
+          }
+        }
+
         // Spawn the retainer NPC
-        uint32_t actorId = retainerMgr.spawnRetainer( player, retainerId );
+        uint32_t actorId = retainerMgr.spawnRetainer( player, retainerId, bellPos );
         
         if( actorId == 0 )
         {
@@ -147,6 +170,21 @@ public:
 
   void Scene00000Return( Entity::Player& player, const Event::SceneResult& result )
   {
+    // Despawn any spawned retainers when the event ends
+    Logger::debug( "CmnDefRetainerCall::Scene00000Return - despawning retainers for player {}", player.getId() );
+    
+    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+    auto retainers = retainerMgr.getRetainers( player );
+    for( const auto& retainer : retainers )
+    {
+      uint32_t actorId = retainerMgr.getSpawnedRetainerActorId( player, retainer.retainerId );
+      if( actorId != 0 )
+      {
+        Logger::debug( "CmnDefRetainerCall: Despawning retainer {} actor {}", retainer.retainerId, actorId );
+        retainerMgr.despawnRetainer( player, actorId );
+      }
+    }
+    
     eventMgr().eventFinish( player, getId(), 1 );
   }
 };

@@ -340,13 +340,16 @@ namespace Sapphire::World::Manager
      * @brief Spawn a retainer NPC in the world
      * 
      * Creates a temporary retainer actor visible to the summoning player.
-     * The retainer will be positioned near the player facing them.
+     * The retainer will be positioned near the summoning bell (if provided)
+     * or near the player as fallback.
      * 
      * @param player The player summoning the retainer
      * @param retainerId The retainer to spawn
+     * @param bellPos Optional position of the summoning bell (retainer spawns here)
      * @return Actor ID of spawned retainer, or 0 on failure
      */
-    uint32_t spawnRetainer( Entity::Player& player, uint64_t retainerId );
+    uint32_t spawnRetainer( Entity::Player& player, uint64_t retainerId, 
+                            const Common::FFXIVARR_POSITION3* bellPos = nullptr );
 
     /**
      * @brief Despawn a retainer NPC
