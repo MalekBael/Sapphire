@@ -110,7 +110,6 @@ void Sapphire::Network::GameConnection::getSearchCommentHandler( const Packets::
   searchInfoPacket->data().TargetEntityID = targetId;
   strcpy( searchInfoPacket->data().SearchComment, pPlayer->getSearchMessage() );
   server().queueForPlayer( player.getCharacterId(), searchInfoPacket );
-
 }
 
 void Sapphire::Network::GameConnection::reqExamineFcInfo( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
@@ -147,8 +146,8 @@ void Sapphire::Network::GameConnection::joinChatChannelHandler( const Packets::F
   chatChannelResultPacket->data().ChannelID = channelIdReq;
   chatChannelResultPacket->data().TargetCharacterID = player.getId();
   chatChannelResultPacket->data().CommunityID = player.getCharacterId();
-  chatChannelResultPacket->data().UpPacketNo = 0; // todo: define behavior
-  chatChannelResultPacket->data().Result = 0; // todo: define behavior
+  chatChannelResultPacket->data().UpPacketNo = 0;// todo: define behavior
+  chatChannelResultPacket->data().Result = 0;    // todo: define behavior
   queueOutPacket( chatChannelResultPacket );
 
   auto joinChannelResultPacket = makeChatPacket< Packets::Server::FFXIVJoinChannelResult >( player.getId() );
@@ -171,7 +170,7 @@ void Sapphire::Network::GameConnection::moveHandler( const Packets::FFXIVARR_PAC
     bPosChanged = false;
 
   //if( !bPosChanged && player.getRot() == data.rotation )
-    //return;
+  //return;
 
   player.setRot( data.dir );
   player.setPos( { data.pos.x, data.pos.y, data.pos.z } );
@@ -258,7 +257,6 @@ void Sapphire::Network::GameConnection::configHandler( const Packets::FFXIVARR_P
   const auto packet = ZoneChannelPacket< Client::FFXIVIpcConfig >( inPacket );
 
   player.setConfigFlags( packet.data().flag );
-
 }
 
 void Sapphire::Network::GameConnection::zoneJumpHandler( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
@@ -277,7 +275,7 @@ void Sapphire::Network::GameConnection::zoneJumpHandler( const Packets::FFXIVARR
 
   Common::FFXIVARR_POSITION3 targetPos{};
   Common::FFXIVARR_POSITION3 targetRot{};
-  uint32_t targetZone{128};
+  uint32_t targetZone{ 128 };
   float rotation = 0.0f;
 
   if( pExitRange )
@@ -299,7 +297,6 @@ void Sapphire::Network::GameConnection::zoneJumpHandler( const Packets::FFXIVARR
 
   auto& warpMgr = Common::Service< WarpMgr >::ref();
   warpMgr.requestMoveTerritory( player, Common::WARP_TYPE_NORMAL_POS, pTargetTeri->getGuId(), targetPos, rotation );
-
 }
 
 
@@ -324,7 +321,6 @@ void Sapphire::Network::GameConnection::newDiscoveryHandler( const Packets::FFXI
   discoveryPacket->data().mapPartId = pRefInfo->header.discoveryIndex;
   server().queueForPlayer( player.getCharacterId(), discoveryPacket );
   playerMgr().onDiscoverArea( player, tInfo->data().Map, pRefInfo->header.discoveryIndex );
-
 }
 
 void Sapphire::Network::GameConnection::loginHandler( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
@@ -468,7 +464,6 @@ void Sapphire::Network::GameConnection::chatHandler( const Packets::FFXIVARR_PAC
       break;
     }
   }
-
 }
 
 // TODO: this handler needs to be improved for timed logout, also the session should be instantly removed
@@ -479,7 +474,7 @@ void Sapphire::Network::GameConnection::logoutHandler( const Packets::FFXIVARR_P
 {
   auto logoutPacket = makeZonePacket< FFXIVIpcEnableLogout >( player.getId() );
   logoutPacket->data().content = 0x02;
-//  logoutPacket->data().flags2 = 0x2000;
+  //  logoutPacket->data().flags2 = 0x2000;
   queueOutPacket( logoutPacket );
 
   player.setMarkedForRemoval();
@@ -534,7 +529,7 @@ void Sapphire::Network::GameConnection::tellHandler( const Packets::FFXIVARR_PAC
 
   if( player.isActingAsGm() )
   {
-    tellPacket->data().type |= ChatFromType::GmTellMsg; //TODO: Is there an enum for this? or is it only GM?
+    tellPacket->data().type |= ChatFromType::GmTellMsg;//TODO: Is there an enum for this? or is it only GM?
   }
   server.queueChatForPlayer( pTargetPlayer->getCharacterId(), tellPacket );
 }
@@ -559,14 +554,13 @@ void Sapphire::Network::GameConnection::catalogSearch( const Packets::FFXIVARR_P
   const auto& data = packet.data();
 
   marketMgr.searchMarketboard(
-    player,
-    data.SearchCategory,
-    data.MaxLevel,
-    data.ClassJob,
-    data.ItemName,
-    data.RequestKey,
-    data.NextIndex
-  );
+          player,
+          data.SearchCategory,
+          data.MaxLevel,
+          data.ClassJob,
+          data.ItemName,
+          data.RequestKey,
+          data.NextIndex );
 }
 
 // Also used for recommended gear
@@ -580,8 +574,8 @@ void Sapphire::Network::GameConnection::gearSetEquip( const Packets::FFXIVARR_PA
   {
     const auto fromSlot = packet.data().containerIndex[ slot ];
     const auto fromContainer = packet.data().storageId[ slot ];
-    
-    if ( fromContainer == Common::GearSet0 )
+
+    if( fromContainer == Common::GearSet0 )
       continue;
 
     const auto fromItem = fromSlot == -1 ? nullptr : player.getItemAt( fromContainer, fromSlot );
@@ -650,15 +644,14 @@ void Sapphire::Network::GameConnection::marketBoardRequestItemListings( const Pa
 
 void Sapphire::Network::GameConnection::getRequestItemListHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
-
 }
 
 void Sapphire::Network::GameConnection::retainerCustomizeHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
   const auto packet = ZoneChannelPacket< Client::FFXIVIpcRetainerCustomize >( inPacket );
-  
+
   Logger::debug( "RetainerCustomize received - modelType: {}", packet.data().modelType );
-  
+
   // Store the customize data on the player for later use in retainer creation
   // The personality is set separately via yieldId 5 (resultInt)
   // this all needs confirmation
@@ -671,7 +664,24 @@ void Sapphire::Network::GameConnection::requestRetainerDataHandler( const Sapphi
   // Respond by sending the retainer list packet
   // this all needs confirmation, especially the opcode
   Logger::debug( "RequestRetainerData (0x350) received from player {}", player.getId() );
-  
+
   auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
   retainerMgr.sendRetainerList( player );
+}
+
+void Sapphire::Network::GameConnection::getRetainerListHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
+{
+  // Client sends GetRetainerList (0x0106) when opening retainer gil/inventory screens
+  // Response includes retainer list + player's full inventory (for gil transfer UI)
+  Logger::debug( "GetRetainerList (0x0106) received from player {}", player.getId() );
+
+  auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+  retainerMgr.sendRetainerList( player );
+
+  // Also send the player's inventory so the client has the player's gil cached
+  // for the gil transfer UI (RetainerBag mode 2)
+  player.sendInventory();
+
+  // Retail additionally sends a GetRetainerListResult (0x0106) server IPC.
+  retainerMgr.sendGetRetainerListResult( player );
 }

@@ -46,7 +46,8 @@ private:
   uint64_t m_selectedRetainerId{ 0 };
 
 public:
-  CmnDefRetainerDesk() : Sapphire::ScriptAPI::EventScript( 720905 )
+  CmnDefRetainerDesk()
+      : Sapphire::ScriptAPI::EventScript( 720905 )
   {
   }
 
@@ -84,66 +85,66 @@ public:
       // Scene 1: Retainer creation flow
       switch( yieldId )
       {
-        case 3:  // LoadRetainerCreation - start the creation flow
+        case 3:// LoadRetainerCreation - start the creation flow
           playerMgr().sendDebug( player, "RetainerDesk: yieldId 3 - LoadRetainerCreation - returning 0 (success)" );
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
           break;
 
-        case 5:  // CreateRetainer - called after CharaMake with name and personality
+        case 5:// CreateRetainer - called after CharaMake with name and personality
         {
           playerMgr().sendDebug( player, "RetainerDesk: yieldId 5 - CreateRetainer - name: '{}', personality: {}",
-                         resultString, resultInt );
-          
+                                 resultString, resultInt );
+
           // Get the customize data stored from RetainerCustomize packet
           if( !player.hasPendingRetainerCustomize() )
           {
             playerMgr().sendDebug( player, "RetainerDesk: ERROR - No pending customize data!" );
-            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // Return error
+            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );// Return error
             break;
           }
-          
+
           // Convert customize data to vector
           const uint8_t* customizePtr = player.getPendingRetainerCustomize();
           std::vector< uint8_t > customize( customizePtr, customizePtr + 26 );
-          
+
           // Get personality from resultInt (1-6)
-          auto personality = static_cast< World::Manager::RetainerPersonality >( 
-            resultInt > 0 && resultInt <= 6 ? resultInt : 1 );
-          
+          auto personality = static_cast< World::Manager::RetainerPersonality >(
+                  resultInt > 0 && resultInt <= 6 ? resultInt : 1 );
+
           // Create the retainer
           auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
           auto retainerId = retainerMgr.createRetainer( player, resultString, personality, customize );
-          
+
           // Clear pending data
           player.clearPendingRetainerCustomize();
-          
+
           if( retainerId.has_value() )
           {
-            playerMgr().sendDebug( player, "RetainerDesk: Created retainer '{}' with ID {}", 
-                           resultString, retainerId.value() );
-            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } ); // Success
+            playerMgr().sendDebug( player, "RetainerDesk: Created retainer '{}' with ID {}",
+                                   resultString, retainerId.value() );
+            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// Success
           }
           else
           {
             playerMgr().sendDebug( player, "RetainerDesk: Failed to create retainer '{}'", resultString );
-            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } ); // Error
+            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );// Error
           }
           break;
         }
 
-        case 24: // GetContentFinderStatus - check if player is in duty finder queue
+        case 24:// GetContentFinderStatus - check if player is in duty finder queue
           // Return 0 = not in queue, allows creation to proceed
           playerMgr().sendDebug( player, "RetainerDesk: yieldId 24 - GetContentFinderStatus - returning 0 (not in queue)" );
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
           break;
 
-        case 25: // SetCharaMakeCondition - setup CharaMake mode
+        case 25:// SetCharaMakeCondition - setup CharaMake mode
           // Return 1 = success, 0 = failure (would abort)
           playerMgr().sendDebug( player, "RetainerDesk: yieldId 25 - SetCharaMakeCondition - returning 1 (success)" );
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
           break;
 
-        case 36: // PromptName - client calls GetAvailableRetainerSlotsSync() which yields here
+        case 36:// PromptName - client calls GetAvailableRetainerSlotsSync() which yields here
         {
           // The client's GetAvailableRetainerSlotsSync() yields with ID 36 and expects
           // the return value to be the number of available retainer slots.
@@ -152,10 +153,10 @@ public:
           auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
           uint8_t maxRetainers = retainerMgr.getMaxRetainerSlots( player );
           uint8_t currentCount = retainerMgr.getRetainerCount( player );
-          
+
           // Return maxRetainers so that: maxRetainers > currentCount allows hiring
           playerMgr().sendDebug( player, "RetainerDesk: yieldId 36 - GetAvailableRetainerSlotsSync - returning {} (max) to pass check vs employed={}",
-                         maxRetainers, currentCount );
+                                 maxRetainers, currentCount );
           eventMgr().resumeScene( player, eventId, sceneId, yieldId, { maxRetainers } );
           break;
         }
@@ -203,35 +204,35 @@ public:
   {
     auto selection = result.getResult( 0 );
     playerMgr().sendDebug( player, "RetainerDesk: Scene00000Return - selection={}", selection );
-    
+
     switch( selection )
     {
-      case 1: // Hire retainer
+      case 1:// Hire retainer
         Scene00001( player );
         break;
-      
-      case 2: // Dispatch retainer (register to market)
+
+      case 2:// Dispatch retainer (register to market)
         Scene00006( player );
         break;
-      
-      case 3: // Release (dismiss) retainer
+
+      case 3:// Release (dismiss) retainer
         Scene00002( player );
         break;
-      
-      case 4: // Ask about retainers (explanation)
+
+      case 4:// Ask about retainers (explanation)
         Scene00005( player );
         break;
-      
-      case 5: // View market tax rates
+
+      case 5:// View market tax rates
         Scene00007( player );
         break;
-      
-      case 6: // Cancel / Nothing
-      case 0: // Escape
+
+      case 6:// Cancel / Nothing
+      case 0:// Escape
         playerMgr().sendDebug( player, "RetainerDesk: Finishing event (cancel)" );
         eventMgr().eventFinish( player, getId(), 1 );
         break;
-      
+
       default:
         // Other options not implemented yet - just finish
         playerMgr().sendDebug( player, "RetainerDesk: Unhandled selection {} - finishing event", selection );
@@ -252,7 +253,7 @@ public:
   {
     auto status = result.getResult( 0 );
     playerMgr().sendDebug( player, "RetainerDesk: Scene00001Return - status={}", status );
-    
+
     // The Lua script returns a scene number to chain to:
     // 11 = Creation success - show success dialogue
     // -1 = Cancelled or error
@@ -300,7 +301,7 @@ public:
   {
     auto status = result.getResult( 0 );
     playerMgr().sendDebug( player, "RetainerDesk: Scene00002Return - status={}", status );
-    
+
     // 0 = success (retainer released), -1 = cancelled/error
     // Return to main menu regardless
     Scene00000( player );
@@ -320,26 +321,26 @@ public:
                            const std::string& resultString, uint64_t resultInt )
   {
     auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-    
+
     // Extract packed args: low 32 bits = arg#0, high 32 bits = arg#1
     uint32_t arg0 = static_cast< uint32_t >( resultInt & 0xFFFFFFFF );
     uint32_t arg1 = static_cast< uint32_t >( resultInt >> 32 );
-    
+
     // Log all yields for discovery
     playerMgr().sendDebug( player, "RetainerDesk Scene02: yieldId={} arg0={} arg1={}", yieldId, arg0, arg1 );
-    
+
     // Based on decompiled client analysis:
     // - SelectRetainer yields with ID 13
     // - RemoveRetainer yields with ID 9
     // - SetCurrentRetainerIndex, IsCurrentRetainerActive, GetRetainerName do NOT yield
-    
+
     switch( yieldId )
     {
-      case 13: // SelectRetainer - open retainer selection UI
+      case 13:// SelectRetainer - open retainer selection UI
       {
         // Send fresh retainer list so the UI has data
         retainerMgr.sendRetainerList( player );
-        
+
         auto retainers = retainerMgr.getRetainers( player );
         if( retainers.empty() )
         {
@@ -355,44 +356,44 @@ public:
           // and sends the actual selected retainer ID in the RemoveRetainer yield (arg1)
           m_selectedRetainerIndex = 1;
           m_selectedRetainerId = retainers[ 0 ].retainerId;
-          playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - {} retainers, selecting idx={} id={}", 
+          playerMgr().sendDebug( player, "RetainerDesk: SelectRetainer - {} retainers, selecting idx={} id={}",
                                  retainers.size(), m_selectedRetainerIndex, m_selectedRetainerId );
           eventMgr().resumeScene( player, eventId, 2, yieldId, { m_selectedRetainerIndex } );
         }
         break;
       }
 
-      case 9:  // RemoveRetainer - actually delete the retainer
+      case 9:// RemoveRetainer - actually delete the retainer
       {
         // arg1 contains the retainer ID from the Lua script (passed from SelectRetainer result)
         // Note: arg1 is the retainer ID as sent in our RetainerData packets
         uint64_t retainerToDelete = arg1;
-        
-        playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer (yield 9) - arg1={} (retainer ID to delete)", 
+
+        playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer (yield 9) - arg1={} (retainer ID to delete)",
                                retainerToDelete );
-        
+
         if( retainerToDelete == 0 )
         {
           // Fall back to m_selectedRetainerId if arg1 is 0
           retainerToDelete = m_selectedRetainerId;
           playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - arg1 was 0, using cached id={}", retainerToDelete );
         }
-        
+
         if( retainerToDelete == 0 )
         {
           playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - no retainer selected!" );
           eventMgr().resumeScene( player, eventId, 2, yieldId, { 1 } );
           break;
         }
-        
+
         auto error = retainerMgr.deleteRetainer( player, retainerToDelete );
-        
+
         if( error == World::Manager::RetainerError::None )
         {
           playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - success" );
           // Send updated retainer list
           retainerMgr.sendRetainerList( player );
-          eventMgr().resumeScene( player, eventId, 2, yieldId, { 0 } ); // Success
+          eventMgr().resumeScene( player, eventId, 2, yieldId, { 0 } );// Success
         }
         else if( error == World::Manager::RetainerError::RetainerBusy )
         {
@@ -402,11 +403,11 @@ public:
         }
         else
         {
-          playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - failed with error {}", 
+          playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - failed with error {}",
                                  static_cast< uint32_t >( error ) );
-          eventMgr().resumeScene( player, eventId, 2, yieldId, { 1 } ); // Generic error
+          eventMgr().resumeScene( player, eventId, 2, yieldId, { 1 } );// Generic error
         }
-        
+
         // Clear selection
         m_selectedRetainerIndex = 0;
         m_selectedRetainerId = 0;
@@ -435,13 +436,13 @@ public:
   {
     auto selection = result.getResult( 0 );
     playerMgr().sendDebug( player, "RetainerDesk: Scene00005Return - selection={}", selection );
-    
+
     // The menu returns:
     // 1 = What is a retainer?
     // 2 = About entrusting items/gil
     // 3 = Summoning retainers
     // 4 = Back
-    
+
     if( selection >= 1 && selection <= 3 )
     {
       // After showing explanation, loop back to the explanation menu
@@ -468,7 +469,7 @@ public:
   {
     auto status = result.getResult( 0 );
     playerMgr().sendDebug( player, "RetainerDesk: Scene00006Return - status={}", status );
-    
+
     // The Lua returns:
     // 0 = Player cancelled or no retainers, back to main menu
     // 1 = Successfully registered retainer, back to main menu
@@ -489,20 +490,20 @@ public:
                            const std::string& resultString, uint64_t resultInt )
   {
     auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-    
+
     // Extract packed args: low 32 bits = arg#0, high 32 bits = arg#1
     uint32_t arg0 = static_cast< uint32_t >( resultInt & 0xFFFFFFFF );
     uint32_t arg1 = static_cast< uint32_t >( resultInt >> 32 );
-    
+
     playerMgr().sendDebug( player, "RetainerDesk Scene06: yieldId={} arg0={} arg1={}", yieldId, arg0, arg1 );
-    
+
     switch( yieldId )
     {
-      case 13: // SelectRetainer - open retainer selection UI
+      case 13:// SelectRetainer - open retainer selection UI
       {
         // Send fresh retainer list so the UI has data
         retainerMgr.sendRetainerList( player );
-        
+
         auto retainers = retainerMgr.getRetainers( player );
         if( retainers.empty() )
         {
@@ -522,34 +523,34 @@ public:
         break;
       }
 
-      case 10: // MarketRegister - register retainer to city market
+      case 10:// MarketRegister - register retainer to city market
       {
         // arg0 = cityId (1=Limsa, 2=Gridania, 3=Ul'dah, 4=Ishgard from Lua constants)
         // arg1 = retainer index
         uint32_t cityId = arg0;
         uint32_t retainerIndex = arg1;
-        
-        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - cityId={} retainerIndex={}", 
+
+        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - cityId={} retainerIndex={}",
                                cityId, retainerIndex );
-        
+
         // Get the retainer by index
         auto retainers = retainerMgr.getRetainers( player );
         if( retainerIndex == 0 || retainerIndex > retainers.size() )
         {
           playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - invalid retainer index" );
-          eventMgr().resumeScene( player, eventId, 6, yieldId, { 1 } ); // Generic error
+          eventMgr().resumeScene( player, eventId, 6, yieldId, { 1 } );// Generic error
           break;
         }
-        
-        auto& retainer = retainers[ retainerIndex - 1 ]; // Convert to 0-indexed
-        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - registering '{}' to city {}", 
+
+        auto& retainer = retainers[ retainerIndex - 1 ];// Convert to 0-indexed
+        playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - registering '{}' to city {}",
                                retainer.name, cityId );
-        
+
         // Register to market and get result code
         // Return codes: 0 = success, 463 = already registered at this city, other = error
-        uint32_t result = retainerMgr.registerToMarket( player, retainer.retainerId, 
+        uint32_t result = retainerMgr.registerToMarket( player, retainer.retainerId,
                                                         static_cast< uint8_t >( cityId ) );
-        
+
         playerMgr().sendDebug( player, "RetainerDesk: MarketRegister - result={}", result );
         eventMgr().resumeScene( player, eventId, 6, yieldId, { result } );
         break;
@@ -576,7 +577,7 @@ public:
   {
     auto selection = result.getResult( 0 );
     playerMgr().sendDebug( player, "RetainerDesk: Scene00007Return - selection={}", selection );
-    
+
     // The menu returns:
     // 1 = Limsa selected
     // 2 = Gridania selected
@@ -584,7 +585,7 @@ public:
     // 4 = Ishgard selected
     // 5 = About tax rates (explanation)
     // 6 = Back
-    
+
     if( selection >= 1 && selection <= 5 )
     {
       // Stay in the market tax menu (loops in Lua)
@@ -611,23 +612,23 @@ public:
                            const std::string& resultString, uint64_t resultInt )
   {
     playerMgr().sendDebug( player, "RetainerDesk Scene07: yieldId={}", yieldId );
-    
+
     switch( yieldId )
     {
-      case 38: // GetMarketSellTaxRates (assumed yield ID - verify via debug log)
+      case 38:// GetMarketSellTaxRates (assumed yield ID - verify via debug log)
       {
         // Return 5 values: limsa, gridania, uldah, ishgard, taxInterval
         // Tax rate 0-4 = that percentage, 5+ or -1 = not registered
         // For now, return default 5% tax (max) for all cities = "no discount"
         // TODO: Implement actual tax rate tracking based on player's sales volume
-        
-        uint32_t limsaTax = 5;      // 5% = no discount
-        uint32_t gridaniaTax = 5;   // 5% = no discount
-        uint32_t uldahTax = 5;      // 5% = no discount
-        uint32_t ishgardTax = 5;    // 5% = no discount
-        uint32_t taxInterval = 168; // Hours until weekly reset (7 days)
-        
-        playerMgr().sendDebug( player, "RetainerDesk: GetMarketSellTaxRates - returning {}/{}/{}/{} interval={}", 
+
+        uint32_t limsaTax = 5;     // 5% = no discount
+        uint32_t gridaniaTax = 5;  // 5% = no discount
+        uint32_t uldahTax = 5;     // 5% = no discount
+        uint32_t ishgardTax = 5;   // 5% = no discount
+        uint32_t taxInterval = 168;// Hours until weekly reset (7 days)
+
+        playerMgr().sendDebug( player, "RetainerDesk: GetMarketSellTaxRates - returning {}/{}/{}/{} interval={}",
                                limsaTax, gridaniaTax, uldahTax, ishgardTax, taxInterval );
         eventMgr().resumeScene( player, eventId, 7, yieldId, { limsaTax, gridaniaTax, uldahTax, ishgardTax, taxInterval } );
         break;

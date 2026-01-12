@@ -1,14 +1,14 @@
 #include "ZoneDbConnection.h"
 #include <MySqlConnector.h>
 
-Sapphire::Db::ZoneDbConnection::ZoneDbConnection( ConnectionInfo& connInfo ) :
-  DbConnection( connInfo )
+Sapphire::Db::ZoneDbConnection::ZoneDbConnection( ConnectionInfo& connInfo )
+    : DbConnection( connInfo )
 {
 }
 
 Sapphire::Db::ZoneDbConnection::ZoneDbConnection( Common::Util::LockedWaitQueue< std::shared_ptr< Operation > >* q,
-                                                  ConnectionInfo& connInfo ) :
-  DbConnection( q, connInfo )
+                                                  ConnectionInfo& connInfo )
+    : DbConnection( q, connInfo )
 {
 }
 
@@ -148,12 +148,14 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
   prepareStatement( CHARA_QUEST_INS,
                     "INSERT INTO charaquest ( CharacterId, SlotId, QuestId, Sequence, Flags, Variables_0, "
                     "Variables_1, Variables_2, Variables_3, Variables_4, "
-                    "Variables_5, Variables_6 ) VALUES( ?,?,?,?,?,?,?,?,?,?,?,? );", CONNECTION_ASYNC );
+                    "Variables_5, Variables_6 ) VALUES( ?,?,?,?,?,?,?,?,?,?,?,? );",
+                    CONNECTION_ASYNC );
 
   prepareStatement( CHARA_QUEST_UP, "UPDATE charaquest SET Sequence = ?, Flags = ?, Variables_0 = ?, "
                                     "Variables_1 = ?, Variables_2 = ?, Variables_3 = ?, "
                                     "Variables_4 = ?, Variables_5 = ?, Variables_6 = ? "
-                                    "WHERE CharacterId = ? AND QuestId = ?;", CONNECTION_ASYNC );
+                                    "WHERE CharacterId = ? AND QuestId = ?;",
+                    CONNECTION_ASYNC );
 
   prepareStatement( CHARA_QUEST_DEL, "DELETE FROM charaquest WHERE CharacterId = ? AND QuestId = ?;",
                     CONNECTION_ASYNC );
@@ -200,26 +202,26 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
 
   prepareStatement( CHARA_MONSTERNOTE_UP, "UPDATE charamonsternote "
                                           " SET Category_0 = ?,"
-                                              " Category_1 = ?,"
-                                              " Category_2 = ?,"
-                                              " Category_3 = ?,"
-                                              " Category_4 = ?,"
-                                              " Category_5 = ?,"
-                                              " Category_6 = ?,"
-                                              " Category_7 = ?,"
-                                              " Category_8 = ?,"
-                                              " Category_9 = ?,"
-                                              " Category_10 = ?,"
-                                              " Category_11 = ?"
-                                              " WHERE CharacterId = ?;",
+                                          " Category_1 = ?,"
+                                          " Category_2 = ?,"
+                                          " Category_3 = ?,"
+                                          " Category_4 = ?,"
+                                          " Category_5 = ?,"
+                                          " Category_6 = ?,"
+                                          " Category_7 = ?,"
+                                          " Category_8 = ?,"
+                                          " Category_9 = ?,"
+                                          " Category_10 = ?,"
+                                          " Category_11 = ?"
+                                          " WHERE CharacterId = ?;",
                     CONNECTION_ASYNC );
 
   /// CLASS INFO
   prepareStatement( CHARA_MONSTERNOTE_SEL, "SELECT Category_0, Category_1, Category_2, "
-                                                  "Category_3, Category_4, Category_5, "
-                                                  "Category_6, Category_7, Category_8, "
-                                                  "Category_9, Category_10, Category_11 FROM charamonsternote "
-                                                  "WHERE CharacterId = ?;",
+                                           "Category_3, Category_4, Category_5, "
+                                           "Category_6, Category_7, Category_8, "
+                                           "Category_9, Category_10, Category_11 FROM charamonsternote "
+                                           "WHERE CharacterId = ?;",
                     CONNECTION_SYNC );
 
   /// CHARA ACHIEVEMENT
@@ -229,14 +231,14 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
                     CONNECTION_SYNC );
 
   prepareStatement( CHARA_ACHIEV_UP, "UPDATE charainfoachievement "
-                                         " SET UnlockList = ?,"
-                                         " ProgressData = ?,"
-                                         " HistoryList = ?"
-                                         " WHERE CharacterId = ?;",
+                                     " SET UnlockList = ?,"
+                                     " ProgressData = ?,"
+                                     " HistoryList = ?"
+                                     " WHERE CharacterId = ?;",
                     CONNECTION_ASYNC );
 
   prepareStatement( CHARA_ACHIEV_SEL, "SELECT UnlockList, ProgressData, HistoryList FROM charainfoachievement "
-                                          "WHERE CharacterId = ?;",
+                                      "WHERE CharacterId = ?;",
                     CONNECTION_SYNC );
 
 
@@ -247,14 +249,14 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
                     CONNECTION_SYNC );
 
   prepareStatement( CHARA_FRIENDLIST_UP, "UPDATE charainfofriendlist "
-                                          " SET CharacterIdList = ?,"
-                                          " InviteDataList = ?"
-                                          " WHERE CharacterId = ?;",
+                                         " SET CharacterIdList = ?,"
+                                         " InviteDataList = ?"
+                                         " WHERE CharacterId = ?;",
                     CONNECTION_ASYNC );
 
   prepareStatement( CHARA_FRIENDLIST_SEL, "SELECT CharacterIdList, InviteDataList FROM charainfofriendlist "
-                                           "WHERE CharacterId = ?;",
-                     CONNECTION_SYNC );
+                                          "WHERE CharacterId = ?;",
+                    CONNECTION_SYNC );
 
   /// CHARA BLACKLIST
   prepareStatement( CHARA_BLACKLIST_INS,
@@ -268,8 +270,8 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
                     CONNECTION_ASYNC );
 
   prepareStatement( CHARA_BLACKLIST_SEL, "SELECT CharacterIdList FROM charainfoblacklist "
-                                          " WHERE CharacterId = ?;",
-                     CONNECTION_SYNC );
+                                         " WHERE CharacterId = ?;",
+                    CONNECTION_SYNC );
 
   /// CHARA LINKSHELL
   prepareStatement( CHARA_LINKSHELL_INS,
@@ -374,23 +376,23 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
 
   prepareStatement( FC_SEL_ALL,
                     "SELECT FreeCompanyId, MasterCharacterId, FcName, FcTag, FcCredit, FcCreditAccumu, FcRank, FcPoint, CrestId, CreateDate, GrandCompanyID, "
-                            "ReputationList, FcStatus, FcBoard, FcMotto, ActiveActionList, ActiveActionLeftTimeList, StockActionList "
+                    "ReputationList, FcStatus, FcBoard, FcMotto, ActiveActionList, ActiveActionLeftTimeList, StockActionList "
                     "FROM freecompany "
                     "ORDER BY FreeCompanyId ASC;",
                     CONNECTION_SYNC );
 
   prepareStatement( FC_INS,
                     "INSERT INTO freecompany ( FreeCompanyId, MasterCharacterId, FcName, FcTag, FcCredit, FcCreditAccumu, FcRank, FcPoint,"
-                                "ReputationList, CrestId, CreateDate, GrandCompanyID, FcStatus, FcBoard, FcMotto ) VALUES ( ?, ?, ?, ?, ?, ?, ?,"
-                                "?, ?, ?, ?, ?, ?, ?, ? );",
+                    "ReputationList, CrestId, CreateDate, GrandCompanyID, FcStatus, FcBoard, FcMotto ) VALUES ( ?, ?, ?, ?, ?, ?, ?,"
+                    "?, ?, ?, ?, ?, ?, ?, ? );",
                     CONNECTION_BOTH );
 
   prepareStatement( FC_UP,
                     "UPDATE freecompany SET MasterCharacterId = ?, FcName = ?, FcTag = ?, FcCredit = ?, FcCreditAccumu = ?,"
-                            "FcRank = ?, FcPoint = ?, ReputationList = ?, CrestId = ?,"
-                            "CreateDate = ?, GrandCompanyID = ?, FcStatus = ?, FcBoard = ?, "
-                            "FcMotto = ?, ActiveActionList = ?, ActiveActionLeftTimeList = ?, StockActionList = ? "
-                            "WHERE FreeCompanyId = ?;",
+                    "FcRank = ?, FcPoint = ?, ReputationList = ?, CrestId = ?,"
+                    "CreateDate = ?, GrandCompanyID = ?, FcStatus = ?, FcBoard = ?, "
+                    "FcMotto = ?, ActiveActionList = ?, ActiveActionLeftTimeList = ?, StockActionList = ? "
+                    "WHERE FreeCompanyId = ?;",
                     CONNECTION_BOTH );
 
   prepareStatement( FC_DEL,
@@ -457,6 +459,10 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
                     "UPDATE chararetainerinfo SET CityId = ? WHERE RetainerId = ?;",
                     CONNECTION_SYNC );
 
+  prepareStatement( CHARA_RETAINER_UP_CLASSJOB,
+                    "UPDATE chararetainerinfo SET ClassJob = ? WHERE RetainerId = ?;",
+                    CONNECTION_SYNC );
+
   prepareStatement( CHARA_RETAINER_DEL,
                     "DELETE FROM chararetainerinfo WHERE RetainerId = ?;",
                     CONNECTION_SYNC );
@@ -464,5 +470,4 @@ void Sapphire::Db::ZoneDbConnection::doPrepareStatements()
   prepareStatement( CHARA_RETAINER_COUNT,
                     "SELECT COUNT(*) AS cnt FROM chararetainerinfo WHERE CharacterId = ?;",
                     CONNECTION_SYNC );
-
 }

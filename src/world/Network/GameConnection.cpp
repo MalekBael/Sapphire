@@ -172,6 +172,8 @@ GameConnection::GameConnection( Sapphire::Network::HivePtr pHive, Sapphire::Netw
   setZoneHandler( RetainerCustomize, "RetainerCustomize", &GameConnection::retainerCustomizeHandler );
 
   setZoneHandler( RequestRetainerData, "RequestRetainerData", &GameConnection::requestRetainerDataHandler );
+  
+  setZoneHandler( GetRetainerList, "GetRetainerList", &GameConnection::getRetainerListHandler );
 }
 
 GameConnection::~GameConnection() = default;

@@ -59,31 +59,31 @@ using InvSlotPair = std::pair< uint16_t, int8_t >;
 using InvSlotPairVec = std::vector< InvSlotPair >;
 
 // player constructor
-Player::Player() :
-  Chara( ObjKind::Player ),
-  m_lastDBWrite( 0 ),
-  m_bIsLogin( false ),
-  m_characterId( 0 ),
-  m_modelMainWeapon( 0 ),
-  m_modelSubWeapon( 0 ),
-  m_homePoint( 0 ),
-  m_startTown( 0 ),
-  m_townWarpFstFlags( 0 ),
-  m_playTime( 0 ),
-  m_lastActionTick( 0 ),
-  m_bLoadingComplete( false ),
-  m_bAutoattack( false ),
-  m_markedForRemoval( false ),
-  m_mount( 0 ),
-  m_emoteMode( 0 ),
-  m_directorInitialized( false ),
-  m_onEnterEventDone( false ),
-  m_falling( false ),
-  m_pQueuedAction( nullptr ),
-  m_partyId( 0 ),
-  m_onlineStatusCustom( 0 ),
-  m_onlineStatus( 0 ),
-  m_bIsConnected( false )
+Player::Player()
+    : Chara( ObjKind::Player ),
+      m_lastDBWrite( 0 ),
+      m_bIsLogin( false ),
+      m_characterId( 0 ),
+      m_modelMainWeapon( 0 ),
+      m_modelSubWeapon( 0 ),
+      m_homePoint( 0 ),
+      m_startTown( 0 ),
+      m_townWarpFstFlags( 0 ),
+      m_playTime( 0 ),
+      m_lastActionTick( 0 ),
+      m_bLoadingComplete( false ),
+      m_bAutoattack( false ),
+      m_markedForRemoval( false ),
+      m_mount( 0 ),
+      m_emoteMode( 0 ),
+      m_directorInitialized( false ),
+      m_onEnterEventDone( false ),
+      m_falling( false ),
+      m_pQueuedAction( nullptr ),
+      m_partyId( 0 ),
+      m_onlineStatusCustom( 0 ),
+      m_onlineStatus( 0 ),
+      m_bIsConnected( false )
 {
   m_id = 0;
   m_currentStance = Stance::Passive;
@@ -361,12 +361,12 @@ void Player::calculateStats()
   setStatValue( BaseParam::Defense, 0 );
   setStatValue( BaseParam::MagicDefense, 0 );
 
-  setStatValue( BaseParam::FireResistance, classInfo->data().Element[0] );
-  setStatValue( BaseParam::IceResistance, classInfo->data().Element[1] );
-  setStatValue( BaseParam::WindResistance, classInfo->data().Element[2] );
-  setStatValue( BaseParam::EarthResistance, classInfo->data().Element[3] );
-  setStatValue( BaseParam::LightningResistance, classInfo->data().Element[4] );
-  setStatValue( BaseParam::WaterResistance, classInfo->data().Element[5] );
+  setStatValue( BaseParam::FireResistance, classInfo->data().Element[ 0 ] );
+  setStatValue( BaseParam::IceResistance, classInfo->data().Element[ 1 ] );
+  setStatValue( BaseParam::WindResistance, classInfo->data().Element[ 2 ] );
+  setStatValue( BaseParam::EarthResistance, classInfo->data().Element[ 3 ] );
+  setStatValue( BaseParam::LightningResistance, classInfo->data().Element[ 4 ] );
+  setStatValue( BaseParam::WaterResistance, classInfo->data().Element[ 5 ] );
 
   setStatValue( BaseParam::AttackPower, str );
   setStatValue( BaseParam::AttackMagicPotency, inte );
@@ -426,7 +426,7 @@ uint8_t Player::getSpawnIdForActorId( uint32_t actorId )
                   "Consider lowering InRangeDistance in world config.",
                   actorId, getId() );
 
-    PlayerMgr::sendUrgent( *this,  "Failed to spawn Chara#{0} for you - no remaining spawn slots. See world log.", actorId );
+    PlayerMgr::sendUrgent( *this, "Failed to spawn Chara#{0} for you - no remaining spawn slots. See world log.", actorId );
   }
 
   return index;
@@ -513,7 +513,7 @@ void Player::setBorrowAction( uint8_t slot, uint32_t action )
 Player::BorrowAction& Player::getBorrowAction()
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast<uint8_t>( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().WorkIndex;
   return m_borrowActions[ classJobIndex ];
 }
 
@@ -871,7 +871,7 @@ void Player::unlockCompanion( uint32_t companionId )
 
   //if( companion->data(). == -1 )
   //  return;
-  
+
   uint16_t index;
   uint8_t value;
   Util::valueToFlagByteIndexValue( companionId, value, index );
@@ -978,7 +978,7 @@ void Player::hateListAdd( const BNpc& bnpc )
     m_actorIdTohateSlotMap[ bnpc.getId() ] = hateId;
     Network::Util::Packet::sendHateList( *this );
     Network::Util::Packet::sendActorControl( *this, bnpc.getId(), SetHateLetter, hateId, bnpc.getId(), 0 );
-}
+  }
 }
 
 void Player::hateListRemove( const BNpc& bnpc )
@@ -991,10 +991,10 @@ void Player::hateListRemove( const BNpc& bnpc )
   uint8_t hateSlot = m_actorIdTohateSlotMap[ bnpcId ];
   if( hateSlot < 26 )
   {
-      m_freeHateSlotQueue.push( hateSlot );
+    m_freeHateSlotQueue.push( hateSlot );
     m_actorIdTohateSlotMap.erase( bnpcId );
-      Network::Util::Packet::sendHateList( *this );
-    }
+    Network::Util::Packet::sendHateList( *this );
+  }
   else
   {
     m_actorIdTohateSlotMap.erase( bnpcId );
@@ -1005,7 +1005,9 @@ void Player::hateListRemove( const BNpc& bnpc )
 bool Player::hateListHasEntry( const BNpc& bnpc )
 {
   return std::any_of( m_actorIdTohateSlotMap.begin(), m_actorIdTohateSlotMap.end(),
-                     [ bnpc ]( const auto& entry ) { return entry.first == bnpc.getId(); } );
+                      [ bnpc ]( const auto& entry ) {
+                        return entry.first == bnpc.getId();
+                      } );
 }
 
 std::vector< CharaPtr > Player::getHateList()
@@ -1095,7 +1097,7 @@ void Player::setTitle( uint16_t titleId )
   uint8_t value;
   Util::valueToFlagByteIndexValue( titleId, value, index );
 
-  if( ( m_titleList[ index ] & value ) == 0 && titleId != 0 )   // Player doesn't have title and is not "no title" - bail
+  if( ( m_titleList[ index ] & value ) == 0 && titleId != 0 )// Player doesn't have title and is not "no title" - bail
     return;
 
   m_activeTitle = titleId;
@@ -1198,14 +1200,13 @@ void Player::autoAttack( CharaPtr pTarget )
 
   auto weaponType = mainWeap->getCategory();
   uint32_t attackId = 7;
-  if( weaponType == ItemUICategory::ArchersArm || weaponType == ItemUICategory::MachinistsArm)
+  if( weaponType == ItemUICategory::ArchersArm || weaponType == ItemUICategory::MachinistsArm )
     attackId = 8;
 
   auto& RNGMgr = Common::Service< Common::Random::RNGMgr >::ref();
   auto variation = static_cast< uint32_t >( RNGMgr.getRandGenerator< float >( 0, 3 ).next() );
 
   actionMgr.handleTargetedAction( *this, attackId, pTarget->getId(), 0 );
-
 }
 
 
@@ -1232,7 +1233,7 @@ uint32_t Player::getCFPenaltyMinutes() const
     return 0;
 
   auto deltaTime = endTimestamp - currentTimestamp;
-  return static_cast< uint32_t > ( std::ceil( static_cast< float > ( deltaTime ) / 60 ) );
+  return static_cast< uint32_t >( std::ceil( static_cast< float >( deltaTime ) / 60 ) );
 }
 
 void Player::setCFPenaltyMinutes( uint32_t minutes )
@@ -1289,15 +1290,13 @@ void Player::teleportQuery( uint16_t aetheryteId, bool useAetheryteTicket )
   auto targetAetheryte = exdData.getRow< Excel::Aetheryte >( aetheryteId );
 
   if( !targetAetheryte )
-   return;
+    return;
 
   auto fromAetheryte = exdData.getRow< Excel::Aetheryte >( exdData.getRow< Excel::TerritoryType >( getTerritoryTypeId() )->data().Aetheryte );
 
   // calculate cost - does not apply for favorite points or homepoints
   // if using aetheryte ticket, cost is 0
-  auto cost = useAetheryteTicket ? 0 : static_cast< uint16_t > (
-    ( std::sqrt( std::pow( fromAetheryte->data().CostPosX - targetAetheryte->data().CostPosX, 2 ) +
-                 std::pow( fromAetheryte->data().CostPosY - targetAetheryte->data().CostPosY, 2 ) ) / 2 ) + 100 );
+  auto cost = useAetheryteTicket ? 0 : static_cast< uint16_t >( ( std::sqrt( std::pow( fromAetheryte->data().CostPosX - targetAetheryte->data().CostPosX, 2 ) + std::pow( fromAetheryte->data().CostPosY - targetAetheryte->data().CostPosY, 2 ) ) / 2 ) + 100 );
 
   // cap at 999 gil
   cost = std::min< uint16_t >( 999, cost );
@@ -1315,7 +1314,6 @@ void Player::teleportQuery( uint16_t aetheryteId, bool useAetheryteTicket )
   {
     clearTeleportQuery();
   }
-
 }
 
 Sapphire::Common::PlayerTeleportQuery Player::getTeleportQuery() const
@@ -1502,7 +1500,7 @@ bool Player::hasQueuedAction() const
 
 void Player::setQueuedAction( Sapphire::World::Action::ActionPtr pAction )
 {
-  m_pQueuedAction = std::move( pAction ); // overwrite previous queued action if any
+  m_pQueuedAction = std::move( pAction );// overwrite previous queued action if any
 }
 
 void Player::setLastActionTick( uint64_t tick )

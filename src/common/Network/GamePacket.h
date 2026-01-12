@@ -76,14 +76,12 @@ namespace Sapphire::Network::Packets
   class FFXIVPacketBase
   {
   public:
-    FFXIVPacketBase() :
-      m_segmentType( 0 )
+    FFXIVPacketBase() : m_segmentType( 0 )
     {
       initializeSegmentHeader();
     }
 
-    FFXIVPacketBase( uint16_t segmentType, uint32_t sourceActorId, uint32_t targetActorId ) :
-      m_segmentType( segmentType )
+    FFXIVPacketBase( uint16_t segmentType, uint32_t sourceActorId, uint32_t targetActorId ) : m_segmentType( segmentType )
     {
       initializeSegmentHeader();
       setSourceActor( sourceActorId );
@@ -195,33 +193,39 @@ namespace Sapphire::Network::Packets
 
       m_alignedSize = m_segHdr.size + ( m_segHdr.size % 8 );
     }
-
   };
 
   template< typename T, typename T1 >
-  class FFXIVIpcPacket :
-    public FFXIVIpcPacketBase< T1 >, public FFXIVPacketBase
+  class FFXIVIpcPacket : public FFXIVIpcPacketBase< T1 >, public FFXIVPacketBase
   {
   public:
-    FFXIVIpcPacket< T, T1 >( uint32_t sourceActorId, uint32_t targetActorId ) :
-      FFXIVPacketBase( 3, sourceActorId, targetActorId )
+    FFXIVIpcPacket< T, T1 >( uint32_t sourceActorId, uint32_t targetActorId ) : FFXIVPacketBase( 3, sourceActorId, targetActorId )
     {
       initialize();
     };
 
-    FFXIVIpcPacket< T, T1 >( uint32_t sourceActorId ) :
-      FFXIVPacketBase( 3, sourceActorId, sourceActorId )
+    FFXIVIpcPacket< T, T1 >( uint32_t sourceActorId ) : FFXIVPacketBase( 3, sourceActorId, sourceActorId )
     {
       initialize();
     };
+
+
+    /*bug? the FFXIVIpcPacket(rawPacket) constructor wasn’t subtracting the segment-header size when computing copySize, which can cause out-of-bounds reads and bad field decode.*/
+
 
     FFXIVIpcPacket< T, T1 >( const FFXIVARR_PACKET_RAW& rawPacket )
     {
-      auto ipcHdrSize = sizeof( FFXIVARR_IPC_HEADER );
-      auto copySize = std::min< size_t >( sizeof( T ), rawPacket.segHdr.size - ipcHdrSize );
+      const auto segmentHdrSize = sizeof( FFXIVARR_PACKET_SEGMENT_HEADER );
+      const auto ipcHdrSize = sizeof( FFXIVARR_IPC_HEADER );
+
+      const auto availableDataSize = rawPacket.segHdr.size > segmentHdrSize ? ( rawPacket.segHdr.size - segmentHdrSize ) : 0;
+      const auto availablePayloadSize = availableDataSize > ipcHdrSize ? ( availableDataSize - ipcHdrSize ) : 0;
+      const auto copySize = std::min< size_t >( sizeof( T ), availablePayloadSize );
 
       memcpy( &m_segHdr, &rawPacket.segHdr, sizeof( FFXIVARR_PACKET_SEGMENT_HEADER ) );
-      memcpy( &m_data, &rawPacket.data[ 0 ] + ipcHdrSize, copySize );
+
+      if( rawPacket.data.size() >= ipcHdrSize && copySize > 0 )
+        memcpy( &m_data, &rawPacket.data[ 0 ] + ipcHdrSize, copySize );
 
       memset( &m_ipcHdr, 0, ipcHdrSize );
       m_ipcHdr.type = static_cast< WorldPackets::Server::ServerZoneIpcType >( m_data._ServerIpcType );
@@ -299,17 +303,15 @@ namespace Sapphire::Network::Packets
   class FFXIVRawPacket : public FFXIVPacketBase
   {
   public:
-    FFXIVRawPacket( uint16_t type, uint32_t size, uint32_t sourceActorId, uint32_t targetActorId ) :
-      m_data( std::vector< uint8_t >( size - sizeof( FFXIVARR_PACKET_SEGMENT_HEADER ) ) ),
-      FFXIVPacketBase( type, sourceActorId, targetActorId )
+    FFXIVRawPacket( uint16_t type, uint32_t size, uint32_t sourceActorId, uint32_t targetActorId ) : m_data( std::vector< uint8_t >( size - sizeof( FFXIVARR_PACKET_SEGMENT_HEADER ) ) ),
+                                                                                                     FFXIVPacketBase( type, sourceActorId, targetActorId )
     {
       initialize();
       m_segHdr.size = size;
       m_alignedSize = m_segHdr.size + ( m_segHdr.size % 8 );
     };
 
-    FFXIVRawPacket( char* data, uint16_t size ) :
-      m_data( std::vector< uint8_t >( size ) )
+    FFXIVRawPacket( char* data, uint16_t size ) : m_data( std::vector< uint8_t >( size ) )
     {
       auto segmentHdrSize = sizeof( FFXIVARR_PACKET_SEGMENT_HEADER );
 
@@ -357,4 +359,4 @@ namespace Sapphire::Network::Packets
     std::vector< uint8_t > m_data;
   };
 
-}
+}// namespace Sapphire::Network::Packets

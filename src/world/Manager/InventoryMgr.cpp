@@ -1,6 +1,7 @@
 #include "InventoryMgr.h"
 
 #include <Common.h>
+#include <Logging/Logger.h>
 #include "Actor/Player.h"
 #include "Inventory/ItemContainer.h"
 #include "Inventory/HousingItem.h"
@@ -27,25 +28,26 @@ void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainer
 {
   auto& server = Common::Service< World::WorldServer >::ref();
 
-  auto sequence = player.getNextInventorySequence();
-  auto pMap = container->getItemMap();
-  uint32_t itemCount = 0;
+  const auto sequence = player.getNextInventorySequence();
+  const auto containerId = container->getId();
+  const auto itemMap = container->getItemMap();
 
-  for( auto & itM : pMap )
+  uint32_t itemCount = 0;
+  for( const auto& itM : itemMap )
   {
     if( !itM.second )
       continue;
 
     itemCount++;
 
-    if( container->getId() == Common::InventoryType::Currency || container->getId() == Common::InventoryType::Crystal )
+    if( containerId == Common::InventoryType::Currency || containerId == Common::InventoryType::Crystal )
     {
       auto currencyInfoPacket = makeZonePacket< FFXIVIpcGilItem >( player.getId() );
       currencyInfoPacket->data().contextId = sequence;
       currencyInfoPacket->data().item.catalogId = itM.second->getId();
       currencyInfoPacket->data().item.subquarity = 1;
       currencyInfoPacket->data().item.stack = itM.second->getStackSize();
-      currencyInfoPacket->data().item.storageId = container->getId();
+      currencyInfoPacket->data().item.storageId = containerId;
       currencyInfoPacket->data().item.containerIndex = itM.first;
 
       server.queueForPlayer( player.getCharacterId(), currencyInfoPacket );
@@ -54,13 +56,13 @@ void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainer
     {
       auto itemInfoPacket = makeZonePacket< FFXIVIpcNormalItem >( player.getId() );
       itemInfoPacket->data().contextId = sequence;
-      itemInfoPacket->data().item.storageId = container->getId();
+      itemInfoPacket->data().item.storageId = containerId;
       itemInfoPacket->data().item.containerIndex = itM.first;
       itemInfoPacket->data().item.stack = itM.second->getStackSize();
       itemInfoPacket->data().item.catalogId = itM.second->getId();
       itemInfoPacket->data().item.durability = itM.second->getDurability();
-//      itemInfoPacket->data().spiritBond = itM->second->getSpiritbond();
-//      itemInfoPacket->data().reservedFlag = itM->second->getReservedFlag();
+      //      itemInfoPacket->data().spiritBond = itM->second->getSpiritbond();
+      //      itemInfoPacket->data().reservedFlag = itM->second->getReservedFlag();
       // todo: not sure if correct flag?
       itemInfoPacket->data().item.flags = static_cast< uint8_t >( itM.second->isHq() ? 1 : 0 );
       itemInfoPacket->data().item.stain = static_cast< uint8_t >( itM.second->getStain() );
@@ -73,7 +75,27 @@ void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainer
   auto itemSizePacket = makeZonePacket< FFXIVIpcItemSize >( player.getId() );
   itemSizePacket->data().contextId = sequence;
   itemSizePacket->data().size = itemCount;
-  itemSizePacket->data().storageId = container->getId();
+  itemSizePacket->data().storageId = containerId;
+
+  // For Currency container, set unknown1 to the player's gil amount
+  // This is required for the RetainerBag gil transfer UI to work
+  if( containerId == Common::InventoryType::Currency )
+  {
+    itemSizePacket->data().unknown1 = player.getCurrency( Common::CurrencyType::Gil );
+  }
+
+  const bool isCurrencyOrCrystal = containerId == Common::InventoryType::Currency ||
+                                   containerId == Common::InventoryType::Crystal;
+  const bool shouldLog = isCurrencyOrCrystal || itemCount > 0;
+
+  if( shouldLog )
+  {
+    Logger::debug( "sendInventoryContainer: storageId={} itemMapSize={} itemCount={} unknown1={}",
+                   static_cast< uint32_t >( containerId ),
+                   itemMap.size(),
+                   itemCount,
+                   itemSizePacket->data().unknown1 );
+  }
 
   server.queueForPlayer( player.getCharacterId(), itemSizePacket );
 }

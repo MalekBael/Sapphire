@@ -250,6 +250,8 @@ namespace Sapphire::Network
     DECLARE_HANDLER( retainerCustomizeHandler );
 
     DECLARE_HANDLER( requestRetainerDataHandler );
+    
+    DECLARE_HANDLER( getRetainerListHandler );
   };
 
 }

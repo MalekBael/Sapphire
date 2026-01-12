@@ -66,7 +66,7 @@ namespace Sapphire::Network::ActorControl
 
     Flee = 0x1B,
 
-    Unk3 = 0x20,                  // Animation related?
+    Unk3 = 0x20,// Animation related?
 
     CombatIndicationShow = 0x22,
 
@@ -90,7 +90,7 @@ namespace Sapphire::Network::ActorControl
     TreasureScreenMsg = 0x57,
     SetOwnerId = 0x59,
     ItemRepairMsg = 0x5C,
-    BluActionLearn = 0x63, // Displays "Action Learned!" animation. Only used for visual, doesn't actually unlock it. param1: actionId. param2: 0 = text only, 1 = text+animation. Verification needed
+    BluActionLearn = 0x63,// Displays "Action Learned!" animation. Only used for visual, doesn't actually unlock it. param1: actionId. param2: 0 = text only, 1 = text+animation. Verification needed
 
     DirectorInit = 0x64,
     DirectorClear = 0x65,
@@ -115,9 +115,9 @@ namespace Sapphire::Network::ActorControl
     ActionLearnMsg1 = 0x87,
 
     SetRollbackFlag = 0x8A,
-    MoveType = 0x8E, // 1 == pvp, 0 == normal
+    MoveType = 0x8E,// 1 == pvp, 0 == normal
 
-    DailyQuestSeed = 0x90, // param1 = the daily quest seed
+    DailyQuestSeed = 0x90,// param1 = the daily quest seed
 
     SetFateProgress = 0x9B,
 
@@ -216,7 +216,7 @@ namespace Sapphire::Network::ActorControl
      * param3 = First result item quantity
      * param4 = (Optional) Second result item id (+ 1 000 000 if HQ)
      * param5 = (Optional) Second result item quantity
-     */ 
+     */
     AetherReductionDlg = 0x17D,
 
     PlayActionTimeline = 0x197,
@@ -232,7 +232,7 @@ namespace Sapphire::Network::ActorControl
 
     SetHateLetter = 0x1F7,
     SetStatusIcon = 0x1F8,
-    LimitBreakGauge = 0x1F9, // Max level, amount, build type (chop sound), lb type(0=pve lb 1=pvp lb)
+    LimitBreakGauge = 0x1F9,// Max level, amount, build type (chop sound), lb type(0=pve lb 1=pvp lb)
     SetHomepoint = 0x1FB,
     SetFavorite = 0x1FC,
     LearnTeleport = 0x1FD,
@@ -255,7 +255,7 @@ namespace Sapphire::Network::ActorControl
     AchievementComplete = 0x203,
     SetCutsceneFlag = 0x204,
 
-    LogMsg = 0x205,                 // LogMessage?
+    LogMsg = 0x205,// LogMessage?
     AchievementObtainMsg = 0x206,
 
     SetItemLevel = 0x209,
@@ -287,7 +287,6 @@ namespace Sapphire::Network::ActorControl
     HuntingLogRankFinish = 0x220,
 
 
-
     SetConfigFlags = 0x260,
     ToggleWireframeRendering = 0x261,
 
@@ -296,9 +295,9 @@ namespace Sapphire::Network::ActorControl
     SetMaxGearSets = 0x320,
     GearSetEquipMsg = 0x321,
 
-    SetBait = 0x325, // param1: bait ID
+    SetBait = 0x325,// param1: bait ID
 
-    SetFestival = 0x386, // param1: festival.exd index
+    SetFestival = 0x386,// param1: festival.exd index
 
     SetCycleTimes = 0x38B,
 
@@ -319,7 +318,7 @@ namespace Sapphire::Network::ActorControl
     */
     SetMountBitmask = 0x387,
 
-    Dismount = 0x3A1, // updated 4.5
+    Dismount = 0x3A1,// updated 4.5
 
     // Duty Recorder
     BeginReplayAck = 0x3A2,
@@ -373,24 +372,24 @@ namespace Sapphire::Network::ActorControl
     HousingStoreroomStatus = 0x419,
 
     // PvP Duel
-    SetPvPState = 0x5E0, // param3 must be 6 to engage a duel (hardcoded in the client)
-    EndDuelSession = 0x5E1, // because someone went oob?
-    StartDuelCountdown = 0x5E2, // begins a countdown; also does some duel bgm thing.
-    StartDuel = 0x5E3, // actually all it does is set the challenger actor id;
-    DuelResultScreen = 0x5E4, // win/lose thing, also reset a target id just like what EndDuelSession does.
+    SetPvPState = 0x5E0,       // param3 must be 6 to engage a duel (hardcoded in the client)
+    EndDuelSession = 0x5E1,    // because someone went oob?
+    StartDuelCountdown = 0x5E2,// begins a countdown; also does some duel bgm thing.
+    StartDuel = 0x5E3,         // actually all it does is set the challenger actor id;
+    DuelResultScreen = 0x5E4,  // win/lose thing, also reset a target id just like what EndDuelSession does.
 
     // Duty Action
-    SetDutyActionId = 0x5E8,  // ContentExAction
-    SetDutyActionHud = 0x5E9, // disable/enable
+    SetDutyActionId = 0x5E8, // ContentExAction
+    SetDutyActionHud = 0x5E9,// disable/enable
     SetDutyActionActive = 0x5EA,
     SetDutyActionRemaining = 0x5EB,
 
-    EurekaStep = 0x73A, // alters the progress of the player on Eureka (is used for all the eureka zones)
+    EurekaStep = 0x73A,// alters the progress of the player on Eureka (is used for all the eureka zones)
   };
 
   enum PacketCommand
   {
-/*  ToggleSheathe = 0x01,
+    /*  ToggleSheathe = 0x01,
     ToggleAutoAttack = 0x02,
     ChangeTarget = 0x03,
 
@@ -493,178 +492,177 @@ namespace Sapphire::Network::ActorControl
     OpenDuelUI = 0x898, // Open a duel ui
     DuelRequestResult = 0x899, // either accept/reject
 */
-      DRAWN_SWORD = 0x1,
-      AUTO_ATTACK = 0x2,
-      TARGET_DECIDE = 0x3,
-      REQUEST_ACTION = 0x64,
-      CANCEL_MOUNT = 0x65,
-      COMPANION = 0x66,
-      COMPANION_CANCEL = 0x67,
-      REQUEST_STATUS_RESET = 0x68,
-      CANCEL_CAST = 0x69,
-      MOUNT_LINK = 0x6A,
-      UNMOUNT_LINK = 0x6B,
-      BALLISTA_ACCESS = 0x6C,
-      REVIVE = 0xC8,
-      FINISH_LOADING = 0xC9,
-      TELEPO_INQUIRY = 0xCA,
-      TELEPO_INVITATION_ANSWER = 0xCB,
-      TELEPO_CANCEL = 0xCC,
-      RAISE_CANCEL = 0xCD,
-      WARP_REPLY = 0xCE,
-      REQUEST_MODE = 0xCF,
-      PUBLIC_INSTANCE = 0xD0,
-      NEWBIE_TELEPO_INQUIRY = 0xD1,
-      INSPECT = 0x12C,
-      MARKING = 0x12D,
-      ACTIVE_TITLE = 0x12E,
-      TITLE_LIST = 0x12F,
-      BORROW_ACTION = 0x130,
-      RANDOM = 0x131,
-      NAME = 0x132,
-      SET_HOWTO = 0x133,
-      SET_CUTSCENE = 0x134,
-      PHYSICAL_BONUS = 0x135,
-      GROUND_MARKING = 0x136,
-      CONTENTS_NOTE_REQUEST = 0x137,
-      BAHAMUTGUIDE_AGREEMENT_CHECK_REPLY = 0x138,
-      SET_MARKET_PRICE = 0x190,
-      DEPOP_RETAINER = 0x191,
-      MARKET_EDIT_START = 0x192,
-      MARKET_EDIT_END = 0x193,
-      MONSTER_NOTE_RANK_NEW_FLAG = 0x194,
-      CHANGE_ITEM_COLOR = 0x195,
-      LOAD_LEGACY_ITEM = 0x196,
-      BRING_OUT_LEGACY_ITEM = 0x197,
-      FCCHEST_LOAD = 0x198,
-      FCCHEST_LOCK = 0x199,
-      FCCHEST_UNLOCK = 0x19A,
-      START_MATERIA_CRAFT = 0x19B,
-      PREPARE_MATERIA_CRAFT = 0x19C,
-      CANCEL_MATERIA_CRAFT = 0x19D,
-      ACCEPT_MATERIA_REQUEST = 0x19E,
-      CANCEL_ATTACH_MATERIA_REQUEST = 0x19F,
-      CHECK_FOR_MATERIA_REQUEST = 0x1A0,
-      EXCHANGE_INACTIVE_MATERIA = 0x1A1,
-      DECAL_ITEM = 0x1A2,
-      DECAL_MANNEQUIN = 0x1A3,
-      DECAL_STORAGE_GROUP = 0x1A4,
-      SELL_INACTIVE_MATERIA = 0x1A5,
-      MATERIA_REQUEST_CLASS_CHANGED = 0x1A6,
-      ITEM_RESYNC = 0x1A7,
-      FCCHEST_GIL_DEPOSIT = 0x1A8,
-      FCCHEST_GIL_TAKE = 0x1A9,
-      FCCHEST_LOAD_LOG = 0x1AA,
-      SET_VANITY_PATTERN = 0x1AB,
-      REQUEST_RETAINER_LIST = 0x1AC,
-      REMOVE_VANITY_PATTERN = 0x1AD,
-      CABINET_REQUEST = 0x1AE,
-      CABINET_STORAGE = 0x1AF,
-      CABINET_TAKEOUT = 0x1B0,
-      SALVAGE = 0x1B1,
-      REQUEST_SALVAGE_SUCCESS_RATE = 0x1B2,
-      MOBHUNT_RECEIPT_ORDER = 0x1B3,
-      MOBHUNT_BREAK_ORDER = 0x1B4,
-      DYE_ITEM = 0x1B5,
-      GLAMOUR_ITEM = 0x1BA,
-      GLAMOUR_DISPEL = 0x1BB,
-      EMOTE = 0x1F4,
-      EMOTE_WITH_WARP = 0x1F5,
-      EMOTE_CANCEL = 0x1F6,
-      EMOTE_MODE_CANCEL = 0x1F7,
-      EMOTE_MODE_CANCEL_WITH_WARP = 0x1F8,
-      POSE_EMOTE_CONFIG = 0x1F9,
-      POSE_EMOTE_WORK = 0x1FA,
-      POSE_EMOTE_CANCEL = 0x1FB,
-      JUMP_START = 0x258,
-      JUMP_LANDING = 0x259,
-      GIMMICK_JUMP_END = 0x25A,
-      START_CRAFT = 0x2BC,
-      FISHING = 0x2BD,
-      PACKET_COMMOND_TRACKING = 0x2BE,
-      PACKET_COMMOND_JOURNAL_CONFIG = 0x2BF,
-      GATHERING_NOTEBOOK_START = 0x2C0,
-      GATHERING_NOTEBOOK_DIVISION = 0x2C1,
-      GATHERING_NOTEBOOK_AREA = 0x2C2,
-      RECIPE_NOTEBOOK_START = 0x2C3,
-      RECIPE_NOTEBOOK_DIVISION = 0x2C4,
-      END_AUTO_CRAFT = 0x2C5,
-      CANCEL_QUEST = 0x320,
-      DIRECTOR_INIT_RETURN = 0x321,
-      CANCEL_GUILDLEVE = 0x322,
-      RETRY_GUILDLEVE = 0x323,
-      START_GUILDLEVE = 0x324,
-      RETIRE_GUILDLEVE = 0x325,
-      CHANGE_GUILDLEVE_DIFFICULTY = 0x326,
-      SYNC_DIRECTOR = 0x327,
-      EVENT_HANDLER = 0x328,
-      FATE_START = 0x329,
-      FATE_INIT_RETURN = 0x32A,
-      FATE_CREATE_CHARACTER_RETURN = 0x32B,
-      FATE_SYNC_CONTEXT_WORK = 0x32C,
-      FATE_LEVEL_SYNC = 0x32D,
-      FATE_INIT_CHARACTER_RETURN = 0x32E,
-      ACHIEVEMENT_REQUEST_RATE = 0x3E8,
-      ACHIEVEMENT_REQUEST = 0x3E9,
-      TROPHY_RECEPTION = 0x3EA,
-      TROPHY_ACQUISITION = 0x3EB,
-      HOUSING_LOCK_LAND_BY_BUILD = 0x44C,
-      HOUSING_LOCK_LAND_BY_EXTERIOR = 0x44D,
-      HOUSING_LOCK_LAND_BY_INTERIOR = 0x44E,
-      HOUSING_LOCK_LAND_BY_BREAK = 0x44F,
-      HOUSING_UNLOCK_HOUSE = 0x450,
-      HOUSING_AUCTION_INFO = 0x451,
-      HOUSING_GET_PROFILE = 0x452,
-      HOUSING_GET_PROFILE_LIST = 0x453,
-      HOUSING_RELEASE = 0x454,
-      HOUSING_BUILD = 0x455,
-      HOUSING_BREAK = 0x456,
-      HOUSING_LOAD_PARTS = 0x457,
-      HOUSING_LOAD_ROOM = 0x458,
-      HOUSING_LOAD_YARD = 0x459,
-      HOUSING_UNPLACE = 0x45A,
-      HOUSING_HOUSE_NAME = 0x45B,
-      HOUSING_GREETING = 0x45C,
-      HOUSING_GREETING_BY_ADDRESS = 0x45D,
-      HOUSING_WELCOME = 0x45E,
-      HOUSING_EDIT_WELCOME = 0x45F,
-      HOUSING_LOAD_FURNITURE = 0x460,
-      HOUSING_WARP_TO_SAFE = 0x461,
-      HOUSING_LAYOUTMODE = 0x462,
-      HOUSING_RELEASE_PERSONAL_ROOM = 0x463,
-      HOUSING_GET_PERSONAL_ROOM_PROFILE_LIST = 0x464,
-      HOUSING_GET_PERSONAL_ROOM_PROFILE = 0x465,
-      HOUSING_GET_BUDDY_STABLE_LIST = 0x466,
-      HOUSING_TRAIN_BUDDY = 0x467,
-      HOUSING_FEED_BUDDY = 0x468,
-      PVP_LEARN_ACTION = 0x4B0,
-      PVP_LEARN_ACTION_TRAIT = 0x4B1,
-      PVP_LEARN_TRAIT = 0x4B2,
-      PVP_ACTION = 0x4B3,
-      PVP_RESET_REWARD = 0x4B4,
-      DISCARD_TREASURE_MAP = 0x514,
-      TREASURE_HUNT_GET_MAP_TIME = 0x515,
-      SET_RETAINER_TASK = 0x578,
-      CANCEL_RETAINER_TASK = 0x579,
-      SET_VENTURE_TUTORIAL_FLAGS = 0x57A,
-      SET_RETAINER_FLAGS = 0x57B,
-      RELIC_NOTE_CLEAR = 0x5DC,
-      RELIC_GEM_ABSORB_MATERIA = 0x5DD,
-      REPAIR_ITEM = 0x640,
-      REPAIR_ITEM_NPC = 0x641,
-      REPAIR_STORAGE_GROUP = 0x642,
-      REPAIR_STORAGE_GROUP_NPC = 0x643,
-      REPAIR_MANNEQUIN = 0x644,
-      REPAIR_MANNEQUIN_NPC = 0x645,
-      BUDDY_ACTION = 0x6A4,
-      BUDDY_EQUIP = 0x6A5,
-      BUDDY_INCREASE_SKILL_LINE = 0x6A6,
-      PET_COMMAND = 0x708,
-      SCREEN_SHOT = 0x7D0,
-      MAX = 0x7D1,
+    DRAWN_SWORD = 0x1,
+    AUTO_ATTACK = 0x2,
+    TARGET_DECIDE = 0x3,
+    REQUEST_ACTION = 0x64,
+    CANCEL_MOUNT = 0x65,
+    COMPANION = 0x66,
+    COMPANION_CANCEL = 0x67,
+    REQUEST_STATUS_RESET = 0x68,
+    CANCEL_CAST = 0x69,
+    MOUNT_LINK = 0x6A,
+    UNMOUNT_LINK = 0x6B,
+    BALLISTA_ACCESS = 0x6C,
+    REVIVE = 0xC8,
+    FINISH_LOADING = 0xC9,
+    TELEPO_INQUIRY = 0xCA,
+    TELEPO_INVITATION_ANSWER = 0xCB,
+    TELEPO_CANCEL = 0xCC,
+    RAISE_CANCEL = 0xCD,
+    WARP_REPLY = 0xCE,
+    REQUEST_MODE = 0xCF,
+    PUBLIC_INSTANCE = 0xD0,
+    NEWBIE_TELEPO_INQUIRY = 0xD1,
+    INSPECT = 0x12C,
+    MARKING = 0x12D,
+    ACTIVE_TITLE = 0x12E,
+    TITLE_LIST = 0x12F,
+    BORROW_ACTION = 0x130,
+    RANDOM = 0x131,
+    NAME = 0x132,
+    SET_HOWTO = 0x133,
+    SET_CUTSCENE = 0x134,
+    PHYSICAL_BONUS = 0x135,
+    GROUND_MARKING = 0x136,
+    CONTENTS_NOTE_REQUEST = 0x137,
+    BAHAMUTGUIDE_AGREEMENT_CHECK_REPLY = 0x138,
+    SET_MARKET_PRICE = 0x190,
+    DEPOP_RETAINER = 0x191,
+    MARKET_EDIT_START = 0x192,
+    MARKET_EDIT_END = 0x193,
+    MONSTER_NOTE_RANK_NEW_FLAG = 0x194,
+    CHANGE_ITEM_COLOR = 0x195,
+    LOAD_LEGACY_ITEM = 0x196,
+    BRING_OUT_LEGACY_ITEM = 0x197,
+    FCCHEST_LOAD = 0x198,
+    FCCHEST_LOCK = 0x199,
+    FCCHEST_UNLOCK = 0x19A,
+    START_MATERIA_CRAFT = 0x19B,
+    PREPARE_MATERIA_CRAFT = 0x19C,
+    CANCEL_MATERIA_CRAFT = 0x19D,
+    ACCEPT_MATERIA_REQUEST = 0x19E,
+    CANCEL_ATTACH_MATERIA_REQUEST = 0x19F,
+    CHECK_FOR_MATERIA_REQUEST = 0x1A0,
+    EXCHANGE_INACTIVE_MATERIA = 0x1A1,
+    DECAL_ITEM = 0x1A2,
+    DECAL_MANNEQUIN = 0x1A3,
+    DECAL_STORAGE_GROUP = 0x1A4,
+    SELL_INACTIVE_MATERIA = 0x1A5,
+    MATERIA_REQUEST_CLASS_CHANGED = 0x1A6,
+    ITEM_RESYNC = 0x1A7,
+    FCCHEST_GIL_DEPOSIT = 0x1A8,
+    FCCHEST_GIL_TAKE = 0x1A9,
+    FCCHEST_LOAD_LOG = 0x1AA,
+    SET_VANITY_PATTERN = 0x1AB,
+    REQUEST_RETAINER_LIST = 0x1AC,
+    REMOVE_VANITY_PATTERN = 0x1AD,
+    CABINET_REQUEST = 0x1AE,
+    CABINET_STORAGE = 0x1AF,
+    CABINET_TAKEOUT = 0x1B0,
+    SALVAGE = 0x1B1,
+    REQUEST_SALVAGE_SUCCESS_RATE = 0x1B2,
+    MOBHUNT_RECEIPT_ORDER = 0x1B3,
+    MOBHUNT_BREAK_ORDER = 0x1B4,
+    DYE_ITEM = 0x1B5,
+    GLAMOUR_ITEM = 0x1BA,
+    GLAMOUR_DISPEL = 0x1BB,
+    EMOTE = 0x1F4,
+    EMOTE_WITH_WARP = 0x1F5,
+    EMOTE_CANCEL = 0x1F6,
+    EMOTE_MODE_CANCEL = 0x1F7,
+    EMOTE_MODE_CANCEL_WITH_WARP = 0x1F8,
+    POSE_EMOTE_CONFIG = 0x1F9,
+    POSE_EMOTE_WORK = 0x1FA,
+    POSE_EMOTE_CANCEL = 0x1FB,
+    JUMP_START = 0x258,
+    JUMP_LANDING = 0x259,
+    GIMMICK_JUMP_END = 0x25A,
+    START_CRAFT = 0x2BC,
+    FISHING = 0x2BD,
+    PACKET_COMMOND_TRACKING = 0x2BE,
+    PACKET_COMMOND_JOURNAL_CONFIG = 0x2BF,
+    GATHERING_NOTEBOOK_START = 0x2C0,
+    GATHERING_NOTEBOOK_DIVISION = 0x2C1,
+    GATHERING_NOTEBOOK_AREA = 0x2C2,
+    RECIPE_NOTEBOOK_START = 0x2C3,
+    RECIPE_NOTEBOOK_DIVISION = 0x2C4,
+    END_AUTO_CRAFT = 0x2C5,
+    CANCEL_QUEST = 0x320,
+    DIRECTOR_INIT_RETURN = 0x321,
+    CANCEL_GUILDLEVE = 0x322,
+    RETRY_GUILDLEVE = 0x323,
+    START_GUILDLEVE = 0x324,
+    RETIRE_GUILDLEVE = 0x325,
+    CHANGE_GUILDLEVE_DIFFICULTY = 0x326,
+    SYNC_DIRECTOR = 0x327,
+    EVENT_HANDLER = 0x328,
+    FATE_START = 0x329,
+    FATE_INIT_RETURN = 0x32A,
+    FATE_CREATE_CHARACTER_RETURN = 0x32B,
+    FATE_SYNC_CONTEXT_WORK = 0x32C,
+    FATE_LEVEL_SYNC = 0x32D,
+    FATE_INIT_CHARACTER_RETURN = 0x32E,
+    ACHIEVEMENT_REQUEST_RATE = 0x3E8,
+    ACHIEVEMENT_REQUEST = 0x3E9,
+    TROPHY_RECEPTION = 0x3EA,
+    TROPHY_ACQUISITION = 0x3EB,
+    HOUSING_LOCK_LAND_BY_BUILD = 0x44C,
+    HOUSING_LOCK_LAND_BY_EXTERIOR = 0x44D,
+    HOUSING_LOCK_LAND_BY_INTERIOR = 0x44E,
+    HOUSING_LOCK_LAND_BY_BREAK = 0x44F,
+    HOUSING_UNLOCK_HOUSE = 0x450,
+    HOUSING_AUCTION_INFO = 0x451,
+    HOUSING_GET_PROFILE = 0x452,
+    HOUSING_GET_PROFILE_LIST = 0x453,
+    HOUSING_RELEASE = 0x454,
+    HOUSING_BUILD = 0x455,
+    HOUSING_BREAK = 0x456,
+    HOUSING_LOAD_PARTS = 0x457,
+    HOUSING_LOAD_ROOM = 0x458,
+    HOUSING_LOAD_YARD = 0x459,
+    HOUSING_UNPLACE = 0x45A,
+    HOUSING_HOUSE_NAME = 0x45B,
+    HOUSING_GREETING = 0x45C,
+    HOUSING_GREETING_BY_ADDRESS = 0x45D,
+    HOUSING_WELCOME = 0x45E,
+    HOUSING_EDIT_WELCOME = 0x45F,
+    HOUSING_LOAD_FURNITURE = 0x460,
+    HOUSING_WARP_TO_SAFE = 0x461,
+    HOUSING_LAYOUTMODE = 0x462,
+    HOUSING_RELEASE_PERSONAL_ROOM = 0x463,
+    HOUSING_GET_PERSONAL_ROOM_PROFILE_LIST = 0x464,
+    HOUSING_GET_PERSONAL_ROOM_PROFILE = 0x465,
+    HOUSING_GET_BUDDY_STABLE_LIST = 0x466,
+    HOUSING_TRAIN_BUDDY = 0x467,
+    HOUSING_FEED_BUDDY = 0x468,
+    PVP_LEARN_ACTION = 0x4B0,
+    PVP_LEARN_ACTION_TRAIT = 0x4B1,
+    PVP_LEARN_TRAIT = 0x4B2,
+    PVP_ACTION = 0x4B3,
+    PVP_RESET_REWARD = 0x4B4,
+    DISCARD_TREASURE_MAP = 0x514,
+    TREASURE_HUNT_GET_MAP_TIME = 0x515,
+    SET_RETAINER_TASK = 0x578,
+    CANCEL_RETAINER_TASK = 0x579,
+    SET_VENTURE_TUTORIAL_FLAGS = 0x57A,
+    SET_RETAINER_FLAGS = 0x57B,
+    RELIC_NOTE_CLEAR = 0x5DC,
+    RELIC_GEM_ABSORB_MATERIA = 0x5DD,
+    REPAIR_ITEM = 0x640,
+    REPAIR_ITEM_NPC = 0x641,
+    REPAIR_STORAGE_GROUP = 0x642,
+    REPAIR_STORAGE_GROUP_NPC = 0x643,
+    REPAIR_MANNEQUIN = 0x644,
+    REPAIR_MANNEQUIN_NPC = 0x645,
+    BUDDY_ACTION = 0x6A4,
+    BUDDY_EQUIP = 0x6A5,
+    BUDDY_INCREASE_SKILL_LINE = 0x6A6,
+    PET_COMMAND = 0x708,
+    SCREEN_SHOT = 0x7D0,
+    MAX = 0x7D1,
 
   };
 
 
-
-}
+}// namespace Sapphire::Network::ActorControl

@@ -136,6 +136,7 @@ namespace Sapphire::Db
     CHARA_RETAINER_SEL_BY_NAME,
     CHARA_RETAINER_UP,
     CHARA_RETAINER_UP_CITY,
+    CHARA_RETAINER_UP_CLASSJOB,
     CHARA_RETAINER_DEL,
     CHARA_RETAINER_COUNT,
 
@@ -154,7 +155,6 @@ namespace Sapphire::Db
     ~ZoneDbConnection();
 
     void doPrepareStatements() override;
-
   };
 
-}
+}// namespace Sapphire::Db

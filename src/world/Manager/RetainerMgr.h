@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 #include <optional>
+#include <unordered_map>
+#include <mutex>
 #include "ForwardsZone.h"
 
 namespace Sapphire::World::Manager
@@ -37,14 +39,13 @@ namespace Sapphire::World::Manager
     NotFound = 0x15D,
     DatabaseError = 0x15E,
     InvalidSlot = 0x15F,
-    RetainerBusy = 0x160  // On venture, has market listings, etc.
+    RetainerBusy = 0x160// On venture, has market listings, etc.
   };
 
   /**
    * @brief Data structure representing a retainer
    */
-  struct RetainerData
-  {
+  struct RetainerData {
     uint64_t retainerId{ 0 };
     uint32_t ownerId{ 0 };
     uint8_t displayOrder{ 0 };
@@ -61,7 +62,7 @@ namespace Sapphire::World::Manager
     bool ventureComplete{ false };
     uint32_t ventureStartTime{ 0 };
     uint32_t ventureCompleteTime{ 0 };
-    std::vector< uint8_t > customize;  // 26 bytes
+    std::vector< uint8_t > customize;// 26 bytes
     bool isActive{ true };
     bool isRename{ false };
     uint8_t status{ 0 };
@@ -87,7 +88,7 @@ namespace Sapphire::World::Manager
     ~RetainerMgr() = default;
 
     // ========== Initialization ==========
-    
+
     /**
      * @brief Initialize the retainer manager
      * 
@@ -106,7 +107,7 @@ namespace Sapphire::World::Manager
      * @param customize Character appearance data (26 bytes)
      * @return RetainerId on success, or empty optional on failure
      */
-    std::optional< uint64_t > createRetainer( Entity::Player& player, 
+    std::optional< uint64_t > createRetainer( Entity::Player& player,
                                               const std::string& name,
                                               RetainerPersonality personality,
                                               const std::vector< uint8_t >& customize );
@@ -258,8 +259,8 @@ namespace Sapphire::World::Manager
      * @param stack Number of items (for stackables)
      * @return Error code (None on success)
      */
-    RetainerError listItem( Entity::Player& player, uint64_t retainerId, 
-                           uint32_t itemId, uint32_t price, uint32_t stack = 1 );
+    RetainerError listItem( Entity::Player& player, uint64_t retainerId,
+                            uint32_t itemId, uint32_t price, uint32_t stack = 1 );
 
     /**
      * @brief Remove an item from the market board
@@ -280,8 +281,8 @@ namespace Sapphire::World::Manager
      * @param newPrice The new price
      * @return Error code (None on success)
      */
-    RetainerError adjustPrice( Entity::Player& player, uint64_t retainerId, 
-                              uint64_t listingId, uint32_t newPrice );
+    RetainerError adjustPrice( Entity::Player& player, uint64_t retainerId,
+                               uint64_t listingId, uint32_t newPrice );
 
     // ========== Packet Sending ==========
 
@@ -307,7 +308,7 @@ namespace Sapphire::World::Manager
      * @param handlerId Event handler ID for context
      * @param slotIndex Slot index (0-7)
      */
-    void sendRetainerInfo( Entity::Player& player, uint64_t retainerId, 
+    void sendRetainerInfo( Entity::Player& player, uint64_t retainerId,
                            uint32_t handlerId = 0, uint8_t slotIndex = 0 );
 
     /**
@@ -317,6 +318,21 @@ namespace Sapphire::World::Manager
      * @param retainerId The retainer
      */
     void sendRetainerInventory( Entity::Player& player, uint64_t retainerId );
+
+    /**
+     * @brief Send IsMarket (0x01EF) to the client
+     *
+     * Retail commonly emits this around retainer UI transitions.
+     */
+    void sendIsMarket( Entity::Player& player, uint32_t marketContext = 0x6E, uint32_t isMarket = 1 );
+
+    /**
+     * @brief Send GetRetainerListResult (0x0106) to the client
+     *
+     * Retail sends this in response to client GetRetainerList (0x0106) when
+     * opening retainer inventory/gil related UIs.
+     */
+    void sendGetRetainerListResult( Entity::Player& player );
 
     /**
      * @brief Send market listings for a retainer
@@ -348,7 +364,7 @@ namespace Sapphire::World::Manager
      * @param bellPos Optional position of the summoning bell (retainer spawns here)
      * @return Actor ID of spawned retainer, or 0 on failure
      */
-    uint32_t spawnRetainer( Entity::Player& player, uint64_t retainerId, 
+    uint32_t spawnRetainer( Entity::Player& player, uint64_t retainerId,
                             const Common::FFXIVARR_POSITION3* bellPos = nullptr );
 
     /**
@@ -371,7 +387,28 @@ namespace Sapphire::World::Manager
      */
     uint32_t getSpawnedRetainerActorId( Entity::Player& player, uint64_t retainerId );
 
+    void sendMarketRetainerUpdate( Entity::Player& player, const RetainerData& retainer );
+
+    // ========== Active Retainer Context ==========
+
+    /**
+     * @brief Track which retainer is currently active/open for a given player.
+     *
+     * This is used by inventory operation handlers (e.g., gil transfer) to know
+     * which retainer DB row to update when the client operates on RetainerGil (12000).
+     */
+    void setActiveRetainer( Entity::Player& player, uint64_t retainerId );
+    void clearActiveRetainer( Entity::Player& player );
+    std::optional< uint64_t > getActiveRetainerId( const Entity::Player& player ) const;
+
+    /**
+     * @brief Persist retainer gil to the database.
+     */
+    bool updateRetainerGil( uint64_t retainerId, uint32_t gil );
+
   private:
+    void sendMarketPriceSnapshot( Entity::Player& player, uint32_t requestId );
+
     /**
      * @brief Load retainer data from database
      * 
@@ -399,6 +436,9 @@ namespace Sapphire::World::Manager
     // Tracking of spawned retainers per player
     // Map: PlayerId -> Map: RetainerId -> ActorId
     std::map< uint32_t, std::map< uint64_t, uint32_t > > m_spawnedRetainers;
+
+    mutable std::mutex m_activeRetainerMutex;
+    std::unordered_map< uint32_t, uint64_t > m_activeRetainerByPlayer;
   };
 
-}
+}// namespace Sapphire::World::Manager

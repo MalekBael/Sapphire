@@ -41,8 +41,7 @@ void Player::initInventory()
 {
   const uint8_t inventorySize = 25;
   auto setupContainer = [ this ]( InventoryType type, uint8_t maxSize, const std::string& tableName,
-                                  bool isMultiStorage, bool isPersistentStorage = true )
-  { m_storageMap[ type ] = make_ItemContainer( type, maxSize, tableName, isMultiStorage, isPersistentStorage ); };
+                                  bool isMultiStorage, bool isPersistentStorage = true ) { m_storageMap[ type ] = make_ItemContainer( type, maxSize, tableName, isMultiStorage, isPersistentStorage ); };
 
   // main bags
   setupContainer( Bag0, inventorySize, "charaiteminventory", true );
@@ -160,7 +159,7 @@ void Player::updateModels( GearSetSlot equipSlotId, const Sapphire::Item& item )
     case Waist:
       break;
 
-    default: // any other slot
+    default:// any other slot
       auto modelSlot = equipSlotToModelSlot( equipSlotId );
       if( modelSlot == GearModelSlot::ModelInvalid )
         break;
@@ -168,7 +167,6 @@ void Player::updateModels( GearSetSlot equipSlotId, const Sapphire::Item& item )
       model = model | stain << 24;
       m_modelEquip[ static_cast< uint8_t >( modelSlot ) ] = static_cast< uint32_t >( model );
       break;
-
   }
 }
 
@@ -242,7 +240,7 @@ void Player::unequipItem( Common::GearSetSlot equipSlotId, Item& item, bool send
   if( modelSlot != GearModelSlot::ModelInvalid )
     m_modelEquip[ static_cast< uint8_t >( modelSlot ) ] = 0;
 
-  if ( equipSlotId == SoulCrystal )
+  if( equipSlotId == SoulCrystal )
     unequipSoulCrystal();
 
   calculateStats();
@@ -499,7 +497,7 @@ Player::InvSlotPair Player::getFreeContainerSlot( uint32_t containerId )
   auto freeSlot = static_cast< int8_t >( m_storageMap[ containerId ]->getFreeSlot() );
 
   if( freeSlot != -1 )
-      return std::make_pair( containerId, freeSlot );
+    return std::make_pair( containerId, freeSlot );
 
   // no room in inventory
   return std::make_pair( 0, -1 );
@@ -520,7 +518,6 @@ uint32_t Player::getCurrency( CurrencyType type )
     return 0;
 
   return currItem->getStackSize();
-
 }
 
 uint32_t Player::getCrystal( CrystalType type )
@@ -532,7 +529,6 @@ uint32_t Player::getCrystal( CrystalType type )
     return 0;
 
   return currItem->getStackSize();
-
 }
 
 void Player::writeInventory( InventoryType type )
@@ -553,7 +549,7 @@ void Player::writeInventory( InventoryType type )
     if( i > 0 )
       query += ", ";
 
-    query += "container_" + std::to_string( i ) + " = " + std::to_string(  currItem ? currItem->getUId() : 0 );
+    query += "container_" + std::to_string( i ) + " = " + std::to_string( currItem ? currItem->getUId() : 0 );
   }
 
   query += " WHERE CharacterId = " + std::to_string( getCharacterId() );
@@ -587,8 +583,8 @@ void Player::writeCurrencyItem( CurrencyType type )
   auto money = m_storageMap[ Currency ]->getItem( static_cast< uint16_t >( type ) - 1 )->getStackSize();
 
   std::string query = fmt::format(
-    "UPDATE charaitemcurrency SET container_{0} = {1} WHERE CharacterId = {2};",
-    std::to_string( static_cast< int16_t >( type ) - 1 ), std::to_string( money ), std::to_string( getCharacterId() ) );
+          "UPDATE charaitemcurrency SET container_{0} = {1} WHERE CharacterId = {2};",
+          std::to_string( static_cast< int16_t >( type ) - 1 ), std::to_string( money ), std::to_string( getCharacterId() ) );
 
   db.execute( query );
 }
@@ -696,7 +692,6 @@ ItemPtr Player::addItem( uint32_t catalogId, uint32_t quantity, bool isHq, bool 
           server().queueForPlayer( getCharacterId(), makeActorControlSelf( getId(), ItemObtainIcon, catalogId, originalQuantity ) );
           return item;
         }
-
       }
       else if( !item && !foundFreeSlot )
       {
@@ -780,10 +775,10 @@ bool Player::removeItem( uint32_t catalogId, uint32_t quantity, bool isHq )
         {
           quantity = 0;
           item->setStackSize( newStackSize );
-          
+
           insertInventoryItem( static_cast< Sapphire::Common::InventoryType >( bag ), slot, item );
 
-          writeItem( item );          
+          writeItem( item );
         }
       }
     }
@@ -792,8 +787,7 @@ bool Player::removeItem( uint32_t catalogId, uint32_t quantity, bool isHq )
   return quantity == 0;
 }
 
-void
-Player::moveItem( uint16_t fromInventoryId, uint16_t fromSlotId, uint16_t toInventoryId, uint16_t toSlot )
+void Player::moveItem( uint16_t fromInventoryId, uint16_t fromSlotId, uint16_t toInventoryId, uint16_t toSlot )
 {
 
   auto tmpItem = m_storageMap[ fromInventoryId ]->getItem( fromSlotId );
@@ -819,7 +813,7 @@ Player::moveItem( uint16_t fromInventoryId, uint16_t fromSlotId, uint16_t toInve
 
   if( static_cast< InventoryType >( toInventoryId ) == GearSet0 ||
       static_cast< InventoryType >( fromInventoryId ) == GearSet0 )
-    sendStatusEffectUpdate(); // send if any equip is changed
+    sendStatusEffectUpdate();// send if any equip is changed
 }
 
 bool Player::updateContainer( uint16_t storageId, uint16_t slotId, ItemPtr pItem )
@@ -937,15 +931,13 @@ void Player::swapItem( uint16_t fromInventoryId, uint16_t fromSlotId, uint16_t t
 
   // An item is being moved from bag0-3 to equippment, meaning
   // the swapped out item will be placed in the matching armory.
-  if( World::Manager::ItemMgr::isEquipment( toInventoryId )
-      && !World::Manager::ItemMgr::isEquipment( fromInventoryId )
-      && !World::Manager::ItemMgr::isArmory( fromInventoryId ) )
+  if( World::Manager::ItemMgr::isEquipment( toInventoryId ) && !World::Manager::ItemMgr::isEquipment( fromInventoryId ) && !World::Manager::ItemMgr::isArmory( fromInventoryId ) )
   {
     updateContainer( fromInventoryId, fromSlotId, nullptr );
     auto& exdData = Common::Service< Data::ExdData >::ref();
     auto itemInfo = exdData.getRow< Excel::Item >( toItem->getId() );
     fromInventoryId = World::Manager::ItemMgr::getCharaEquipSlotCategoryToArmoryId( static_cast< Common::EquipSlotCategory >( itemInfo->data().Slot ) );
-    fromSlotId = static_cast < uint8_t >( m_storageMap[ fromInventoryId ]->getFreeSlot() );
+    fromSlotId = static_cast< uint8_t >( m_storageMap[ fromInventoryId ]->getFreeSlot() );
   }
 
   auto containerTypeFrom = World::Manager::ItemMgr::getContainerType( fromInventoryId );
@@ -955,8 +947,8 @@ void Player::swapItem( uint16_t fromInventoryId, uint16_t fromSlotId, uint16_t t
   updateContainer( fromInventoryId, fromSlotId, toItem );
 
   if( static_cast< InventoryType >( toInventoryId ) == GearSet0 ||
-    static_cast< InventoryType >( fromInventoryId ) == GearSet0 )
-    sendStatusEffectUpdate(); // send if any equip is changed
+      static_cast< InventoryType >( fromInventoryId ) == GearSet0 )
+    sendStatusEffectUpdate();// send if any equip is changed
 }
 
 void Player::discardItem( uint16_t fromInventoryId, uint16_t fromSlotId )

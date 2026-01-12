@@ -30,9 +30,9 @@ bool RetainerMgr::init()
 // ========== Retainer CRUD Operations ==========
 
 std::optional< uint64_t > RetainerMgr::createRetainer( Entity::Player& player,
-                                                        const std::string& name,
-                                                        RetainerPersonality personality,
-                                                        const std::vector< uint8_t >& customize )
+                                                       const std::string& name,
+                                                       RetainerPersonality personality,
+                                                       const std::vector< uint8_t >& customize )
 {
   // Validate name
   auto nameError = validateName( name );
@@ -62,37 +62,36 @@ std::optional< uint64_t > RetainerMgr::createRetainer( Entity::Player& player,
   // Insert into database
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_INS );
-  stmt->setUInt( 1, player.getId() );               // CharacterId
-  stmt->setUInt( 2, static_cast< uint32_t >( slot ) );   // DisplayOrder
-  stmt->setString( 3, name );                       // Name
-  stmt->setUInt( 4, static_cast< uint32_t >( personality ) );  // Personality
-  stmt->setBinary( 5, customize );                  // Customize (26 bytes)
-  stmt->setUInt( 6, static_cast< uint32_t >( time( nullptr ) ) );  // CreateTime
-  
+  stmt->setUInt( 1, player.getId() );                            // CharacterId
+  stmt->setUInt( 2, static_cast< uint32_t >( slot ) );           // DisplayOrder
+  stmt->setString( 3, name );                                    // Name
+  stmt->setUInt( 4, static_cast< uint32_t >( personality ) );    // Personality
+  stmt->setBinary( 5, customize );                               // Customize (26 bytes)
+  stmt->setUInt( 6, static_cast< uint32_t >( time( nullptr ) ) );// CreateTime
+
   try
   {
     db.directExecute( stmt );
-  }
-  catch( const std::exception& e )
+  } catch( const std::exception& e )
   {
-    Logger::error( "RetainerMgr: Database error creating retainer '{}' for player {}: {}", 
+    Logger::error( "RetainerMgr: Database error creating retainer '{}' for player {}: {}",
                    name, player.getId(), e.what() );
     return std::nullopt;
   }
-  
+
   // Get the inserted retainer ID by querying for it
   auto selStmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_SEL_BY_NAME );
   selStmt->setString( 1, name );
   auto res = db.query( selStmt );
-  
+
   if( res && res->next() )
   {
     uint64_t retainerId = res->getUInt64( "RetainerId" );
-    Logger::info( "RetainerMgr: Created retainer '{}' (ID: {}) for player {} in slot {} (personality: {})", 
+    Logger::info( "RetainerMgr: Created retainer '{}' (ID: {}) for player {} in slot {} (personality: {})",
                   name, retainerId, player.getId(), slot, static_cast< int >( personality ) );
     return retainerId;
   }
-  
+
   Logger::error( "RetainerMgr: Failed to retrieve retainer ID after insert for '{}'", name );
   return std::nullopt;
 }
@@ -107,7 +106,7 @@ RetainerError RetainerMgr::deleteRetainer( Entity::Player& player, uint64_t reta
 
   if( retainer->ownerId != player.getId() )
   {
-    Logger::warn( "RetainerMgr: Player {} attempted to delete retainer {} they don't own", 
+    Logger::warn( "RetainerMgr: Player {} attempted to delete retainer {} they don't own",
                   player.getId(), retainerId );
     return RetainerError::NotFound;
   }
@@ -124,21 +123,20 @@ RetainerError RetainerMgr::deleteRetainer( Entity::Player& player, uint64_t reta
   }
 
   // Delete from database
-  Logger::info( "RetainerMgr: Deleting retainer {} (name: '{}') for player {}", 
+  Logger::info( "RetainerMgr: Deleting retainer {} (name: '{}') for player {}",
                 retainerId, retainer->name, player.getId() );
-  
+
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
-  
+
   try
   {
     db.directExecute( "DELETE FROM chararetainerinfo WHERE RetainerId = " + std::to_string( retainerId ) );
-  }
-  catch( const std::exception& e )
+  } catch( const std::exception& e )
   {
     Logger::error( "RetainerMgr: DELETE failed with exception: {}", e.what() );
     return RetainerError::NotFound;
   }
-  
+
   Logger::info( "RetainerMgr: Successfully deleted retainer {}", retainerId );
   return RetainerError::None;
 }
@@ -146,12 +144,12 @@ RetainerError RetainerMgr::deleteRetainer( Entity::Player& player, uint64_t reta
 std::vector< RetainerData > RetainerMgr::getRetainers( Entity::Player& player )
 {
   std::vector< RetainerData > retainers;
-  
+
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_SEL_BY_CHARID );
   stmt->setUInt( 1, player.getId() );
   auto res = db.query( stmt );
-  
+
   while( res && res->next() )
   {
     RetainerData data;
@@ -175,7 +173,7 @@ std::vector< RetainerData > RetainerMgr::getRetainers( Entity::Player& player )
     data.isRename = res->getUInt( "IsRename" ) != 0;
     data.status = static_cast< uint8_t >( res->getUInt( "Status" ) );
     data.createTime = res->getUInt( "CreateTime" );
-    
+
     // Get customize data if present
     if( !res->isNull( "Customize" ) )
     {
@@ -185,7 +183,7 @@ std::vector< RetainerData > RetainerMgr::getRetainers( Entity::Player& player )
         data.customize.assign( blobData.begin(), blobData.end() );
       }
     }
-    
+
     retainers.push_back( data );
   }
 
@@ -204,12 +202,12 @@ uint8_t RetainerMgr::getRetainerCount( Entity::Player& player )
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_COUNT );
   stmt->setUInt( 1, player.getId() );
   auto res = db.query( stmt );
-  
+
   if( res && res->next() )
   {
     return static_cast< uint8_t >( res->getUInt( "cnt" ) );
   }
-  
+
   return 0;
 }
 
@@ -230,7 +228,7 @@ bool RetainerMgr::isNameAvailable( const std::string& name )
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_SEL_BY_NAME );
   stmt->setString( 1, name );
   auto res = db.query( stmt );
-  
+
   // Name is available if no results found
   return !( res && res->next() );
 }
@@ -295,12 +293,53 @@ RetainerError RetainerMgr::setRetainerClass( Entity::Player& player, uint64_t re
     return RetainerError::NotFound;
   }
 
-  // Retainers can only have Disciples of War/Magic or Disciples of Land classes
-  // Validate classJob ID here
-  // TODO: Validate against ClassJob Excel sheet
+  // Retainers can have:
+  // - Disciples of War: Gladiator(1), Pugilist(2), Marauder(3), Lancer(4), Archer(5)
+  // - Disciples of Magic: Conjurer(6), Thaumaturge(7), Arcanist(26)
+  // - Disciples of Land: Miner(16), Botanist(17), Fisher(18)
+  // Classes 8-15 are crafters (not valid for retainers in 3.x)
+  bool isValidClass = ( classJob >= 1 && classJob <= 7 ) ||  // DoW/DoM base classes
+                      ( classJob >= 16 && classJob <= 18 ) ||// DoL classes
+                      ( classJob == 26 );                    // Arcanist
+  if( !isValidClass )
+  {
+    Logger::warn( "RetainerMgr::setRetainerClass - Invalid classJob {} for retainer {}", classJob, retainerId );
+    return RetainerError::None;// Silently fail for invalid classes
+  }
 
-  // TODO: Update database
+  // Update database
+  auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+  auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_UP_CLASSJOB );
+  stmt->setUInt( 1, classJob );
+  stmt->setUInt64( 2, retainerId );
 
+  try
+  {
+    db.directExecute( stmt );
+  } catch( const std::exception& e )
+  {
+    Logger::error( "RetainerMgr::setRetainerClass - DB error: {}", e.what() );
+    return RetainerError::None;// Return success to not break client flow
+  }
+
+  // Reload retainer data from DB to get updated classJob
+  auto updatedRetainer = getRetainer( retainerId );
+  if( updatedRetainer.has_value() )
+  {
+    Logger::info( "RetainerMgr::setRetainerClass - DB updated, new classJob={}",
+                  static_cast< int >( updatedRetainer->classJob ) );
+  }
+
+  // Send updated RetainerInfo packet to client so it knows the class changed
+  // This is needed because the client caches classJob from the initial spawn packet
+  // We also resend the full retainer list to update the client's menu cache
+  sendRetainerInfo( player, retainerId, 0, updatedRetainer ? updatedRetainer->displayOrder : 0 );
+
+  // Also resend the retainer inventory which triggers a refresh
+  sendRetainerInventory( player, retainerId );
+
+  Logger::info( "RetainerMgr::setRetainerClass - Set retainer {} '{}' classJob to {}",
+                retainerId, updatedRetainer ? updatedRetainer->name : "?", classJob );
   return RetainerError::None;
 }
 
@@ -343,7 +382,7 @@ RetainerError RetainerMgr::completeVenture( Entity::Player& player, uint64_t ret
 
   if( retainer->ventureId == 0 || !retainer->ventureComplete )
   {
-    return RetainerError::None; // No venture or not complete
+    return RetainerError::None;// No venture or not complete
   }
 
   // TODO: Generate rewards based on ventureId
@@ -381,22 +420,22 @@ uint32_t RetainerMgr::registerToMarket( Entity::Player& player, uint64_t retaine
   if( !retainer.has_value() )
   {
     Logger::warn( "RetainerMgr::registerToMarket - Retainer {} not found", retainerId );
-    return 1; // Generic error
+    return 1;// Generic error
   }
 
   if( retainer->ownerId != player.getId() )
   {
-    Logger::warn( "RetainerMgr::registerToMarket - Player {} doesn't own retainer {}", 
+    Logger::warn( "RetainerMgr::registerToMarket - Player {} doesn't own retainer {}",
                   player.getId(), retainerId );
-    return 1; // Generic error
+    return 1;// Generic error
   }
 
   // Check if already registered to this city
   if( retainer->cityId == cityId && cityId != 0 )
   {
-    Logger::debug( "RetainerMgr::registerToMarket - Retainer {} already registered to city {}", 
+    Logger::debug( "RetainerMgr::registerToMarket - Retainer {} already registered to city {}",
                    retainerId, cityId );
-    return 463; // Already registered at this city
+    return 463;// Already registered at this city
   }
 
   // Update cityId in database
@@ -404,20 +443,19 @@ uint32_t RetainerMgr::registerToMarket( Entity::Player& player, uint64_t retaine
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_UP_CITY );
   stmt->setUInt( 1, cityId );
   stmt->setUInt64( 2, retainerId );
-  
+
   try
   {
     db.directExecute( stmt );
-  }
-  catch( const std::exception& e )
+  } catch( const std::exception& e )
   {
     Logger::error( "RetainerMgr::registerToMarket - DB error: {}", e.what() );
-    return 1; // Generic error
+    return 1;// Generic error
   }
 
-  Logger::info( "RetainerMgr::registerToMarket - Registered retainer {} '{}' to city {}", 
+  Logger::info( "RetainerMgr::registerToMarket - Registered retainer {} '{}' to city {}",
                 retainerId, retainer->name, cityId );
-  return 0; // Success
+  return 0;// Success
 }
 
 RetainerError RetainerMgr::listItem( Entity::Player& player, uint64_t retainerId,
@@ -455,148 +493,418 @@ RetainerError RetainerMgr::adjustPrice( Entity::Player& player, uint64_t retaine
 void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
 {
   Logger::info( "RetainerMgr::sendRetainerList called for player {}", player.getId() );
-  
-  auto retainers = getRetainers( player );
+
+  const auto retainers = getRetainers( player );
   Logger::info( "RetainerMgr: getRetainers returned {} retainers", retainers.size() );
-  
+
   auto& server = Common::Service< World::WorldServer >::ref();
-  const auto maxSlots = getMaxRetainerSlots( player );
-  const auto currentCount = static_cast< uint8_t >( retainers.size() );
-  
-  // ========== Step 0: Send ActorControl to set retainer count ==========
-  // This updates the client's internal count for GetRetainerEmployedCount()
+  const uint8_t maxSlots = getMaxRetainerSlots( player );
+  const uint8_t employedCount = static_cast< uint8_t >( retainers.size() );
+  const uint8_t availableSlots = maxSlots > employedCount ? static_cast< uint8_t >( maxSlots - employedCount ) : 0;
+
+  // If handlerId not provided, generate one based on player ID.
+  // Retail captures show a value in the 0x1A** range.
+  if( handlerId == 0 )
+    handlerId = ( player.getId() & 0xFFFF ) | 0x1A00;
+
+  // Step 0: Tell the client how many retainers are currently employed.
+  // This updates GetRetainerEmployedCount() client-side.
   Network::Util::Packet::sendActorControlSelf( player, player.getId(), 0x98 /* SetRetainerCount */,
-                                                static_cast<uint32_t>(retainers.size()) );
-  
-  // Build a map of slot -> retainer for quick lookup
-  std::map< uint8_t, const RetainerData* > slotMap;
+                                               static_cast< uint32_t >( employedCount ) );
+
+  // Build a fixed slot index (0-7) lookup.
+  std::array< const RetainerData*, 8 > slotToRetainer{};
+  slotToRetainer.fill( nullptr );
   for( const auto& r : retainers )
   {
-    slotMap[r.displayOrder] = &r;
+    if( r.displayOrder < slotToRetainer.size() )
+      slotToRetainer[ r.displayOrder ] = &r;
   }
-  
-  // If handlerId not provided, generate one based on player ID
-  // In the capture, handlerId = 0x1ADD = 6877
-  if( handlerId == 0 )
-  {
-    // Use lower 16 bits of player ID as a simple handler ID
-    handlerId = ( player.getId() & 0xFFFF ) | 0x1A00;
-  }
-  
-  // ========== Step 1: Send 8x 0x01AB RetainerData packets (one per slot) ==========
-  // NOTE: Retail sends RetainerData BEFORE RetainerList (based on packet capture)
-  // BINARY ANALYSIS: GetRetainerEmployedCount() counts slots where retainerId != 0 at offset 8472
-  for( uint8_t slot = 0; slot < 8; slot++ )
+
+  // Step 1: Send 8x 0x01AB RetainerData packets (one per slot).
+  // NOTE: In retail captures, these commonly arrive before the 0x01AA list.
+  for( uint8_t slot = 0; slot < slotToRetainer.size(); ++slot )
   {
     auto infoPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerData >( player.getId() );
     auto& info = infoPacket->data();
     std::memset( &info, 0, sizeof( info ) );
-    
-    // Common fields for all slots
+
     info.handlerId = handlerId;
-    info.unknown1 = 0xFFFFFFFF;  // Always -1 in capture
-    info.slotIndex = slot;        // Slot index 0-7 (client uses this for array indexing!)
-    info.personality = 0x99;      // 153 = default personality value
-    
-    auto it = slotMap.find( slot );
-    if( it != slotMap.end() && it->second )
+    info.unknown1 = 0xFFFFFFFF;
+    info.slotIndex = slot;
+    info.personality = 0x99;
+
+    // Retail 3.35 capture shows these bytes are non-zero constants even for empty slots.
+    info.padding1[ 0 ] = 0x68;
+    info.padding1[ 1 ] = 0x0E;
+    info.padding1[ 2 ] = 0xE2;
+    info.padding2[ 0 ] = 0x00;
+    info.padding2[ 1 ] = 0x39;
+    info.tail16 = 0xE20E;
+    info.tail32 = 0xE20E6B70;
+
+    if( const RetainerData* r = slotToRetainer[ slot ] )
     {
-      // Filled slot - retainerId MUST be non-zero for client to count as employed!
-      const auto& r = *it->second;
-      info.retainerId = r.retainerId;  // Full 64-bit retainer ID (client counts non-zero as employed)
-      info.unknown2 = 11;              // Unknown, 11 for filled slots
-      info.activeFlag = 1;             // 1 = ACTIVE slot
-      info.classJob = r.classJob > 0 ? r.classJob : 1;
-      info.unknown3 = r.createTime;    // Create time or level?
-      info.unknown4 = r.displayOrder + 1;  // 1-indexed display order
-      std::strncpy( info.name, r.name.c_str(), 31 );
-      info.name[31] = '\0';
-      
-      Logger::debug( "RetainerMgr: Slot {} - '{}' (retainerId: {}, classJob: {})", 
-                     slot, r.name, r.retainerId, static_cast<int>(info.classJob) );
+      info.retainerId = r->retainerId;
+      // Number of items currently listed on the market for this retainer.
+      // This value is shown in the retainer list UI as "selling X/20".
+      info.sellingCount = r->sellingCount;
+      info.activeFlag = 1;
+      info.classJob = r->classJob > 0 ? r->classJob : 1;
+      info.unknown3 = r->createTime;
+      info.unknown4 = 1;
+
+      std::strncpy( info.name, r->name.c_str(), 31 );
+      info.name[ 31 ] = '\0';
+
+      Logger::debug( "RetainerMgr: Slot {} - '{}' (retainerId: {}, classJob: {}, tail32: {:08X})",
+                     slot, r->name, r->retainerId, static_cast< int >( info.classJob ), info.tail32 );
     }
     else
     {
-      // Empty slot - retainerId must be 0 (client won't count this as employed)
       info.retainerId = 0;
       info.activeFlag = 0;
+      info.unknown4 = 0;
       Logger::debug( "RetainerMgr: Slot {} - empty (retainerId: 0)", slot );
     }
-    
+
     server.queueForPlayer( player.getCharacterId(), infoPacket );
   }
-  
-  // ========== Step 2: Send 0x01AA RetainerList (tiny 8-byte packet) AFTER the data packets ==========
+
+  // Step 2: Send 0x01AA RetainerList.
+  // IMPORTANT: Despite its name, byte +5 is treated by the client as "available slots".
   auto listPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerList >( player.getId() );
   auto& listData = listPacket->data();
   std::memset( &listData, 0, sizeof( listData ) );
-  
+
   listData.handlerId = handlerId;
-  
-  // BINARY ANALYSIS FINDINGS:
-  // The client stores packet byte +5 (our "retainerCount" field) into byte_1417A12B2
-  // GetAvailableRetainerSlots() reads byte_1417A12B2 directly (it's the AVAILABLE slots, not employed count!)
-  // Lua Scene 1 checks: if employedCount <= availableSlots then show "hire up to [availableSlots]"
-  // 
-  // So this field should contain: maxSlots - currentlyEmployed = available slots remaining
-  uint8_t currentEmployed = static_cast< uint8_t >( retainers.size() );
-  uint8_t availableSlots = maxSlots > currentEmployed ? maxSlots - currentEmployed : 0;
-  
-  listData.maxSlots = maxSlots;         // Maximum allowed retainer slots (2)
-  listData.retainerCount = availableSlots;  // ACTUALLY available slots (maxSlots - employed)
+  listData.maxSlots = maxSlots;
+  listData.retainerCount = availableSlots;
   listData.padding = 0;
 
   Logger::debug( "RetainerMgr: Sending RetainerList - maxSlots: {}, availableSlots: {} (employed: {})",
-                 maxSlots, availableSlots, currentEmployed );
+                 maxSlots, availableSlots, employedCount );
   server.queueForPlayer( player.getCharacterId(), listPacket );
-  
-  Logger::info( "RetainerMgr: Sent 8x RetainerData + 1x RetainerList packets (count: {})", retainers.size() );
+
+  // Step 3: Send 0x01EF IsMarket so the client enables market-related retainer options.
+  // Retail capture shows this packet sent twice back-to-back.
+  sendIsMarket( player );
+  sendIsMarket( player );
+
+  Logger::info( "RetainerMgr: Sent 8x RetainerData + 1x RetainerList + 2x IsMarket (employed: {}, maxSlots: {})",
+                employedCount, maxSlots );
 }
 
-void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId, 
+void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId,
                                     uint32_t handlerId, uint8_t slotIndex )
 {
-  auto retainer = getRetainer( retainerId );
+  const auto retainer = getRetainer( retainerId );
   if( !retainer.has_value() )
   {
     Logger::warn( "RetainerMgr: Cannot send info for unknown retainer {}", retainerId );
     return;
   }
-  
+
   auto& server = Common::Service< World::WorldServer >::ref();
+
+  if( handlerId == 0 )
+    handlerId = ( player.getId() & 0xFFFF ) | 0x1A00;
+
   auto packet = makeZonePacket< WorldPackets::Server::FFXIVIpcRetainerData >( player.getId() );
   auto& data = packet->data();
   std::memset( &data, 0, sizeof( data ) );
-  
-  // If handlerId not provided, generate one
-  if( handlerId == 0 )
-  {
-    handlerId = ( player.getId() & 0xFFFF ) | 0x1A00;
-  }
-  
-  // Fill packet using corrected 3.35 structure (based on binary analysis)
+
   data.handlerId = handlerId;
-  data.unknown1 = 0xFFFFFFFF;  // Always -1
-  data.retainerId = retainer->retainerId;  // Full 64-bit retainer ID
+  data.unknown1 = 0xFFFFFFFF;
+  data.retainerId = retainer->retainerId;
   data.slotIndex = slotIndex > 0 ? slotIndex : retainer->displayOrder;
-  data.unknown2 = 11;          // Filled slot marker
-  data.activeFlag = 1;         // Active slot
+  // Number of items currently listed on the market for this retainer.
+  data.sellingCount = retainer->sellingCount;
+  data.activeFlag = 1;
   data.classJob = retainer->classJob > 0 ? retainer->classJob : 1;
   data.unknown3 = retainer->createTime;
-  data.unknown4 = retainer->displayOrder + 1;
-  data.personality = 0x99;     // 153
+  data.unknown4 = 1;
+  data.personality = 0x99;
+
+  // Retail 3.35 capture shows these bytes are non-zero constants.
+  data.padding1[ 0 ] = 0x68;
+  data.padding1[ 1 ] = 0x0E;
+  data.padding1[ 2 ] = 0xE2;
+  data.padding2[ 0 ] = 0x00;
+  data.padding2[ 1 ] = 0x39;
+  data.tail16 = 0xE20E;
+  data.tail32 = 0xE20E6B70;
+
   std::strncpy( data.name, retainer->name.c_str(), 31 );
-  data.name[31] = '\0';
-  
+  data.name[ 31 ] = '\0';
+
   server.queueForPlayer( player.getCharacterId(), packet );
-  Logger::debug( "RetainerMgr: Sent RetainerInfo for '{}' to player {} ({} bytes)", 
-                 retainer->name, player.getId(), sizeof( data ) );
+
+  // Also provide IsMarket state during direct retainer interactions.
+  sendIsMarket( player );
+
+  Logger::info( "RetainerMgr: Sent RetainerInfo for '{}' (classJob={}) + IsMarket to player {}",
+                retainer->name, static_cast< int >( data.classJob ), player.getId() );
+}
+
+void RetainerMgr::sendIsMarket( Entity::Player& player, uint32_t marketContext, uint32_t isMarket )
+{
+  auto& server = Common::Service< World::WorldServer >::ref();
+
+  auto pkt = makeZonePacket< WorldPackets::Server::FFXIVIpcIsMarket >( player.getId() );
+  auto& data = pkt->data();
+  std::memset( &data, 0, sizeof( data ) );
+  data.marketContext = marketContext;
+  data.isMarket = isMarket;
+  server.queueForPlayer( player.getCharacterId(), pkt );
 }
 
 void RetainerMgr::sendRetainerInventory( Entity::Player& player, uint64_t retainerId )
 {
-  // TODO: Query retainer inventory from database
-  // TODO: Send item packets similar to player inventory
+  Logger::info( "RetainerMgr::sendRetainerInventory - Called for retainerId {} player {}", retainerId, player.getId() );
+
+  // Track the currently open retainer so inventory operations (e.g., gil transfer)
+  // can resolve RetainerGil(12000) updates to a concrete retainerId.
+  setActiveRetainer( player, retainerId );
+
+  if( const auto* soldItems = player.getSoldItems() )
+  {
+    Logger::debug( "RetainerMgr::sendRetainerInventory - player {} soldItemsCount={} (buyback diagnostic)",
+                   player.getId(), soldItems->size() );
+  }
+
+  // Send player's full inventory (including gil in Currency container) so the client
+  // has the player's gil cached when opening the gil transfer UI.
+  player.sendInventory();
+
+  const auto retainerOpt = getRetainer( retainerId );
+  if( !retainerOpt.has_value() )
+  {
+    Logger::error( "RetainerMgr::sendRetainerInventory - Retainer {} not found in database!", retainerId );
+    return;
+  }
+
+  const auto& retainer = *retainerOpt;
+  Logger::info( "RetainerMgr::sendRetainerInventory - Found retainer '{}' with {} gil", retainer.name, retainer.gil );
+
+  auto& server = Common::Service< World::WorldServer >::ref();
+
+  // Retail sends 0x010B early in the retainer inventory/gil flow.
+  sendMarketRetainerUpdate( player, retainer );
+
+  Logger::info( "RetainerMgr::sendRetainerInventory - Sending inventory packets (no ItemStorage - following retail)" );
+
+  // ============================================================================
+  // RETAIL PACKET ANALYSIS (3.35 capture - retainer_summon_gil_view_class.xml):
+  // Retail does NOT send ItemStorage (0x01AE) packets for retainer containers!
+  // It only sends: GilItem/NormalItem + ItemSize directly.
+  //
+  // The client appears to handle container initialization implicitly when
+  // receiving item data packets with a storageId it hasn't seen before.
+  // ============================================================================
+
+  // ============================================================================
+  // RETAIL DISCOVERY: The client uses ItemSize.unknown1 to determine the player's
+  // gil amount for the RetainerBag(2) gil transfer UI. This field must contain
+  // the player's current gil in ALL retainer container ItemSize packets!
+  // ============================================================================
+  const uint32_t playerGil = player.getCurrency( Common::CurrencyType::Gil );
+
+  // ============================================================================
+  // Send retainer's gil (container ID 12000)
+  //
+  // RETAIL PACKET ANALYSIS (3.35 capture):
+  // Retail does NOT send ItemStorage (0x01AE) for RetainerGil containers!
+  // It only sends: GilItem (0x01B3) + ItemSize (0x01B0) directly.
+  //
+  // From capture: GilItem contextId=0x1ae5, storageId=12000, stack=0, subquarity=3, catalogId=1
+  //               ItemSize contextId=0x1ae5, size=1, storageId=12000, unknown1=playerGil
+  // ============================================================================
+
+  // Send retainer bag containers (10000-10006) FIRST - matching retail order
+  for( int i = 0; i < 7; ++i )
+  {
+    auto bagSequence = player.getNextInventorySequence();
+
+    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
+    sizePacket->data().contextId = bagSequence;
+    sizePacket->data().size = 0;// Empty bag (TODO: send actual items when implemented)
+    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerBag0 ) + i;
+    sizePacket->data().unknown1 = playerGil;
+    server.queueForPlayer( player.getCharacterId(), sizePacket );
+  }
+
+  // Send retainer's gil (container ID 12000)
+  {
+    auto gilSequence = player.getNextInventorySequence();
+
+    // GilItem packet with the actual gil amount (NO ItemStorage packet!)
+    auto gilPacket = makeZonePacket< WorldPackets::Server::FFXIVIpcGilItem >( player.getId() );
+    gilPacket->data().contextId = gilSequence;
+    gilPacket->data().item.catalogId = 1; // Gil item ID
+    gilPacket->data().item.subquarity = 3;// Retail uses 3, not 1
+    gilPacket->data().item.stack = retainer.gil;
+    gilPacket->data().item.storageId = static_cast< uint16_t >( Common::InventoryType::RetainerGil );
+    gilPacket->data().item.containerIndex = 0;
+    gilPacket->data().padding = 0;
+    server.queueForPlayer( player.getCharacterId(), gilPacket );
+
+    // ItemSize to finalize - unknown1 MUST contain player's gil!
+    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
+    sizePacket->data().contextId = gilSequence;
+    sizePacket->data().size = 1;
+    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerGil );
+    sizePacket->data().unknown1 = playerGil;
+    server.queueForPlayer( player.getCharacterId(), sizePacket );
+
+    Logger::info( "  -> RetainerGil(12000): contextId={} retainerGil={} playerGil={}",
+                  gilSequence, retainer.gil, playerGil );
+  }
+
+  // Send retainer crystals (container ID 12001)
+  {
+    auto crystalSequence = player.getNextInventorySequence();
+
+    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
+    sizePacket->data().contextId = crystalSequence;
+    sizePacket->data().size = 0;// No crystals
+    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerCrystal );
+    sizePacket->data().unknown1 = playerGil;
+    server.queueForPlayer( player.getCharacterId(), sizePacket );
+  }
+
+  // Send retainer market listings (container ID 12002)
+  {
+    auto marketSequence = player.getNextInventorySequence();
+
+    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
+    sizePacket->data().contextId = marketSequence;
+    sizePacket->data().size = 0;// No market listings
+    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerMarket );
+    sizePacket->data().unknown1 = playerGil;
+    server.queueForPlayer( player.getCharacterId(), sizePacket );
+
+    // Retail sends a burst of 0x01AD entries followed by a 0x01AC header.
+    // This appears to prime the market-related retainer UI paths even when empty.
+    sendMarketPriceSnapshot( player, marketSequence );
+  }
+
+  // Send retainer equipped gear (container ID 11000)
+  {
+    auto gearSequence = player.getNextInventorySequence();
+
+    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
+    sizePacket->data().contextId = gearSequence;
+    sizePacket->data().size = 0;// No equipped gear
+    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerEquippedGear );
+    sizePacket->data().unknown1 = playerGil;
+    server.queueForPlayer( player.getCharacterId(), sizePacket );
+  }
+
+  Logger::debug( "RetainerMgr::sendRetainerInventory - Sent inventory for retainer {} (retainerGil: {}, playerGil: {})",
+                 retainerId, retainer.gil, playerGil );
+}
+
+void RetainerMgr::setActiveRetainer( Entity::Player& player, uint64_t retainerId )
+{
+  std::scoped_lock lock( m_activeRetainerMutex );
+  m_activeRetainerByPlayer[ player.getId() ] = retainerId;
+}
+
+void RetainerMgr::clearActiveRetainer( Entity::Player& player )
+{
+  std::scoped_lock lock( m_activeRetainerMutex );
+  m_activeRetainerByPlayer.erase( player.getId() );
+}
+
+std::optional< uint64_t > RetainerMgr::getActiveRetainerId( const Entity::Player& player ) const
+{
+  std::scoped_lock lock( m_activeRetainerMutex );
+  const auto it = m_activeRetainerByPlayer.find( player.getId() );
+  if( it == m_activeRetainerByPlayer.end() )
+    return std::nullopt;
+  return it->second;
+}
+
+bool RetainerMgr::updateRetainerGil( uint64_t retainerId, uint32_t gil )
+{
+  auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+
+  try
+  {
+    db.directExecute( "UPDATE chararetainerinfo SET Gil = " + std::to_string( gil ) +
+                      " WHERE RetainerId = " + std::to_string( retainerId ) );
+    return true;
+  } catch( const std::exception& e )
+  {
+    Logger::error( "RetainerMgr: Failed to update retainer gil for {}: {}", retainerId, e.what() );
+    return false;
+  }
+}
+
+void RetainerMgr::sendGetRetainerListResult( Entity::Player& player )
+{
+  const auto retainers = getRetainers( player );
+  const RetainerData* chosen = retainers.empty() ? nullptr : &retainers.front();
+
+  auto& server = Common::Service< World::WorldServer >::ref();
+
+  auto pkt = makeZonePacket< WorldPackets::Server::FFXIVIpcGetRetainerListResult >( player.getId() );
+  auto& data = pkt->data();
+  std::memset( &data, 0, sizeof( data ) );
+
+  if( chosen )
+  {
+    data.retainerId = chosen->retainerId;
+    data.createTime = chosen->createTime;
+    data.unknown12 = 3;
+    data.unknown14 = 3;
+    std::strncpy( data.name, chosen->name.c_str(), sizeof( data.name ) - 1 );
+    data.name[ sizeof( data.name ) - 1 ] = '\0';
+  }
+
+  server.queueForPlayer( player.getCharacterId(), pkt );
+}
+
+void RetainerMgr::sendMarketRetainerUpdate( Entity::Player& player, const RetainerData& retainer )
+{
+  auto& server = Common::Service< World::WorldServer >::ref();
+
+  auto pkt = makeZonePacket< WorldPackets::Server::FFXIVIpcMarketRetainerUpdate >( player.getId() );
+  auto& data = pkt->data();
+  std::memset( &data, 0, sizeof( data ) );
+
+  data.retainerId = retainer.retainerId;
+  data.unknown15 = 3;
+  data.classJob = retainer.classJob;
+  std::strncpy( data.name, retainer.name.c_str(), sizeof( data.name ) - 1 );
+  data.name[ sizeof( data.name ) - 1 ] = '\0';
+
+  server.queueForPlayer( player.getCharacterId(), pkt );
+}
+
+void RetainerMgr::sendMarketPriceSnapshot( Entity::Player& player, uint32_t requestId )
+{
+  auto& server = Common::Service< World::WorldServer >::ref();
+
+  // Send a small set of empty-ish price entries to mirror the retail pattern.
+  for( int i = 0; i < 11; ++i )
+  {
+    auto entry = makeZonePacket< WorldPackets::Server::FFXIVIpcMarketPrice >( player.getId() );
+    auto& e = entry->data();
+    std::memset( &e, 0, sizeof( e ) );
+    e.requestId = requestId;
+    e.itemCatalogId = static_cast< uint32_t >( Common::InventoryType::RetainerMarket );
+    e.unknown12 = 0x68;
+    e.unknown16 = 0x12C;
+    server.queueForPlayer( player.getCharacterId(), entry );
+  }
+
+  auto hdr = makeZonePacket< WorldPackets::Server::FFXIVIpcMarketPriceHeader >( player.getId() );
+  auto& h = hdr->data();
+  std::memset( &h, 0, sizeof( h ) );
+  h.requestId = requestId;
+  server.queueForPlayer( player.getCharacterId(), hdr );
 }
 
 void RetainerMgr::sendMarketListings( Entity::Player& player, uint64_t retainerId )
@@ -614,7 +922,7 @@ void RetainerMgr::sendSalesHistory( Entity::Player& player, uint64_t retainerId 
 // ========== NPC Spawning ==========
 
 uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId,
-                                      const Common::FFXIVARR_POSITION3* bellPos )
+                                     const Common::FFXIVARR_POSITION3* bellPos )
 {
   // Load retainer data
   auto retainerOpt = getRetainer( retainerId );
@@ -639,7 +947,7 @@ uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId
   if( existingActor != 0 )
   {
     Logger::debug( "RetainerMgr::spawnRetainer - Retainer {} was tracked as spawned, clearing and respawning",
-                  retainerId );
+                   retainerId );
     despawnRetainer( player, existingActor );
   }
 
@@ -652,21 +960,21 @@ uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId
   // If bell position is provided, spawn near the bell; otherwise spawn near player
   auto playerPos = player.getPos();
   auto playerRot = player.getRot();
-  
+
   Common::FFXIVARR_POSITION3 spawnPos;
   float retainerRot;
-  
+
   if( bellPos != nullptr )
   {
     // Spawn at the bell's position
     // The retainer will "walk in" via the Lua script animation
     spawnPos = *bellPos;
-    
+
     // Calculate rotation to face the player
     float dx = playerPos.x - bellPos->x;
     float dz = playerPos.z - bellPos->z;
     retainerRot = std::atan2( dx, dz );
-    
+
     Logger::debug( "RetainerMgr::spawnRetainer - Using bell position ({:.2f}, {:.2f}, {:.2f})",
                    bellPos->x, bellPos->y, bellPos->z );
   }
@@ -676,22 +984,21 @@ uint32_t RetainerMgr::spawnRetainer( Entity::Player& player, uint64_t retainerId
     spawnPos.x = playerPos.x + ( std::sin( playerRot ) * 2.0f );
     spawnPos.y = playerPos.y;
     spawnPos.z = playerPos.z + ( std::cos( playerRot ) * 2.0f );
-    
+
     // Face retainer towards player
-    retainerRot = playerRot + 3.14159265f; // 180 degrees opposite
-    
+    retainerRot = playerRot + 3.14159265f;// 180 degrees opposite
+
     Logger::debug( "RetainerMgr::spawnRetainer - No bell position, using player-relative position" );
   }
 
   // Send spawn packet
   auto& server = Common::Service< World::WorldServer >::ref();
   auto spawnPacket = std::make_shared< WorldPackets::Server::RetainerSpawnPacket >(
-    retainerActorId,
-    retainerData,
-    spawnPos,
-    retainerRot,
-    player
-  );
+          retainerActorId,
+          retainerData,
+          spawnPos,
+          retainerRot,
+          player );
 
   server.queueForPlayer( player.getCharacterId(), spawnPacket );
 
@@ -717,10 +1024,10 @@ void RetainerMgr::despawnRetainer( Entity::Player& player, uint32_t retainerActo
     {
       Logger::info( "RetainerMgr::despawnRetainer - Despawning retainer actor {} for player {}",
                     retainerActorId, player.getId() );
-      
+
       // Send ActorFreeSpawn packet to client and free spawn index
       player.freePlayerSpawnId( retainerActorId );
-      
+
       playerIt->second.erase( it );
       break;
     }
@@ -754,7 +1061,7 @@ std::optional< RetainerData > RetainerMgr::loadRetainerFromDb( uint64_t retainer
   auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_RETAINER_SEL );
   stmt->setUInt64( 1, retainerId );
   auto res = db.query( stmt );
-  
+
   if( res && res->next() )
   {
     RetainerData data;
@@ -778,7 +1085,7 @@ std::optional< RetainerData > RetainerMgr::loadRetainerFromDb( uint64_t retainer
     data.isRename = res->getUInt( "IsRename" ) != 0;
     data.status = static_cast< uint8_t >( res->getUInt( "Status" ) );
     data.createTime = res->getUInt( "CreateTime" );
-    
+
     // Get customize data if present
     if( !res->isNull( "Customize" ) )
     {
@@ -788,7 +1095,7 @@ std::optional< RetainerData > RetainerMgr::loadRetainerFromDb( uint64_t retainer
         data.customize.assign( blobData.begin(), blobData.end() );
       }
     }
-    
+
     return data;
   }
 
@@ -805,7 +1112,7 @@ uint8_t RetainerMgr::getNextAvailableSlot( Entity::Player& player )
 {
   auto retainers = getRetainers( player );
   std::set< uint8_t > usedSlots;
-  
+
   for( const auto& r : retainers )
   {
     usedSlots.insert( r.displayOrder );
@@ -820,5 +1127,5 @@ uint8_t RetainerMgr::getNextAvailableSlot( Entity::Player& player )
     }
   }
 
-  return 255; // All slots used
+  return 255;// All slots used
 }

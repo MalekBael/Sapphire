@@ -37,6 +37,119 @@ using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::World::Manager;
 
+//retainer event logging - can be removed once the feature is complete ---------------------------------------------------------------------
+namespace
+{
+  constexpr uint32_t kRetainerDeskHandlerId = 0x000B0009;
+  constexpr uint32_t kRetainerCallHandlerId = 0x000B000A;
+
+  const char* getRetainerTraceTag( uint32_t handlerId )
+  {
+    switch( handlerId )
+    {
+      case kRetainerDeskHandlerId:
+        return "RetainerDesk";
+      case kRetainerCallHandlerId:
+        return "RetainerCall";
+      default:
+        return nullptr;
+    }
+  }
+
+  void traceRetainerYieldScene( Entity::Player& player, uint32_t handlerId, uint16_t sceneId, uint8_t yieldId,
+                                uint8_t numOfResults, const std::vector< uint32_t >& results )
+  {
+    const char* tag = getRetainerTraceTag( handlerId );
+    if( !tag )
+      return;
+
+    const uint32_t arg0 = results.size() >= 1 ? results[ 0 ] : 0;
+    const uint32_t arg1 = results.size() >= 2 ? results[ 1 ] : 0;
+    const uint64_t packed = static_cast< uint64_t >( arg0 ) | ( static_cast< uint64_t >( arg1 ) << 32 );
+    const bool inNpcEvent = player.hasCondition( Common::PlayerCondition::InNpcEvent );
+
+    PlayerMgr::sendUrgent( player,
+                           "[{0}][Yield] scene={1} yieldId={2} numArgs={3} arg0=0x{4:08X} arg1=0x{5:08X} packed=0x{6:016X} inNpcEvent={7}",
+                           tag,
+                           sceneId,
+                           yieldId,
+                           numOfResults,
+                           arg0,
+                           arg1,
+                           packed,
+                           inNpcEvent ? 1 : 0 );
+
+    Logger::debug( "[{0}][Yield] scene={1} yieldId={2} numArgs={3} arg0=0x{4:08X} arg1=0x{5:08X} packed=0x{6:016X} inNpcEvent={7}",
+                   tag,
+                   sceneId,
+                   yieldId,
+                   numOfResults,
+                   arg0,
+                   arg1,
+                   packed,
+                   inNpcEvent ? 1 : 0 );
+  }
+
+  void traceRetainerYieldString( Entity::Player& player, uint32_t handlerId, uint16_t sceneId, uint8_t yieldId,
+                                 const std::string& resultString )
+  {
+    const char* tag = getRetainerTraceTag( handlerId );
+    if( !tag )
+      return;
+
+    const bool inNpcEvent = player.hasCondition( Common::PlayerCondition::InNpcEvent );
+    PlayerMgr::sendUrgent( player,
+                           "[{0}][YieldString] scene={1} yieldId={2} str='{3}' inNpcEvent={4}",
+                           tag,
+                           sceneId,
+                           yieldId,
+                           resultString,
+                           inNpcEvent ? 1 : 0 );
+    Logger::debug( "[{0}][YieldString] scene={1} yieldId={2} str='{3}' inNpcEvent={4}",
+                   tag,
+                   sceneId,
+                   yieldId,
+                   resultString,
+                   inNpcEvent ? 1 : 0 );
+  }
+
+  void traceRetainerYieldIntAndString( Entity::Player& player, uint32_t handlerId, uint16_t sceneId, uint8_t yieldId,
+                                       uint64_t resultInt, const std::string& resultString )
+  {
+    const char* tag = getRetainerTraceTag( handlerId );
+    if( !tag )
+      return;
+
+    const uint32_t low32 = static_cast< uint32_t >( resultInt & 0xFFFFFFFFull );
+    const uint32_t high32 = static_cast< uint32_t >( ( resultInt >> 32 ) & 0xFFFFFFFFull );
+    const bool inNpcEvent = player.hasCondition( Common::PlayerCondition::InNpcEvent );
+
+    PlayerMgr::sendUrgent(
+      player,
+      "[{0}][YieldIntStr] scene={1} yieldId={2} int=0x{3:016X} (lo=0x{4:08X} hi=0x{5:08X}) str='{6}' inNpcEvent={7}",
+      tag,
+      sceneId,
+      yieldId,
+      resultInt,
+      low32,
+      high32,
+      resultString,
+      inNpcEvent ? 1 : 0 );
+
+    Logger::debug( "[{0}][YieldIntStr] scene={1} yieldId={2} int=0x{3:016X} (lo=0x{4:08X} hi=0x{5:08X}) str='{6}' inNpcEvent={7}",
+                   tag,
+                   sceneId,
+                   yieldId,
+                   resultInt,
+                   low32,
+                   high32,
+                   resultString,
+                   inNpcEvent ? 1 : 0 );
+  }
+}
+
+//retainer logging end ------------------------------------------------------------------------------------------------------------
+
 std::string EventMgr::getEventName( uint32_t eventId )
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
@@ -343,6 +456,10 @@ void EventMgr::handleYieldEventScene( Entity::Player& player, uint32_t eventId, 
     PlayerMgr::sendDebug( player, "arg#{0}: {1} ({1:08X})", index++, r );
   }
 
+  //retainer yield logging, can be removed once the feature is complete -------------------------------------------------------------
+  traceRetainerYieldScene( player, eventId, sceneId, resumeId, numOfResults, results );
+  //retainer logging end ------------------------------------------------------------------------------------------------------------
+
   // Pass results[1] as resultInt if available (many yields use arg#1 for the actual value)
   // Combine results[0] and results[1] into a 64-bit value if both exist
   uint64_t resultInt = 0;
@@ -370,6 +487,8 @@ void EventMgr::handleYieldStringEventScene( Entity::Player& player, uint32_t eve
 
   PlayerMgr::sendDebug( player, "eventId: {0} ({0:08X}) scene: {1}, resumeId: {2} resultString: {3}",
                         eventId, sceneId, resumeId, resultString );
+//retainer yield logging, can be removed once the feature is complete -------------------------------------------------------------
+  traceRetainerYieldString( player, eventId, sceneId, resumeId, resultString );
 
   if( !scriptMgr.onYield( player, eventId, sceneId, resumeId, resultString, 0 ) )
   {
@@ -385,6 +504,8 @@ void EventMgr::handleYieldStringIntEventScene( Entity::Player& player, uint32_t 
 
   PlayerMgr::sendDebug( player, "eventId: {0} ({0:08X}) scene: {1}, resumeId: {2} resultString: {3} resultInt: {4}",
                         eventId, sceneId, resumeId, resultString, resultInt );
+
+  traceRetainerYieldIntAndString( player, eventId, sceneId, resumeId, resultInt, resultString );
 
   if( !scriptMgr.onYield( player, eventId, sceneId, resumeId, resultString, resultInt ) )
   {
