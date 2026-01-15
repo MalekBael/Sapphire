@@ -10,19 +10,16 @@
 #include "ItemContainer.h"
 
 Sapphire::ItemContainer::ItemContainer( uint16_t storageId, uint16_t maxSize, const std::string& tableName,
-                                        bool isMultiStorage, bool isPersistentStorage ) :
-  m_id( storageId ),
-  m_size( maxSize ),
-  m_tableName( tableName ),
-  m_bMultiStorage( isMultiStorage ),
-  m_isPersistentStorage( isPersistentStorage )
+                                        bool isMultiStorage, bool isPersistentStorage ) : m_id( storageId ),
+                                                                                          m_size( maxSize ),
+                                                                                          m_tableName( tableName ),
+                                                                                          m_bMultiStorage( isMultiStorage ),
+                                                                                          m_isPersistentStorage( isPersistentStorage )
 {
-
 }
 
 Sapphire::ItemContainer::~ItemContainer()
 {
-
 }
 
 uint16_t Sapphire::ItemContainer::getId() const
@@ -79,27 +76,35 @@ int16_t Sapphire::ItemContainer::getFreeSlot()
 Sapphire::ItemPtr Sapphire::ItemContainer::getItem( uint16_t slotId )
 {
 
-  if( ( slotId > m_size ) )
+  if( slotId >= m_size )
   {
-    Logger::error( "Slot out of range {0}", slotId );
+    Logger::error( "Slot out of range {} (maxSize={})", slotId, m_size );
     return nullptr;
   }
-  
-  if( m_itemMap.find( slotId ) == m_itemMap.end() )
+
+  const auto it = m_itemMap.find( slotId );
+  if( it == m_itemMap.end() )
     return nullptr;
 
-  return m_itemMap[ slotId ];
+  return it->second;
 }
 
 void Sapphire::ItemContainer::setItem( uint16_t slotId, ItemPtr pItem )
 {
-  if( slotId > m_size )
+  if( slotId >= m_size )
   {
-    Logger::error( "Unable to place item {}, {} exceeds max size of {}", pItem->getId(), slotId, m_size );
+    const uint32_t itemId = pItem ? pItem->getId() : 0;
+    Logger::error( "Unable to place item {} at slot {} (maxSize={})", itemId, slotId, m_size );
     return;
   }
 
-  m_itemMap[ slotId ] = pItem;
+  if( !pItem )
+  {
+    m_itemMap.erase( slotId );
+    return;
+  }
+
+  m_itemMap[ slotId ] = std::move( pItem );
 }
 
 uint16_t Sapphire::ItemContainer::getMaxSize() const
@@ -121,5 +126,3 @@ bool Sapphire::ItemContainer::isPersistentStorage() const
 {
   return m_isPersistentStorage;
 }
-
-

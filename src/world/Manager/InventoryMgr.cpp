@@ -26,50 +26,57 @@ using namespace Sapphire::Network::Packets::WorldPackets::Server;
 
 void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainerPtr container )
 {
+  if( !container )
+    return;
+
   auto& server = Common::Service< World::WorldServer >::ref();
 
   const auto sequence = player.getNextInventorySequence();
   const auto containerId = container->getId();
-  const auto itemMap = container->getItemMap();
+  const auto& itemMap = container->getItemMap();
+
+  const bool isCurrencyContainer = containerId == Common::InventoryType::Currency;
+  const bool isCrystalContainer = containerId == Common::InventoryType::Crystal ||
+                                  containerId == Common::InventoryType::RetainerCrystal;
+  const bool isCurrencyOrCrystal = isCurrencyContainer || isCrystalContainer;
 
   uint32_t itemCount = 0;
-  for( const auto& itM : itemMap )
+  for( const auto& [ slotIndex, item ] : itemMap )
   {
-    if( !itM.second )
+    if( !item )
       continue;
 
-    itemCount++;
+    ++itemCount;
 
-    if( containerId == Common::InventoryType::Currency || containerId == Common::InventoryType::Crystal )
+    if( isCurrencyOrCrystal )
     {
       auto currencyInfoPacket = makeZonePacket< FFXIVIpcGilItem >( player.getId() );
       currencyInfoPacket->data().contextId = sequence;
-      currencyInfoPacket->data().item.catalogId = itM.second->getId();
+      currencyInfoPacket->data().item.catalogId = item->getId();
       currencyInfoPacket->data().item.subquarity = 1;
-      currencyInfoPacket->data().item.stack = itM.second->getStackSize();
+      currencyInfoPacket->data().item.stack = item->getStackSize();
       currencyInfoPacket->data().item.storageId = containerId;
-      currencyInfoPacket->data().item.containerIndex = itM.first;
+      currencyInfoPacket->data().item.containerIndex = slotIndex;
 
       server.queueForPlayer( player.getCharacterId(), currencyInfoPacket );
+      continue;
     }
-    else
-    {
-      auto itemInfoPacket = makeZonePacket< FFXIVIpcNormalItem >( player.getId() );
-      itemInfoPacket->data().contextId = sequence;
-      itemInfoPacket->data().item.storageId = containerId;
-      itemInfoPacket->data().item.containerIndex = itM.first;
-      itemInfoPacket->data().item.stack = itM.second->getStackSize();
-      itemInfoPacket->data().item.catalogId = itM.second->getId();
-      itemInfoPacket->data().item.durability = itM.second->getDurability();
-      //      itemInfoPacket->data().spiritBond = itM->second->getSpiritbond();
-      //      itemInfoPacket->data().reservedFlag = itM->second->getReservedFlag();
-      // todo: not sure if correct flag?
-      itemInfoPacket->data().item.flags = static_cast< uint8_t >( itM.second->isHq() ? 1 : 0 );
-      itemInfoPacket->data().item.stain = static_cast< uint8_t >( itM.second->getStain() );
-      itemInfoPacket->data().item.pattern = itM.second->getPattern();
 
-      server.queueForPlayer( player.getCharacterId(), itemInfoPacket );
-    }
+    auto itemInfoPacket = makeZonePacket< FFXIVIpcNormalItem >( player.getId() );
+    itemInfoPacket->data().contextId = sequence;
+    itemInfoPacket->data().item.storageId = containerId;
+    itemInfoPacket->data().item.containerIndex = slotIndex;
+    itemInfoPacket->data().item.stack = item->getStackSize();
+    itemInfoPacket->data().item.catalogId = item->getId();
+    itemInfoPacket->data().item.durability = item->getDurability();
+    //      itemInfoPacket->data().spiritBond = item->getSpiritbond();
+    //      itemInfoPacket->data().reservedFlag = item->getReservedFlag();
+    // todo: not sure if correct flag?
+    itemInfoPacket->data().item.flags = static_cast< uint8_t >( item->isHq() ? 1 : 0 );
+    itemInfoPacket->data().item.stain = static_cast< uint8_t >( item->getStain() );
+    itemInfoPacket->data().item.pattern = item->getPattern();
+
+    server.queueForPlayer( player.getCharacterId(), itemInfoPacket );
   }
 
   auto itemSizePacket = makeZonePacket< FFXIVIpcItemSize >( player.getId() );
@@ -77,25 +84,10 @@ void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainer
   itemSizePacket->data().size = itemCount;
   itemSizePacket->data().storageId = containerId;
 
-  // For Currency container, set unknown1 to the player's gil amount
-  // This is required for the RetainerBag gil transfer UI to work
-  if( containerId == Common::InventoryType::Currency )
-  {
+  const bool isRetainerContainer = containerId >= Common::InventoryType::RetainerBag0 &&
+                                   containerId <= Common::InventoryType::RetainerMarket;
+  if( isCurrencyContainer || isRetainerContainer )
     itemSizePacket->data().unknown1 = player.getCurrency( Common::CurrencyType::Gil );
-  }
-
-  const bool isCurrencyOrCrystal = containerId == Common::InventoryType::Currency ||
-                                   containerId == Common::InventoryType::Crystal;
-  const bool shouldLog = isCurrencyOrCrystal || itemCount > 0;
-
-  if( shouldLog )
-  {
-    Logger::debug( "sendInventoryContainer: storageId={} itemMapSize={} itemCount={} unknown1={}",
-                   static_cast< uint32_t >( containerId ),
-                   itemMap.size(),
-                   itemCount,
-                   itemSizePacket->data().unknown1 );
-  }
 
   server.queueForPlayer( player.getCharacterId(), itemSizePacket );
 }

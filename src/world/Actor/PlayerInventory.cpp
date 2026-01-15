@@ -24,6 +24,7 @@
 #include "Manager/ItemMgr.h"
 #include "Manager/PlayerMgr.h"
 #include "Manager/MgrUtil.h"
+#include "Manager/RetainerMgr.h"
 
 #include <Service.h>
 
@@ -36,69 +37,51 @@ using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::Network::ActorControl;
 
+namespace
+{
+  bool IsRetainerStorageId( const uint16_t storageId )
+  {
+    return storageId >= static_cast< uint16_t >( Common::InventoryType::RetainerBag0 ) &&
+           storageId <= static_cast< uint16_t >( Common::InventoryType::RetainerMarket );
+  }
+}// namespace
+
 
 void Player::initInventory()
 {
-  const uint8_t inventorySize = 25;
-  auto setupContainer = [ this ]( InventoryType type, uint8_t maxSize, const std::string& tableName,
-                                  bool isMultiStorage, bool isPersistentStorage = true ) { m_storageMap[ type ] = make_ItemContainer( type, maxSize, tableName, isMultiStorage, isPersistentStorage ); };
+  const uint8_t bagSize = 25;
+  const uint8_t gearSetSize = 13;
+  const uint8_t currencySize = 11;
 
-  // main bags
-  setupContainer( Bag0, inventorySize, "charaiteminventory", true );
-  setupContainer( Bag1, inventorySize, "charaiteminventory", true );
-  setupContainer( Bag2, inventorySize, "charaiteminventory", true );
-  setupContainer( Bag3, inventorySize, "charaiteminventory", true );
+  auto setupContainer = [ this ]( const InventoryType type,
+                                  const uint8_t maxSize,
+                                  const std::string& tableName,
+                                  const bool isMultiStorage,
+                                  const bool isPersistentStorage = true ) {
+    m_storageMap[ type ] = make_ItemContainer( type, maxSize, tableName, isMultiStorage, isPersistentStorage );
+  };
 
-  // gear set
-  setupContainer( GearSet0, 13, "charaitemgearset", true );
+  // Player inventory containers (persisted)
+  for( const auto bag : { Bag0, Bag1, Bag2, Bag3 } )
+    setupContainer( bag, bagSize, "charaiteminventory", true );
 
-  // gil contianer
-  setupContainer( Currency, 11, "charaiteminventory", true );
+  setupContainer( GearSet0, gearSetSize, "charaitemgearset", true );
+  setupContainer( Currency, currencySize, "charaiteminventory", true );
+  setupContainer( Crystal, currencySize, "charaiteminventory", true );
 
-  // crystals??
-  setupContainer( Crystal, 11, "charaiteminventory", true );
+  for( const auto armory : { ArmoryMain, ArmoryOff, ArmoryHead, ArmoryBody, ArmoryHand, ArmoryWaist, ArmoryLegs,
+                             ArmoryFeet, ArmoryNeck, ArmoryEar, ArmoryWrist, ArmoryRing, ArmorySoulCrystal } )
+    setupContainer( armory, bagSize, "charaiteminventory", true );
 
-  // armory weapons - 0
-  setupContainer( ArmoryMain, inventorySize, "charaiteminventory", true );
+  // Retainer containers (persisted via charaiteminventory rows keyed by storageId).
+  // These are intentionally NOT broadcast in Player::sendInventory() unless explicitly requested by retainer flows.
+  for( uint16_t i = 0; i < 7; ++i )
+    setupContainer( static_cast< InventoryType >( static_cast< uint16_t >( RetainerBag0 ) + i ), bagSize, "charaiteminventory", true );
+  setupContainer( RetainerEquippedGear, gearSetSize, "charaiteminventory", true );
+  setupContainer( RetainerCrystal, currencySize, "charaiteminventory", true );
+  setupContainer( RetainerMarket, bagSize, "charaiteminventory", true );
 
-  // armory offhand - 1
-  setupContainer( ArmoryOff, inventorySize, "charaiteminventory", true );
-
-  //armory head - 2
-  setupContainer( ArmoryHead, inventorySize, "charaiteminventory", true );
-
-  //armory body - 3
-  setupContainer( ArmoryBody, inventorySize, "charaiteminventory", true );
-
-  //armory hand - 4
-  setupContainer( ArmoryHand, inventorySize, "charaiteminventory", true );
-
-  //armory waist - 5
-  setupContainer( ArmoryWaist, inventorySize, "charaiteminventory", true );
-
-  //armory legs - 6
-  setupContainer( ArmoryLegs, inventorySize, "charaiteminventory", true );
-
-  //armory feet - 7
-  setupContainer( ArmoryFeet, inventorySize, "charaiteminventory", true );
-
-  //neck
-  setupContainer( ArmoryNeck, inventorySize, "charaiteminventory", true );
-
-  //earring
-  setupContainer( ArmoryEar, inventorySize, "charaiteminventory", true );
-
-  //wrist
-  setupContainer( ArmoryWrist, inventorySize, "charaiteminventory", true );
-
-  //armory rings - 11
-  setupContainer( ArmoryRing, inventorySize, "charaiteminventory", true );
-
-  //soul crystals - 13
-  setupContainer( ArmorySoulCrystal, inventorySize, "charaiteminventory", true );
-
-  // item hand in container
-  // non-persistent container, will not save its contents
+  // Item hand-in container (non-persistent)
   setupContainer( HandIn, 10, "", true, false );
 
   loadInventory();
@@ -453,8 +436,18 @@ void Player::sendInventory()
 
   for( auto& it : m_storageMap )
   {
+    if( IsRetainerStorageId( it.first ) )
+      continue;
     invMgr.sendInventoryContainer( *this, it.second );
   }
+}
+
+ItemContainerPtr Player::getInventoryContainer( const uint16_t storageId ) const
+{
+  const auto it = m_storageMap.find( storageId );
+  if( it == m_storageMap.end() )
+    return nullptr;
+  return it->second;
 }
 
 void Player::sendGearInventory()
@@ -534,28 +527,53 @@ uint32_t Player::getCrystal( CrystalType type )
 void Player::writeInventory( InventoryType type )
 {
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+  auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
 
   auto storage = m_storageMap[ type ];
-
-  if( !storage->isPersistentStorage() )
+  if( !storage || !storage->isPersistentStorage() )
     return;
 
-  std::string query = "UPDATE " + storage->getTableName() + " SET ";
+  uint32_t ownerKey = static_cast< uint32_t >( getCharacterId() );
+  const uint16_t storageId = static_cast< uint16_t >( type );
 
-  for( int32_t i = 0; i <= storage->getMaxSize(); i++ )
+  if( IsRetainerStorageId( storageId ) )
   {
-    auto currItem = storage->getItem( i );
+    const auto activeRetainerId = retainerMgr.getActiveRetainerId( *this );
+    if( !activeRetainerId.has_value() )
+    {
+      Logger::warn( "writeInventory: retainer storageId={} but no active retainer for player {}",
+                    storageId, getId() );
+      return;
+    }
 
-    if( i > 0 )
-      query += ", ";
-
-    query += "container_" + std::to_string( i ) + " = " + std::to_string( currItem ? currItem->getUId() : 0 );
+    ownerKey = World::Manager::RetainerMgr::MakeRetainerInventoryOwnerKey( *activeRetainerId );
   }
 
-  query += " WHERE CharacterId = " + std::to_string( getCharacterId() );
-
+  // Persist via UPSERT so new storageId rows are created on-demand.
+  std::string query = "INSERT INTO " + storage->getTableName() + " ( CharacterId";
   if( storage->isMultiStorage() )
-    query += " AND storageId = " + std::to_string( static_cast< uint16_t >( type ) );
+    query += ", storageId";
+
+  for( uint16_t i = 0; i < storage->getMaxSize(); ++i )
+    query += ", container_" + std::to_string( i );
+
+  query += " ) VALUES ( " + std::to_string( ownerKey );
+  if( storage->isMultiStorage() )
+    query += ", " + std::to_string( storageId );
+
+  for( uint16_t i = 0; i < storage->getMaxSize(); ++i )
+  {
+    const auto currItem = storage->getItem( i );
+    query += ", " + std::to_string( currItem ? currItem->getUId() : 0 );
+  }
+
+  query += " ) ON DUPLICATE KEY UPDATE ";
+  for( uint16_t i = 0; i < storage->getMaxSize(); ++i )
+  {
+    if( i > 0 )
+      query += ", ";
+    query += "container_" + std::to_string( i ) + " = VALUES(container_" + std::to_string( i ) + ")";
+  }
 
   db.execute( query );
 }
@@ -790,18 +808,55 @@ bool Player::removeItem( uint32_t catalogId, uint32_t quantity, bool isHq )
 void Player::moveItem( uint16_t fromInventoryId, uint16_t fromSlotId, uint16_t toInventoryId, uint16_t toSlot )
 {
 
-  auto tmpItem = m_storageMap[ fromInventoryId ]->getItem( fromSlotId );
-  auto& itemMap = m_storageMap[ fromInventoryId ]->getItemMap();
+  const auto fromIt = m_storageMap.find( fromInventoryId );
+  if( fromIt == m_storageMap.end() || !fromIt->second )
+  {
+    Logger::warn( "moveItem: missing source container {} (slot={})", fromInventoryId, fromSlotId );
+    return;
+  }
 
-  if( tmpItem == nullptr )
+  const auto toIt = m_storageMap.find( toInventoryId );
+  if( toIt == m_storageMap.end() || !toIt->second )
+  {
+    Logger::warn( "moveItem: missing destination container {} (slot={})", toInventoryId, toSlot );
+    return;
+  }
+
+  auto& fromContainer = *fromIt->second;
+  auto& toContainerObj = *toIt->second;
+
+  if( fromSlotId >= fromContainer.getMaxSize() )
+  {
+    Logger::warn( "moveItem: source slot out of range container={} slot={} maxSize={}",
+                  fromInventoryId,
+                  fromSlotId,
+                  fromContainer.getMaxSize() );
+    return;
+  }
+
+  if( toSlot >= toContainerObj.getMaxSize() )
+  {
+    Logger::warn( "moveItem: destination slot out of range container={} slot={} maxSize={}",
+                  toInventoryId,
+                  toSlot,
+                  toContainerObj.getMaxSize() );
+    return;
+  }
+
+  auto tmpItem = fromContainer.getItem( fromSlotId );
+  if( !tmpItem )
     return;
 
-  itemMap[ fromSlotId ].reset();
+  if( toContainerObj.getItem( toSlot ) )
+  {
+    Logger::warn( "moveItem: destination slot already occupied container={} slot={}", toInventoryId, toSlot );
+    return;
+  }
 
-  m_storageMap[ toInventoryId ]->setItem( toSlot, tmpItem );
+  fromContainer.setItem( fromSlotId, nullptr );
+  toContainerObj.setItem( toSlot, tmpItem );
 
   writeInventory( static_cast< InventoryType >( toInventoryId ) );
-
   if( fromInventoryId != toInventoryId )
     writeInventory( static_cast< InventoryType >( fromInventoryId ) );
 

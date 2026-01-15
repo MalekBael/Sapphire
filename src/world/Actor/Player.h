@@ -722,6 +722,8 @@ namespace Sapphire::Entity
     ItemPtr getItemAt( uint16_t containerId, uint16_t slotId );
     bool updateContainer( uint16_t storageId, uint16_t slotId, ItemPtr pItem );
 
+    ItemContainerPtr getInventoryContainer( uint16_t storageId ) const;
+
     /*! calculate and return player ilvl based off equipped gear */
     uint16_t calculateItemLevel();
 

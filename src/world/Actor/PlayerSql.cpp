@@ -28,7 +28,7 @@ bool Player::loadFromDb( uint64_t characterId )
   m_characterId = characterId;
 
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
-  auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_SEL );  
+  auto stmt = db.getPreparedStatement( Db::ZoneDbStatements::CHARA_SEL );
 
   stmt->set( 1, characterId );
   auto res = db.query( stmt );
@@ -191,7 +191,7 @@ bool Player::loadActiveQuests()
   stmt->setUInt64( 1, m_characterId );
   auto res = db.query( stmt );
 
-  for( size_t idx = 0; idx < 30; ++ idx )
+  for( size_t idx = 0; idx < 30; ++idx )
     m_quests[ idx ] = World::Quest();
 
   while( res->next() )
@@ -209,7 +209,6 @@ bool Player::loadActiveQuests()
   }
 
   return true;
-
 }
 
 bool Player::loadAchievements()
@@ -227,12 +226,10 @@ bool Player::loadAchievements()
     auto history = res->getBlobVector( "HistoryList" );
 
     // todo: throw this in util (used in LS etc)
-    auto func = []( std::unordered_map< uint32_t, uint32_t >& outData, std::vector< char >& inData )
-    {
+    auto func = []( std::unordered_map< uint32_t, uint32_t >& outData, std::vector< char >& inData ) {
       if( !inData.empty() )
       {
         size_t entryCount = inData.size() / sizeof( uint32_t );
-        
 
         for( auto i = 0; i < entryCount; ++i )
         {
@@ -246,7 +243,7 @@ bool Player::loadAchievements()
 
     std::unordered_map< uint32_t, uint32_t > progressMap;
     func( progressMap, progressData );
-    
+
     memcpy( reinterpret_cast< char* >( m_achievementData.unlockList.data() ), unlock.data(), unlock.size() );
     m_achievementData.progressData = progressMap;
     memcpy( reinterpret_cast< char* >( m_achievementData.history.data() ), history.data(), history.size() );
@@ -320,8 +317,8 @@ bool Player::loadHuntingLog()
   {
     std::string catStr = fmt::format( "Category_{}", i );
     auto cat = res->getBlobVector( catStr );
-    m_huntingLogEntries[i].rank = cat[0];
-    memcpy( reinterpret_cast< char* >( m_huntingLogEntries[i].entries ), cat.data() + 1, cat.size() - 1 );
+    m_huntingLogEntries[ i ].rank = cat[ 0 ];
+    memcpy( reinterpret_cast< char* >( m_huntingLogEntries[ i ].entries ), cat.data() + 1, cat.size() - 1 );
   }
   return true;
 }
@@ -375,10 +372,10 @@ void Player::updateDbChara() const
   stmt->setInt( 1, getHp() );
   stmt->setInt( 2, getMp() );
   stmt->setInt( 3, getTp() ); // TP
-  stmt->setInt( 4, 0 ); // GP
-  stmt->setInt( 5, 0 ); // Mode
-  stmt->setUInt( 6, m_mount ); // Mount
-  stmt->setInt( 7, 0 ); // InvicibleGM
+  stmt->setInt( 4, 0 );       // GP
+  stmt->setInt( 5, 0 );       // Mode
+  stmt->setUInt( 6, m_mount );// Mount
+  stmt->setInt( 7, 0 );       // InvicibleGM
   stmt->setInt( 8, m_voice );
 
   std::vector< uint8_t > customVec( sizeof( m_customize ) );
@@ -393,21 +390,21 @@ void Player::updateDbChara() const
   memcpy( modelVec.data(), m_modelEquip, sizeof( m_modelEquip ) );
   stmt->setBinary( 13, modelVec );
 
-  stmt->setInt( 14, m_emoteMode ); // EmodeModeType
-  stmt->setInt( 15, 0 ); // Language
+  stmt->setInt( 14, m_emoteMode );// EmodeModeType
+  stmt->setInt( 15, 0 );          // Language
 
   stmt->setInt( 16, static_cast< uint32_t >( m_bNewGame ) );
   stmt->setInt( 17, static_cast< uint32_t >( m_bNewAdventurer ) );
 
-  stmt->setInt( 18, m_territoryTypeId ); // TerritoryType
-  stmt->setInt( 19, m_territoryId ); // TerritoryId
+  stmt->setInt( 18, m_territoryTypeId );// TerritoryType
+  stmt->setInt( 19, m_territoryId );    // TerritoryId
   stmt->setDouble( 20, m_pos.x );
   stmt->setDouble( 21, m_pos.y );
   stmt->setDouble( 22, m_pos.z );
   stmt->setDouble( 23, getRot() );
 
-  stmt->setInt( 24, m_prevTerritoryTypeId ); // OTerritoryType
-  stmt->setInt( 25, m_prevTerritoryId ); // OTerritoryId
+  stmt->setInt( 24, m_prevTerritoryTypeId );// OTerritoryType
+  stmt->setInt( 25, m_prevTerritoryId );    // OTerritoryId
   stmt->setDouble( 26, m_prevPos.x );
   stmt->setDouble( 27, m_prevPos.y );
   stmt->setDouble( 28, m_prevPos.z );
@@ -418,8 +415,8 @@ void Player::updateDbChara() const
   stmt->setInt( 32, m_playTime );
   stmt->setInt( 33, m_homePoint );
 
-  stmt->setBinary( 34, { 0, 0, 0 } ); // FavoritePoint
-  stmt->setInt( 35, 0 ); // RestPoint
+  stmt->setBinary( 34, { 0, 0, 0 } );// FavoritePoint
+  stmt->setInt( 35, 0 );             // RestPoint
   stmt->setInt( 36, m_activeTitle ); // ActiveTitle
 
   std::vector< uint8_t > titleListVec( sizeof( m_titleList ) );
@@ -446,9 +443,9 @@ void Player::updateDbChara() const
   memcpy( orchestrionVec.data(), m_orchestrion.data(), m_orchestrion.size() );
   stmt->setBinary( 42, orchestrionVec );
 
-  stmt->setInt( 43, m_equippedMannequin ); // EquippedMannequin
+  stmt->setInt( 43, m_equippedMannequin );// EquippedMannequin
 
-  stmt->setInt( 44, 0 ); // DisplayFlags
+  stmt->setInt( 44, 0 );// DisplayFlags
   std::vector< uint8_t > questCompleteVec( m_questCompleteFlags.size() );
   memcpy( questCompleteVec.data(), m_questCompleteFlags.data(), m_questCompleteFlags.size() );
   stmt->setBinary( 45, questCompleteVec );
@@ -459,7 +456,7 @@ void Player::updateDbChara() const
   memcpy( questTrackerVec.data(), m_questTracking.data(), sizeof( m_questTracking ) );
   stmt->setBinary( 47, questTrackerVec );
 
-  stmt->setInt( 48, m_gc ); // DisplayFlags
+  stmt->setInt( 48, m_gc );// DisplayFlags
 
   stmt->setBinary( 49, { m_gcRank[ 0 ], m_gcRank[ 1 ], m_gcRank[ 2 ] } );
 
@@ -488,7 +485,7 @@ void Player::updateDbClass() const
 {
   auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
   auto& exdData = Common::Service< Data::ExdData >::ref();
-  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast<uint8_t>( getClass() ) )->data().WorkIndex;
+  uint8_t classJobIndex = exdData.getRow< Excel::ClassJob >( static_cast< uint8_t >( getClass() ) )->data().WorkIndex;
   auto& borrowAction = m_borrowActions[ classJobIndex ];
 
   //Exp = ?, Lvl = ?, BorrowAction = ? WHERE CharacterId = ? AND ClassIdx = ?
@@ -641,7 +638,6 @@ void Player::updateDbAllQuests() const
     stmtS3->setUInt64( 10, m_characterId );
     stmtS3->setInt( 11, m_quests[ i ].getId() );
     db.execute( stmtS3 );
-
   }
 }
 
@@ -710,11 +706,11 @@ ItemPtr Player::createItem( uint32_t catalogId, uint32_t quantity )
   pItem->setStackSize( quantity );
 
   db.execute( "INSERT INTO charaglobalitem ( CharacterId, itemId, catalogId, stack, flags ) VALUES ( " +
-               std::to_string( m_characterId ) + ", " +
-               std::to_string( pItem->getUId() ) + ", " +
-               std::to_string( pItem->getId() ) + ", " +
-               std::to_string( quantity ) + ", " +
-               std::to_string( flags ) + ");" );
+              std::to_string( m_characterId ) + ", " +
+              std::to_string( pItem->getUId() ) + ", " +
+              std::to_string( pItem->getId() ) + ", " +
+              std::to_string( quantity ) + ", " +
+              std::to_string( flags ) + ");" );
 
   return pItem;
 }
@@ -726,12 +722,13 @@ bool Player::loadInventory()
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   // load active gearset
   auto res = db.query( "SELECT storageId, container_0, container_1, container_2, container_3, "
-                         "container_4, container_5, container_6, container_7, "
-                         "container_8, container_9, container_10, container_11, "
-                         "container_12, container_13 "
-                         "FROM charaitemgearset " \
-                               "WHERE CharacterId =  " + std::to_string( m_characterId ) + " " \
-                               "ORDER BY storageId ASC;" );
+                       "container_4, container_5, container_6, container_7, "
+                       "container_8, container_9, container_10, container_11, "
+                       "container_12, container_13 "
+                       "FROM charaitemgearset "
+                       "WHERE CharacterId =  " +
+                       std::to_string( m_characterId ) + " "
+                                                         "ORDER BY storageId ASC;" );
 
   while( res->next() )
   {
@@ -756,20 +753,27 @@ bool Player::loadInventory()
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Load everything
   auto bagRes = db.query( "SELECT storageId, "
-                            "container_0, container_1, container_2, container_3, container_4, "
-                            "container_5, container_6, container_7, container_8, container_9, "
-                            "container_10, container_11, container_12, container_13, container_14, "
-                            "container_15, container_16, container_17, container_18, container_19, "
-                            "container_20, container_21, container_22, container_23, container_24, "
-                            "container_25, container_26, container_27, container_28, container_29, "
-                            "container_30, container_31, container_32, container_33, container_34 "
-                            "FROM charaiteminventory " \
-                                  "WHERE CharacterId =  " + std::to_string( m_characterId ) + " " \
-                                  "ORDER BY storageId ASC;" );
+                          "container_0, container_1, container_2, container_3, container_4, "
+                          "container_5, container_6, container_7, container_8, container_9, "
+                          "container_10, container_11, container_12, container_13, container_14, "
+                          "container_15, container_16, container_17, container_18, container_19, "
+                          "container_20, container_21, container_22, container_23, container_24, "
+                          "container_25, container_26, container_27, container_28, container_29, "
+                          "container_30, container_31, container_32, container_33, container_34 "
+                          "FROM charaiteminventory "
+                          "WHERE CharacterId =  " +
+                          std::to_string( m_characterId ) + " "
+                                                            "ORDER BY storageId ASC;" );
 
   while( bagRes->next() )
   {
     uint16_t storageId = bagRes->getUInt16( 1 );
+
+    const bool isRetainerStorageId = storageId >= static_cast< uint16_t >( Common::InventoryType::RetainerBag0 ) &&
+                                     storageId <= static_cast< uint16_t >( Common::InventoryType::RetainerMarket );
+    if( isRetainerStorageId )
+      continue;
+
     for( uint32_t i = 1; i <= m_storageMap[ storageId ]->getMaxSize(); i++ )
     {
       uint64_t uItemId = bagRes->getUInt64( i + 1 );
@@ -785,15 +789,16 @@ bool Player::loadInventory()
     }
   }
 
-  auto currencyRes = db.query(fmt::format("SELECT storageId, "
-    "container_0, container_1, container_2, container_3, container_4, "
-    "container_5, container_6, container_7, container_8, container_9, "
-    "container_10, container_11 "
-    "FROM charaitemcurrency " \
-    "WHERE CharacterId = {0} " \
-    "ORDER BY storageId ASC;", std::to_string(m_characterId)));
+  auto currencyRes = db.query( fmt::format( "SELECT storageId, "
+                                            "container_0, container_1, container_2, container_3, container_4, "
+                                            "container_5, container_6, container_7, container_8, container_9, "
+                                            "container_10, container_11 "
+                                            "FROM charaitemcurrency "
+                                            "WHERE CharacterId = {0} "
+                                            "ORDER BY storageId ASC;",
+                                            std::to_string( m_characterId ) ) );
 
-  while ( currencyRes->next() )
+  while( currencyRes->next() )
   {
     uint16_t storageId = currencyRes->getUInt16( 1 );
     for( uint32_t i = 1; i <= m_storageMap[ storageId ]->getMaxSize(); i++ )

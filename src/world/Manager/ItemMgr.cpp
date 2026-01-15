@@ -12,19 +12,18 @@ using namespace Sapphire::World::Manager;
 
 bool ItemMgr::isArmory( uint16_t containerId )
 {
-  return
-    containerId == Common::ArmoryBody ||
-    containerId == Common::ArmoryEar ||
-    containerId == Common::ArmoryFeet ||
-    containerId == Common::ArmoryHand ||
-    containerId == Common::ArmoryHead ||
-    containerId == Common::ArmoryLegs ||
-    containerId == Common::ArmoryMain ||
-    containerId == Common::ArmoryOff ||
-    containerId == Common::ArmoryRing ||
-    containerId == Common::ArmoryWaist ||
-    containerId == Common::ArmoryWrist ||
-    containerId == Common::ArmorySoulCrystal;
+  return containerId == Common::ArmoryBody ||
+         containerId == Common::ArmoryEar ||
+         containerId == Common::ArmoryFeet ||
+         containerId == Common::ArmoryHand ||
+         containerId == Common::ArmoryHead ||
+         containerId == Common::ArmoryLegs ||
+         containerId == Common::ArmoryMain ||
+         containerId == Common::ArmoryOff ||
+         containerId == Common::ArmoryRing ||
+         containerId == Common::ArmoryWaist ||
+         containerId == Common::ArmoryWrist ||
+         containerId == Common::ArmorySoulCrystal;
 }
 
 
@@ -146,8 +145,7 @@ ItemPtr ItemMgr::loadItem( uint64_t uId )
     pItem->setGlamModelIds();
 
     return pItem;
-  }
-  catch( ... )
+  } catch( ... )
   {
     return nullptr;
   }
@@ -157,6 +155,12 @@ ItemPtr ItemMgr::loadItem( uint64_t uId )
 Common::ContainerType ItemMgr::getContainerType( uint32_t containerId )
 {
   if( containerId < 5 )
+  {
+    return Common::Bag;
+  }
+  // Retainer inventories are addressed via high storage IDs but behave like bag containers
+  // from the player's perspective (no equip/unequip side effects).
+  else if( containerId >= Common::InventoryType::RetainerBag0 && containerId <= Common::InventoryType::RetainerMarket )
   {
     return Common::Bag;
   }

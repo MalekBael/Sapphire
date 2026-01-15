@@ -96,6 +96,11 @@ namespace Sapphire::World::Manager
      */
     bool init();
 
+    // Retainer inventories are stored separately from player inventories.
+    // We currently reuse the charaiteminventory schema but key rows by a synthetic owner id
+    // derived from RetainerId, so multiple retainers under one player do not share storage.
+    static uint32_t MakeRetainerInventoryOwnerKey( uint64_t retainerId );
+
     // ========== Retainer CRUD Operations ==========
 
     /**
@@ -439,6 +444,9 @@ namespace Sapphire::World::Manager
 
     mutable std::mutex m_activeRetainerMutex;
     std::unordered_map< uint32_t, uint64_t > m_activeRetainerByPlayer;
+
+    mutable std::mutex m_loadedRetainerMutex;
+    std::unordered_map< uint32_t, uint64_t > m_loadedRetainerInventoryByPlayer;
   };
 
 }// namespace Sapphire::World::Manager

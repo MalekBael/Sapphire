@@ -13,12 +13,130 @@
 #include <cmath>
 
 #include "Actor/Player.h"
+#include "Inventory/ItemContainer.h"
+#include "Manager/InventoryMgr.h"
+#include "Manager/ItemMgr.h"
 #include "Network/GameConnection.h"
 #include "WorldServer.h"
 
 using namespace Sapphire;
 using namespace Sapphire::World::Manager;
 using namespace Sapphire::Network::Packets;
+
+namespace
+{
+  bool IsRetainerStorageId( const uint16_t storageId )
+  {
+    return storageId >= static_cast< uint16_t >( Common::InventoryType::RetainerBag0 ) &&
+           storageId <= static_cast< uint16_t >( Common::InventoryType::RetainerMarket );
+  }
+}// namespace
+
+uint32_t RetainerMgr::MakeRetainerInventoryOwnerKey( const uint64_t retainerId )
+{
+  // Keep retainer inventory rows out of the normal CharacterId namespace.
+  // We only need per-retainer uniqueness for storage persistence.
+  // Mask to 31 bits to keep it in-range for typical INT columns.
+  return 0x40000000u | static_cast< uint32_t >( retainerId & 0x3FFFFFFFu );
+}
+
+static void ClearContainerItems( const ItemContainerPtr& container )
+{
+  if( !container )
+    return;
+  // Important: clear the map entirely.
+  // Resetting shared_ptrs leaves null entries behind, which can confuse
+  // code paths that rely on getEntryCount()/map size for UI refresh logic.
+  container->getItemMap().clear();
+}
+
+static void ClearRetainerContainers( Entity::Player& player )
+{
+  for( uint16_t i = 0; i < 7; ++i )
+    ClearContainerItems( player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerBag0 ) + i ) );
+
+  ClearContainerItems( player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerEquippedGear ) ) );
+  ClearContainerItems( player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerCrystal ) ) );
+  ClearContainerItems( player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerMarket ) ) );
+}
+
+static void LoadRetainerContainersFromDb( Entity::Player& player, const uint64_t retainerId )
+{
+  auto& itemMgr = Common::Service< World::Manager::ItemMgr >::ref();
+  auto& db = Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::ref();
+
+  const uint32_t ownerKey = RetainerMgr::MakeRetainerInventoryOwnerKey( retainerId );
+
+  const std::string query =
+          "SELECT storageId, "
+          "container_0, "
+          "container_1, "
+          "container_2, "
+          "container_3, "
+          "container_4, "
+          "container_5, "
+          "container_6, "
+          "container_7, "
+          "container_8, "
+          "container_9, "
+          "container_10, "
+          "container_11, "
+          "container_12, "
+          "container_13, "
+          "container_14, "
+          "container_15, "
+          "container_16, "
+          "container_17, "
+          "container_18, "
+          "container_19, "
+          "container_20, "
+          "container_21, "
+          "container_22, "
+          "container_23, "
+          "container_24, "
+          "container_25, "
+          "container_26, "
+          "container_27, "
+          "container_28, "
+          "container_29, "
+          "container_30, "
+          "container_31, "
+          "container_32, "
+          "container_33, "
+          "container_34 "
+          "FROM charaiteminventory WHERE CharacterId = " +
+          std::to_string( ownerKey ) +
+          " ORDER BY storageId ASC;";
+
+  auto res = db.query( query );
+
+  while( res->next() )
+  {
+    const uint16_t storageId = res->getUInt16( 1 );
+    if( !IsRetainerStorageId( storageId ) )
+      continue;
+
+    auto container = player.getInventoryContainer( storageId );
+    if( !container )
+      continue;
+
+    uint32_t loadedCount = 0;
+
+    for( uint32_t i = 1; i <= container->getMaxSize(); ++i )
+    {
+      const uint64_t uItemId = res->getUInt64( i + 1 );
+      if( uItemId == 0 )
+        continue;
+
+      ItemPtr item = itemMgr.loadItem( uItemId );
+      if( !item )
+        continue;
+
+      container->getItemMap()[ i - 1 ] = item;
+      ++loadedCount;
+    }
+  }
+}
 
 bool RetainerMgr::init()
 {
@@ -492,10 +610,7 @@ RetainerError RetainerMgr::adjustPrice( Entity::Player& player, uint64_t retaine
 
 void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
 {
-  Logger::info( "RetainerMgr::sendRetainerList called for player {}", player.getId() );
-
   const auto retainers = getRetainers( player );
-  Logger::info( "RetainerMgr: getRetainers returned {} retainers", retainers.size() );
 
   auto& server = Common::Service< World::WorldServer >::ref();
   const uint8_t maxSlots = getMaxRetainerSlots( player );
@@ -556,16 +671,12 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
 
       std::strncpy( info.name, r->name.c_str(), 31 );
       info.name[ 31 ] = '\0';
-
-      Logger::debug( "RetainerMgr: Slot {} - '{}' (retainerId: {}, classJob: {}, tail32: {:08X})",
-                     slot, r->name, r->retainerId, static_cast< int >( info.classJob ), info.tail32 );
     }
     else
     {
       info.retainerId = 0;
       info.activeFlag = 0;
       info.unknown4 = 0;
-      Logger::debug( "RetainerMgr: Slot {} - empty (retainerId: 0)", slot );
     }
 
     server.queueForPlayer( player.getCharacterId(), infoPacket );
@@ -582,17 +693,12 @@ void RetainerMgr::sendRetainerList( Entity::Player& player, uint32_t handlerId )
   listData.retainerCount = availableSlots;
   listData.padding = 0;
 
-  Logger::debug( "RetainerMgr: Sending RetainerList - maxSlots: {}, availableSlots: {} (employed: {})",
-                 maxSlots, availableSlots, employedCount );
   server.queueForPlayer( player.getCharacterId(), listPacket );
 
   // Step 3: Send 0x01EF IsMarket so the client enables market-related retainer options.
   // Retail capture shows this packet sent twice back-to-back.
   sendIsMarket( player );
   sendIsMarket( player );
-
-  Logger::info( "RetainerMgr: Sent 8x RetainerData + 1x RetainerList + 2x IsMarket (employed: {}, maxSlots: {})",
-                employedCount, maxSlots );
 }
 
 void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId,
@@ -642,9 +748,6 @@ void RetainerMgr::sendRetainerInfo( Entity::Player& player, uint64_t retainerId,
 
   // Also provide IsMarket state during direct retainer interactions.
   sendIsMarket( player );
-
-  Logger::info( "RetainerMgr: Sent RetainerInfo for '{}' (classJob={}) + IsMarket to player {}",
-                retainer->name, static_cast< int >( data.classJob ), player.getId() );
 }
 
 void RetainerMgr::sendIsMarket( Entity::Player& player, uint32_t marketContext, uint32_t isMarket )
@@ -661,20 +764,12 @@ void RetainerMgr::sendIsMarket( Entity::Player& player, uint32_t marketContext, 
 
 void RetainerMgr::sendRetainerInventory( Entity::Player& player, uint64_t retainerId )
 {
-  Logger::info( "RetainerMgr::sendRetainerInventory - Called for retainerId {} player {}", retainerId, player.getId() );
-
   // Track the currently open retainer so inventory operations (e.g., gil transfer)
   // can resolve RetainerGil(12000) updates to a concrete retainerId.
   setActiveRetainer( player, retainerId );
 
-  if( const auto* soldItems = player.getSoldItems() )
-  {
-    Logger::debug( "RetainerMgr::sendRetainerInventory - player {} soldItemsCount={} (buyback diagnostic)",
-                   player.getId(), soldItems->size() );
-  }
-
-  // Send player's full inventory (including gil in Currency container) so the client
-  // has the player's gil cached when opening the gil transfer UI.
+  // Send player's inventory first so the client has player gil cached.
+  // (Player::sendInventory() intentionally skips retainer storages.)
   player.sendInventory();
 
   const auto retainerOpt = getRetainer( retainerId );
@@ -685,51 +780,55 @@ void RetainerMgr::sendRetainerInventory( Entity::Player& player, uint64_t retain
   }
 
   const auto& retainer = *retainerOpt;
-  Logger::info( "RetainerMgr::sendRetainerInventory - Found retainer '{}' with {} gil", retainer.name, retainer.gil );
+
+  // Ensure the player's retainer containers reflect the currently selected retainer.
+  // Avoid reloading on repeated scene yields while the same retainer UI is open.
+  {
+    std::scoped_lock lock( m_loadedRetainerMutex );
+    const auto it = m_loadedRetainerInventoryByPlayer.find( player.getId() );
+    const bool needsLoad = it == m_loadedRetainerInventoryByPlayer.end() || it->second != retainerId;
+    if( needsLoad )
+    {
+      ClearRetainerContainers( player );
+      LoadRetainerContainersFromDb( player, retainerId );
+      m_loadedRetainerInventoryByPlayer[ player.getId() ] = retainerId;
+    }
+  }
 
   auto& server = Common::Service< World::WorldServer >::ref();
+  auto& invMgr = Common::Service< InventoryMgr >::ref();
 
   // Retail sends 0x010B early in the retainer inventory/gil flow.
   sendMarketRetainerUpdate( player, retainer );
 
-  Logger::info( "RetainerMgr::sendRetainerInventory - Sending inventory packets (no ItemStorage - following retail)" );
-
   // ============================================================================
   // RETAIL PACKET ANALYSIS (3.35 capture - retainer_summon_gil_view_class.xml):
-  // Retail does NOT send ItemStorage (0x01AE) packets for retainer containers!
-  // It only sends: GilItem/NormalItem + ItemSize directly.
-  //
-  // The client appears to handle container initialization implicitly when
-  // receiving item data packets with a storageId it hasn't seen before.
+  // Retail does NOT send ItemStorage (0x01AE) for retainer containers.
+  // It sends: GilItem/NormalItem + ItemSize.
   // ============================================================================
 
-  // ============================================================================
-  // RETAIL DISCOVERY: The client uses ItemSize.unknown1 to determine the player's
-  // gil amount for the RetainerBag(2) gil transfer UI. This field must contain
-  // the player's current gil in ALL retainer container ItemSize packets!
-  // ============================================================================
   const uint32_t playerGil = player.getCurrency( Common::CurrencyType::Gil );
 
-  // ============================================================================
-  // Send retainer's gil (container ID 12000)
-  //
-  // RETAIL PACKET ANALYSIS (3.35 capture):
-  // Retail does NOT send ItemStorage (0x01AE) for RetainerGil containers!
-  // It only sends: GilItem (0x01B3) + ItemSize (0x01B0) directly.
-  //
-  // From capture: GilItem contextId=0x1ae5, storageId=12000, stack=0, subquarity=3, catalogId=1
-  //               ItemSize contextId=0x1ae5, size=1, storageId=12000, unknown1=playerGil
-  // ============================================================================
-
-  // Send retainer bag containers (10000-10006) FIRST - matching retail order
-  for( int i = 0; i < 7; ++i )
+  // Send retainer bag containers (10000-10006) FIRST - matching retail order.
+  // Important: sending size=0 here will cause the client to CLEAR its local view,
+  // which looks like entrusted items "disappearing" when the UI refreshes.
+  for( uint16_t i = 0; i < 7; ++i )
   {
-    auto bagSequence = player.getNextInventorySequence();
+    const uint16_t storageId = static_cast< uint16_t >( Common::InventoryType::RetainerBag0 ) + i;
+    if( auto container = player.getInventoryContainer( storageId ) )
+    {
+      invMgr.sendInventoryContainer( player, container );
+      continue;
+    }
 
+    Logger::warn( "RetainerMgr::sendRetainerInventory - Missing retainer bag container storageId={} for player {}",
+                  storageId, player.getId() );
+
+    auto seq = player.getNextInventorySequence();
     auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
-    sizePacket->data().contextId = bagSequence;
-    sizePacket->data().size = 0;// Empty bag (TODO: send actual items when implemented)
-    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerBag0 ) + i;
+    sizePacket->data().contextId = seq;
+    sizePacket->data().size = 0;
+    sizePacket->data().storageId = storageId;
     sizePacket->data().unknown1 = playerGil;
     server.queueForPlayer( player.getCharacterId(), sizePacket );
   }
@@ -756,53 +855,36 @@ void RetainerMgr::sendRetainerInventory( Entity::Player& player, uint64_t retain
     sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerGil );
     sizePacket->data().unknown1 = playerGil;
     server.queueForPlayer( player.getCharacterId(), sizePacket );
-
-    Logger::info( "  -> RetainerGil(12000): contextId={} retainerGil={} playerGil={}",
-                  gilSequence, retainer.gil, playerGil );
   }
 
-  // Send retainer crystals (container ID 12001)
+  // Retainer crystals (12001)
+  if( auto container = player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerCrystal ) ) )
+    invMgr.sendInventoryContainer( player, container );
+
+  // Retainer market listings (12002)
   {
-    auto crystalSequence = player.getNextInventorySequence();
+    const uint32_t marketSequence = player.getNextInventorySequence();
 
-    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
-    sizePacket->data().contextId = crystalSequence;
-    sizePacket->data().size = 0;// No crystals
-    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerCrystal );
-    sizePacket->data().unknown1 = playerGil;
-    server.queueForPlayer( player.getCharacterId(), sizePacket );
-  }
-
-  // Send retainer market listings (container ID 12002)
-  {
-    auto marketSequence = player.getNextInventorySequence();
-
-    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
-    sizePacket->data().contextId = marketSequence;
-    sizePacket->data().size = 0;// No market listings
-    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerMarket );
-    sizePacket->data().unknown1 = playerGil;
-    server.queueForPlayer( player.getCharacterId(), sizePacket );
+    if( auto container = player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerMarket ) ) )
+      invMgr.sendInventoryContainer( player, container );
+    else
+    {
+      auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
+      sizePacket->data().contextId = marketSequence;
+      sizePacket->data().size = 0;
+      sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerMarket );
+      sizePacket->data().unknown1 = playerGil;
+      server.queueForPlayer( player.getCharacterId(), sizePacket );
+    }
 
     // Retail sends a burst of 0x01AD entries followed by a 0x01AC header.
     // This appears to prime the market-related retainer UI paths even when empty.
     sendMarketPriceSnapshot( player, marketSequence );
   }
 
-  // Send retainer equipped gear (container ID 11000)
-  {
-    auto gearSequence = player.getNextInventorySequence();
-
-    auto sizePacket = makeZonePacket< WorldPackets::Server::FFXIVIpcItemSize >( player.getId() );
-    sizePacket->data().contextId = gearSequence;
-    sizePacket->data().size = 0;// No equipped gear
-    sizePacket->data().storageId = static_cast< uint32_t >( Common::InventoryType::RetainerEquippedGear );
-    sizePacket->data().unknown1 = playerGil;
-    server.queueForPlayer( player.getCharacterId(), sizePacket );
-  }
-
-  Logger::debug( "RetainerMgr::sendRetainerInventory - Sent inventory for retainer {} (retainerGil: {}, playerGil: {})",
-                 retainerId, retainer.gil, playerGil );
+  // Retainer equipped gear (11000)
+  if( auto container = player.getInventoryContainer( static_cast< uint16_t >( Common::InventoryType::RetainerEquippedGear ) ) )
+    invMgr.sendInventoryContainer( player, container );
 }
 
 void RetainerMgr::setActiveRetainer( Entity::Player& player, uint64_t retainerId )
@@ -813,8 +895,17 @@ void RetainerMgr::setActiveRetainer( Entity::Player& player, uint64_t retainerId
 
 void RetainerMgr::clearActiveRetainer( Entity::Player& player )
 {
-  std::scoped_lock lock( m_activeRetainerMutex );
-  m_activeRetainerByPlayer.erase( player.getId() );
+  // When the retainer UI closes, drop both the active retainer context and any
+  // cached "loaded retainer" marker so the next open always reloads from DB.
+  {
+    std::scoped_lock lock( m_activeRetainerMutex );
+    m_activeRetainerByPlayer.erase( player.getId() );
+  }
+
+  {
+    std::scoped_lock lock( m_loadedRetainerMutex );
+    m_loadedRetainerInventoryByPlayer.erase( player.getId() );
+  }
 }
 
 std::optional< uint64_t > RetainerMgr::getActiveRetainerId( const Entity::Player& player ) const
