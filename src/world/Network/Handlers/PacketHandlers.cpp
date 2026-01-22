@@ -672,16 +672,10 @@ void Sapphire::Network::GameConnection::requestRetainerDataHandler( const Sapphi
 void Sapphire::Network::GameConnection::getRetainerListHandler( const Sapphire::Network::Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
   // Client sends GetRetainerList (0x0106) when opening retainer gil/inventory screens
-  // Response includes retainer list + player's full inventory (for gil transfer UI)
   Logger::debug( "GetRetainerList (0x0106) received from player {}", player.getId() );
 
   auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-  retainerMgr.sendRetainerList( player );
 
-  // Also send the player's inventory so the client has the player's gil cached
-  // for the gil transfer UI (RetainerBag mode 2)
-  player.sendInventory();
-
-  // Retail additionally sends a GetRetainerListResult (0x0106) server IPC.
+  // Retail sends a GetRetainerListResult (0x0106) server IPC in response.
   retainerMgr.sendGetRetainerListResult( player );
 }

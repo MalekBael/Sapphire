@@ -195,7 +195,8 @@ void Sapphire::Network::GameConnection::returnEventSceneHeader( const Packets::F
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventSceneHeader >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -208,7 +209,8 @@ void Sapphire::Network::GameConnection::returnEventScene2( const Packets::FFXIVA
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene2 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -221,7 +223,8 @@ void Sapphire::Network::GameConnection::returnEventScene4( const Packets::FFXIVA
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene4 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -234,7 +237,8 @@ void Sapphire::Network::GameConnection::returnEventScene8( const Packets::FFXIVA
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene8 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -247,7 +251,8 @@ void Sapphire::Network::GameConnection::returnEventScene16( const Packets::FFXIV
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene16 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -260,7 +265,8 @@ void Sapphire::Network::GameConnection::returnEventScene32( const Packets::FFXIV
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene32 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -273,7 +279,8 @@ void Sapphire::Network::GameConnection::returnEventScene64( const Packets::FFXIV
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene64 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -286,7 +293,8 @@ void Sapphire::Network::GameConnection::returnEventScene128( const Packets::FFXI
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene128 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -299,7 +307,8 @@ void Sapphire::Network::GameConnection::returnEventScene255( const Packets::FFXI
   const auto packet = ZoneChannelPacket< FFXIVIpcReturnEventScene255 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleReturnEventScene( player, data.handlerId, data.sceneId, data.errorCode, data.numOfResults, results );
 }
@@ -312,7 +321,8 @@ void Sapphire::Network::GameConnection::yieldEventSceneHeader( const Packets::FF
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventSceneHeader >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -325,7 +335,8 @@ void Sapphire::Network::GameConnection::yieldEventScene2( const Packets::FFXIVAR
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene2 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -338,7 +349,8 @@ void Sapphire::Network::GameConnection::yieldEventScene4( const Packets::FFXIVAR
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene4 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -351,7 +363,8 @@ void Sapphire::Network::GameConnection::yieldEventScene8( const Packets::FFXIVAR
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene8 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -364,7 +377,8 @@ void Sapphire::Network::GameConnection::yieldEventScene16( const Packets::FFXIVA
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene16 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -377,7 +391,8 @@ void Sapphire::Network::GameConnection::yieldEventScene32( const Packets::FFXIVA
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene32 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -390,7 +405,8 @@ void Sapphire::Network::GameConnection::yieldEventScene64( const Packets::FFXIVA
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene64 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -403,7 +419,8 @@ void Sapphire::Network::GameConnection::yieldEventScene128( const Packets::FFXIV
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene128 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -416,7 +433,8 @@ void Sapphire::Network::GameConnection::yieldEventScene255( const Packets::FFXIV
   const auto packet = ZoneChannelPacket< FFXIVIpcYieldEventScene255 >( inPacket );
   const auto& data = packet.data();
 
-  std::vector< uint32_t > results( std::begin( data.results ), std::end( data.results ) );
+  const size_t resultCount = ( std::min )( static_cast< size_t >( data.numOfResults ), std::size( data.results ) );
+  std::vector< uint32_t > results( std::begin( data.results ), std::begin( data.results ) + resultCount );
 
   eventMgr.handleYieldEventScene( player, data.handlerId, data.sceneId, data.yieldId, data.numOfResults, results );
 }
@@ -428,7 +446,7 @@ void Sapphire::Network::GameConnection::yieldEventString( const Packets::FFXIVAR
 
   std::string inString;
 
-  uint16_t type = *( ( uint16_t * ) ( &inPacket.data[ 2 ] ) );
+  uint16_t type = *( ( uint16_t* ) ( &inPacket.data[ 2 ] ) );
   switch( type )
   {
     case Packets::WorldPackets::Client::ClientZoneIpcType::YieldEventSceneString8:
@@ -458,8 +476,8 @@ void Sapphire::Network::GameConnection::yieldEventString( const Packets::FFXIVAR
   if( data.handlerId == 0x000B0009 )
   {
     World::Manager::PlayerMgr::sendUrgent( player,
-      "[RetainerDesk][YieldString] scene={} yieldId={} str='{}'",
-      data.sceneId, data.yieldId, inString );
+                                           "[RetainerDesk][YieldString] scene={} yieldId={} str='{}'",
+                                           data.sceneId, data.yieldId, inString );
     Logger::debug( "[RetainerDesk][YieldString] scene={} yieldId={} str='{}'", data.sceneId, data.yieldId, inString );
   }
 
@@ -482,8 +500,8 @@ void Sapphire::Network::GameConnection::yieldEventSceneIntAndString( const Packe
     const uint32_t low32 = static_cast< uint32_t >( data.integer & 0xFFFFFFFFull );
     const uint32_t high32 = static_cast< uint32_t >( ( data.integer >> 32 ) & 0xFFFFFFFFull );
     World::Manager::PlayerMgr::sendUrgent( player,
-      "[RetainerDesk][YieldIntStr] scene={} yieldId={} int=0x{:016X} (lo={} hi={}) str='{}'",
-      data.sceneId, data.yieldId, static_cast< uint64_t >( data.integer ), low32, high32, inString );
+                                           "[RetainerDesk][YieldIntStr] scene={} yieldId={} int=0x{:016X} (lo={} hi={}) str='{}'",
+                                           data.sceneId, data.yieldId, static_cast< uint64_t >( data.integer ), low32, high32, inString );
     Logger::debug( "[RetainerDesk][YieldIntStr] scene={} yieldId={} int=0x{:016X} (lo={} hi={}) str='{}'",
                    data.sceneId, data.yieldId, static_cast< uint64_t >( data.integer ), low32, high32, inString );
   }

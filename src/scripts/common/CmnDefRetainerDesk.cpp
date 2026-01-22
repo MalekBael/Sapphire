@@ -45,6 +45,14 @@ private:
   uint8_t m_selectedRetainerIndex{ 0 };
   uint64_t m_selectedRetainerId{ 0 };
 
+  void finishEvent( Entity::Player& player )
+  {
+    // RetainerDesk is the vocate NPC (hire/release/market registration), not an active
+    // retainer session like the summoning bell. Ending the event should not emit the
+    // RetainerCall-style session close burst.
+    eventMgr().eventFinish( player, getId(), 1 );
+  }
+
 public:
   CmnDefRetainerDesk()
       : Sapphire::ScriptAPI::EventScript( 720905 )
@@ -68,12 +76,9 @@ public:
 
     if( sceneId == 0 && yieldId == 37 )
     {
-      // Client is requesting retainer list/menu data; send the list packet now so it is fresh.
-      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-      retainerMgr.sendRetainerList( player );
-
       // Scene 0, yieldId 37: Get retainer list data
       // Returns: maxRetainers, currentRetainerCount (Lua expects max first)
+      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
       uint8_t maxRetainers = retainerMgr.getMaxRetainerSlots( player );
       uint8_t currentCount = retainerMgr.getRetainerCount( player );
       // Use player debug channel; Logger is not available in script DLLs
@@ -230,13 +235,13 @@ public:
       case 6:// Cancel / Nothing
       case 0:// Escape
         playerMgr().sendDebug( player, "RetainerDesk: Finishing event (cancel)" );
-        eventMgr().eventFinish( player, getId(), 1 );
+        finishEvent( player );
         break;
 
       default:
         // Other options not implemented yet - just finish
         playerMgr().sendDebug( player, "RetainerDesk: Unhandled selection {} - finishing event", selection );
-        eventMgr().eventFinish( player, getId(), 1 );
+        finishEvent( player );
         break;
     }
   }
@@ -266,7 +271,7 @@ public:
     else
     {
       // Cancelled or error - finish the event
-      eventMgr().eventFinish( player, getId(), 1 );
+      finishEvent( player );
     }
   }
 
@@ -338,8 +343,8 @@ public:
     {
       case 13:// SelectRetainer - open retainer selection UI
       {
-        // Send fresh retainer list so the UI has data
-        retainerMgr.sendRetainerList( player );
+        // Send fresh retainer list so the UI has data (skip gating packets here)
+        retainerMgr.sendRetainerList( player, 0, false );
 
         auto retainers = retainerMgr.getRetainers( player );
         if( retainers.empty() )
@@ -392,7 +397,7 @@ public:
         {
           playerMgr().sendDebug( player, "RetainerDesk: RemoveRetainer - success" );
           // Send updated retainer list
-          retainerMgr.sendRetainerList( player );
+          retainerMgr.sendRetainerList( player, 0, false );
           eventMgr().resumeScene( player, eventId, 2, yieldId, { 0 } );// Success
         }
         else if( error == World::Manager::RetainerError::RetainerBusy )
@@ -501,8 +506,8 @@ public:
     {
       case 13:// SelectRetainer - open retainer selection UI
       {
-        // Send fresh retainer list so the UI has data
-        retainerMgr.sendRetainerList( player );
+        // Send fresh retainer list so the UI has data (skip gating packets here)
+        retainerMgr.sendRetainerList( player, 0, false );
 
         auto retainers = retainerMgr.getRetainers( player );
         if( retainers.empty() )

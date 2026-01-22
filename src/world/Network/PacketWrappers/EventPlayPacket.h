@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include <Network/GamePacket.h>
 #include <Actor/Player.h>
 #include <Event/EventHandler.h>
@@ -18,8 +20,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                            uint64_t actorId,
                            uint32_t eventId,
                            uint16_t sceneId,
-                           uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventSceneHeader >( player.getId(), player.getId() )
+                           uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventSceneHeader >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -41,7 +42,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -51,8 +52,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   class EventPlayPacket2 : public ZoneChannelPacket< FFXIVIpcPlayEventScene2 >
   {
   public:
-    EventPlayPacket2( const Entity::Player& player, uint64_t actorId, uint32_t eventId, uint16_t sceneId, uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene2 >( player.getId(), player.getId() )
+    EventPlayPacket2( const Entity::Player& player, uint64_t actorId, uint32_t eventId, uint16_t sceneId, uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene2 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -67,14 +67,16 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
 
       if( auto pEvent = player.getEvent( eventId ) )
       {
-        auto pEventParam = pEvent->getScenePlayParams()->getParams( sceneId );
-        if( pEventParam )
-        {
-          auto size = static_cast< uint8_t >( pEventParam->size() );
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
-          m_data.paramCount = size;
-          pEvent->getScenePlayParams()->getParams( sceneId )->clear();
-        }
+        auto* sceneParams = pEvent->getScenePlayParams()->getParams( sceneId );
+        if( !sceneParams || sceneParams->empty() )
+          return;
+
+        const auto maxParams = static_cast< uint8_t >( std::size( m_data.params ) );
+        const auto size = static_cast< uint8_t >( ( std::min )( sceneParams->size(), static_cast< size_t >( maxParams ) ) );
+
+        std::memcpy( &m_data.params[ 0 ], sceneParams->data(), size * sizeof( uint32_t ) );
+        m_data.paramCount = size;
+        sceneParams->clear();
       }
     };
   };
@@ -85,8 +87,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                       uint64_t actorId,
                       uint32_t eventId,
                       uint16_t sceneId,
-                      uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene4 >( player.getId(), player.getId() )
+                      uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene4 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -108,7 +109,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -122,8 +123,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                       uint64_t actorId,
                       uint32_t eventId,
                       uint16_t sceneId,
-                      uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene8 >( player.getId(), player.getId() )
+                      uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene8 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -145,7 +145,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -159,8 +159,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                        uint64_t actorId,
                        uint32_t eventId,
                        uint16_t sceneId,
-                       uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene16 >( player.getId(), player.getId() )
+                       uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene16 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -182,7 +181,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -196,8 +195,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                        uint64_t actorId,
                        uint32_t eventId,
                        uint16_t sceneId,
-                       uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene32 >( player.getId(), player.getId() )
+                       uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene32 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -219,7 +217,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -233,8 +231,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                        uint64_t actorId,
                        uint32_t eventId,
                        uint16_t sceneId,
-                       uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene64 >( player.getId(), player.getId() )
+                       uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene64 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -256,7 +253,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -270,8 +267,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                         uint64_t actorId,
                         uint32_t eventId,
                         uint16_t sceneId,
-                        uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene128 >( player.getId(), player.getId() )
+                        uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene128 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -293,7 +289,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
@@ -307,8 +303,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
                         uint64_t actorId,
                         uint32_t eventId,
                         uint16_t sceneId,
-                        uint32_t flags ) :
-      ZoneChannelPacket< FFXIVIpcPlayEventScene255 >( player.getId(), player.getId() )
+                        uint32_t flags ) : ZoneChannelPacket< FFXIVIpcPlayEventScene255 >( player.getId(), player.getId() )
     {
       initialize( player, actorId, eventId, sceneId, flags );
     };
@@ -330,11 +325,11 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
         auto size = static_cast< uint32_t >( pEvent->getScenePlayParams()->getParams( sceneId )->size() );
         if( size )
         {
-          memcpy( &m_data.params[0], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
+          memcpy( &m_data.params[ 0 ], pEvent->getScenePlayParams()->getParams( sceneId )->data(), size * sizeof( uint32_t ) );
           m_data.paramCount = size;
           pEvent->getScenePlayParams()->getParams( sceneId )->clear();
         }
       }
     };
   };
-}
+}// namespace Sapphire::Network::Packets::WorldPackets::Server

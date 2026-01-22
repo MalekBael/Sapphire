@@ -229,11 +229,11 @@ void PlayerMgr::sendLoginMessage( Entity::Player& player )
   }
 }
 
-void PlayerMgr::onLogin( Entity::Player &player )
+void PlayerMgr::onLogin( Entity::Player& player )
 {
 }
 
-void PlayerMgr::onLogout( Entity::Player &player )
+void PlayerMgr::onLogout( Entity::Player& player )
 {
 }
 
@@ -281,7 +281,7 @@ void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
   if( player.isLogin() )
   {
     Network::Util::Packet::sendChangeClass( player );
-    Network::Util::Packet::sendActorControl( player, player.getId(), 0x112, 0x24 ); // unknown
+    Network::Util::Packet::sendActorControl( player, player.getId(), 0x112, 0x24 );// unknown
     Network::Util::Packet::sendContentAttainFlags( player );
     player.clearSoldItems();
   }
@@ -295,18 +295,18 @@ void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
     Network::Util::Packet::sendDailyQuests( player );
     Network::Util::Packet::sendQuestRepeatFlags( player );
 
-    auto &questMgr = Common::Service< World::Manager::QuestMgr >::ref();
+    auto& questMgr = Common::Service< World::Manager::QuestMgr >::ref();
     questMgr.sendQuestsInfo( player );
     Network::Util::Packet::sendGrandCompany( player );
-    
-    // Send retainer list on login to populate client's available slots cache (byte_1417A12B2)
-    // This ensures GetAvailableRetainerSlots() returns correct value when talking to Retainer Vocate
-    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-    retainerMgr.sendRetainerList( player );
+
+    // NOTE: Do NOT send retainer list here during zone-in!
+    // This causes the client to lock in "Busy" state during login.
+    // Retainer list should only be sent when player explicitly interacts with a retainer bell.
+    // The client's GetAvailableRetainerSlots() and similar functions have other ways to populate
+    // their caches without needing this early packet burst at zone load.
   }
 
   teri.onPlayerZoneIn( player );
-
 }
 
 void PlayerMgr::onUpdate( Entity::Player& player, uint64_t tickCount )
@@ -351,7 +351,6 @@ void PlayerMgr::checkAutoAttack( Entity::Player& player, uint64_t tickCount ) co
       player.autoAttack( actor->getAsChara() );
     }
   }
-
 }
 
 void PlayerMgr::onGainExp( Entity::Player& player, uint32_t exp )
@@ -373,12 +372,12 @@ void PlayerMgr::onGainExp( Entity::Player& player, uint32_t exp )
   uint32_t gainedExp = exp;
   exp += currentExp;
 
-  while( exp >= neededExpToLevel ) // levelup
+  while( exp >= neededExpToLevel )// levelup
   {
     exp -= neededExpToLevel;
     level += 1;
 
-    if (level > Common::MAX_PLAYER_LEVEL)
+    if( level > Common::MAX_PLAYER_LEVEL )
     {
       exp = 0;
       break;
@@ -441,8 +440,8 @@ void PlayerMgr::onDiscoverArea( Entity::Player& player, int16_t mapId, int16_t s
   {
     discoveredAreas = ( discovery[ offset + 3 ] << 24 ) |
                       ( discovery[ offset + 2 ] << 16 ) |
-                      ( discovery[ offset + 1 ] << 8  ) |
-                        discovery[ offset ];
+                      ( discovery[ offset + 1 ] << 8 ) |
+                      discovery[ offset ];
   }
 
   bool allDiscovered = ( ( discoveredAreas & mask ) == mask );
@@ -456,17 +455,17 @@ void PlayerMgr::onDiscoverArea( Entity::Player& player, int16_t mapId, int16_t s
 
 ////////// Helper ///////////
 
-void PlayerMgr::sendServerNotice( Entity::Player& player, const std::string& message ) //Purple Text
+void PlayerMgr::sendServerNotice( Entity::Player& player, const std::string& message )//Purple Text
 {
   Network::Util::Packet::sendServerNotice( player, message );
 }
 
-void PlayerMgr::sendUrgent( Entity::Player& player, const std::string& message ) //Red Text
+void PlayerMgr::sendUrgent( Entity::Player& player, const std::string& message )//Red Text
 {
   Network::Util::Packet::sendChat( player, Common::ChatType::ServerUrgent, message );
 }
 
-void PlayerMgr::sendDebug( Entity::Player& player, const std::string& message ) //Grey Text
+void PlayerMgr::sendDebug( Entity::Player& player, const std::string& message )//Grey Text
 {
   Network::Util::Packet::sendChat( player, Common::ChatType::SystemMessage, message );
 }
@@ -565,7 +564,6 @@ void PlayerMgr::onExitInstance( Entity::Player& player )
 
   warpMgr.requestMoveTerritory( player, Common::WarpType::WARP_TYPE_CONTENT_END_RETURN,
                                 player.getPrevTerritoryId(), player.getPrevPos(), player.getPrevRot() );
-
 }
 
 void PlayerMgr::onClassJobChanged( Entity::Player& player, Common::ClassJob classJob )
@@ -608,6 +606,3 @@ void PlayerMgr::onSongLearned( Entity::Player& player, uint8_t songId, uint32_t 
   player.learnSong( songId, itemId );
   Network::Util::Packet::sendActorControlSelf( player, player.getId(), ToggleOrchestrionUnlock, songId, 1, itemId );
 }
-
-
-

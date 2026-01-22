@@ -111,7 +111,7 @@ namespace Sapphire::Entity
     /*! remove a given quest */
     void removeQuest( uint16_t questId );
 
-    bool isQuestCompleted( uint32_t questId );
+    bool isQuestCompleted( uint32_t questId ) const;
 
     /*! add a quest to the completed quests mask */
     void updateQuestsCompleted( uint32_t questId );

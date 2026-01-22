@@ -22,6 +22,7 @@
 #include <Manager/RetainerMgr.h>
 #include <Manager/TerritoryMgr.h>
 #include <Manager/PlayerMgr.h>
+#include <Manager/QuestMgr.h>
 #include <Service.h>
 #include <cstdlib>
 #include <vector>
@@ -35,6 +36,36 @@ private:
   uint64_t m_currentRetainerId{ 0 };
   uint8_t m_currentRetainerIndex{ 0 };
 
+  // Yield IDs are client-script dependent; these are the ones observed/validated for the 3.35 client.
+  static constexpr uint8_t YIELD_SELECT_RETAINER = 13;
+  static constexpr uint8_t YIELD_CALL_RETAINER = 7;
+  static constexpr uint8_t YIELD_DEPOP_RETAINER = 14;
+  static constexpr uint8_t YIELD_RETAINER_MAIN_MENU = 34;
+
+  // Additional yields used by the Lua flow (venture/tutorial flags, housing, etc.).
+  static constexpr uint8_t YIELD_ACCEPT_RETAINER_TASK = 33;
+  static constexpr uint8_t YIELD_SET_VENTURE_TUTORIAL_FLAG = 35;
+  static constexpr uint8_t YIELD_IS_VENTURE_TUTORIAL_FLAG = 36;
+  static constexpr uint8_t YIELD_IS_HOUSING_INDOOR = 37;
+  static constexpr uint8_t YIELD_GET_RETAINER_FLAG = 38;
+  static constexpr uint8_t YIELD_SET_RETAINER_FLAG = 39;
+  static constexpr uint8_t YIELD_CANCEL_RETAINER_TASK = 41;
+
+  static constexpr uint32_t QUEST_ILL_CONCEIVED_VENTURE_LIMSA = 66968;
+  static constexpr uint32_t QUEST_ILL_CONCEIVED_VENTURE_GRIDANIA = 66969;
+  static constexpr uint32_t QUEST_ILL_CONCEIVED_VENTURE_ULDAH = 66970;
+  static constexpr uint32_t QUEST_SCIONS_OF_THE_SEVENTH_DAWN = 66045;
+
+  static bool HasVentureUnlockQuestCompleted( const Entity::Player& player )
+  {
+    if( !player.isQuestCompleted( QUEST_SCIONS_OF_THE_SEVENTH_DAWN ) )
+      return false;
+
+    return player.isQuestCompleted( QUEST_ILL_CONCEIVED_VENTURE_LIMSA ) ||
+           player.isQuestCompleted( QUEST_ILL_CONCEIVED_VENTURE_GRIDANIA ) ||
+           player.isQuestCompleted( QUEST_ILL_CONCEIVED_VENTURE_ULDAH );
+  }
+
 public:
   CmnDefRetainerCall()
       : Sapphire::ScriptAPI::EventScript( 720906 )
@@ -43,99 +74,42 @@ public:
 
   void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
   {
+    // Ensure the client has up-to-date quest completion flags. This matters for
+    // retainer menu gating (ventures unlock quest) and avoids client-side false negatives.
+    Common::Service< World::Manager::QuestMgr >::ref().sendQuestsInfo( player );
+
+    // Retail 3.35 ordering: send retainer list/gating packets BEFORE the scene starts.
+    // The client expects to receive the roster data before EventPlay, not during a yield.
+    // NOTE: sendEventStart=false because the framework already sent EventStart (0x01CC)
+    // via eventMgr.eventStart() in eventHandlerTalk before calling our onTalk.
+    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+    retainerMgr.sendRetainerList( player, 0, true, false );
+
     Scene00000( player );
   }
 
-  // ========== Yield IDs from Lua script (cmndefretainercall_00010.luab) ==========
-  // These correspond to server-side functions that require data operations
-  // NOTE: RetainerBag, RetainerCharacterWidget are CLIENT-SIDE ONLY and do NOT yield!
-  //       They are blocking calls that open UI modals using cached data.
-  //
-  // VERIFIED FROM BINARY (3.35):
-  // - CallRetainer (sub_140634330) → yield 7
-  // - SelectRetainer (sub_140634A50) → yield 13
-  // - DepopRetainer (sub_140634EB0) → yield 14
-  // - RetainerMainMenu (sub_1406348E0) → yield 34
-
-  // Core retainer operations
-  static constexpr uint8_t YIELD_CALL_RETAINER = 7;   // CallRetainer(slot) - spawns retainer NPC
-  static constexpr uint8_t YIELD_SELECT_RETAINER = 13;// SelectRetainer() - opens retainer selection UI
-  static constexpr uint8_t YIELD_DEPOP_RETAINER = 14; // DepopRetainer() - despawns retainer NPC
-
-  // Menu operations
-  static constexpr uint8_t YIELD_RETAINER_MAIN_MENU = 34;// RetainerMainMenu() - shows main menu, waits for server
-  // RetainerMainMenuAfter does NOT yield - it returns the selection directly to Lua
-
-  // Class/Job operations (CORRECTED based on actual Lua behavior)
-  static constexpr uint8_t YIELD_RETAINER_CLASS_SELECT = 29; // RetainerClassSelect() - class selection menu
-  static constexpr uint8_t YIELD_SET_RETAINER_CLASS_JOB = 30;// SetRetainerClassJob(classId) - assign class
-  static constexpr uint8_t YIELD_RETAINER_JOB_SELECT = 20;   // RetainerJobSelect() - job selection menu
-
-  // Data queries (these return values to Lua)
-  static constexpr uint8_t YIELD_GET_RETAINER_NAME = 22;          // GetRetainerName() -> string
-  static constexpr uint8_t YIELD_GET_RETAINER_CLASS_JOB = 23;     // GetRetainerClassJob() -> (classId, level)
-  static constexpr uint8_t YIELD_GET_RETAINER_TASK_DETAILS = 24;  // GetRetainerTaskDetails() -> (taskId, isComplete)
-  static constexpr uint8_t YIELD_IS_RETAINER_MANNEQUIN_EMPTY = 25;// IsRetainerMannequinEmpty() -> bool
-  static constexpr uint8_t YIELD_CAN_RETAINER_JOB_CHANGE = 26;    // CanRetainerJobChange() -> bool
-  static constexpr uint8_t YIELD_GET_RETAINER_EMPLOYED_COUNT = 27;// GetRetainerEmployedCount() -> count
-
-  // Venture operations (renumbered - 28 stays, moved tasks to higher IDs)
-  static constexpr uint8_t YIELD_RETAINER_TASK_LV_RANGE = 28;// RetainerTaskLvRange() - level range selection
-  static constexpr uint8_t YIELD_RETAINER_TASK_SELECT = 18;  // RetainerTaskSelect(lvRange, isTreasure) - task selection
-  static constexpr uint8_t YIELD_RETAINER_TASK_STATUS = 19;  // RetainerTaskStatus() - view current task
-  static constexpr uint8_t YIELD_RETAINER_TASK_RESULT = 31;  // RetainerTaskResult(...) - show results
-  static constexpr uint8_t YIELD_RETAINER_TASK_ASK = 32;     // RetainerTaskAsk() - confirm task
-  static constexpr uint8_t YIELD_ACCEPT_RETAINER_TASK = 33;  // AcceptRetainerTask(taskId) - start task
-
-  // Tutorial flags
-  static constexpr uint8_t YIELD_SET_VENTURE_TUTORIAL_FLAG = 35;// SetVentureTutorialFlag(flag, value)
-  static constexpr uint8_t YIELD_IS_VENTURE_TUTORIAL_FLAG = 36; // IsVentureTutorialFlag(flag) -> bool
-
-  // Housing check
-  static constexpr uint8_t YIELD_IS_HOUSING_INDOOR = 37;// IsHousingIndoorTerritory() -> bool
-
-  // Retainer flags
-  static constexpr uint8_t YIELD_GET_RETAINER_FLAG = 38;// GetRetainerFlag(flag) -> bool
-  static constexpr uint8_t YIELD_SET_RETAINER_FLAG = 39;// SetRetainerFlag(flag, value)
-
-  // Note: RetainerCharacterWidget doesn't yield - it's client-side only
-  static constexpr uint8_t YIELD_CANCEL_RETAINER_TASK = 41;// CancelRetainerTask() - abort task
-
-  // Menu constants from Lua
-  enum RetainerMenuOption : uint8_t
-  {
-    RETAINER_MENU_INVENTORY = 0,
-    RETAINER_MENU_GIL = 1,
-    RETAINER_MENU_BUYBACK = 2,
-    RETAINER_MENU_MARKET_1 = 3,
-    RETAINER_MENU_MARKET_2 = 4,
-    RETAINER_MENU_SELLHISTORY = 5,
-    RETAINER_MENU_TASK_STATUS = 6,
-    RETAINER_MENU_VENTURE = 7,
-    RETAINER_MENU_EQUIP = 8,
-    RETAINER_MENU_CLASS = 9,
-    RETAINER_MENU_JOB = 10,
-    RETAINER_MENU_CLOSE = 11
-  };
-
-  // Inventory mode constants
-  enum RetainerBagMode : uint8_t
-  {
-    BAG_MODE_ITEM = 1,
-    BAG_MODE_MONEY = 2,
-    BAG_MODE_LIST_TO_PLAYER = 3,
-    BAG_MODE_LIST_TO_RETAINER = 4,
-    BAG_MODE_HISTORY = 5
-  };
-
-  void onYield( uint32_t eventId, uint16_t sceneId, uint8_t yieldId, Entity::Player& player,
-                const std::string& resultString, uint64_t resultInt ) override
+  void onYield( uint32_t eventId,
+                uint16_t sceneId,
+                uint8_t yieldId,
+                Entity::Player& player,
+                const std::string& /*resultString*/,
+                uint64_t returnInt ) override
   {
     auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
 
-    // Extract packed args: low 32 bits = arg#0, high 32 bits = arg#1
-    uint32_t arg0 = static_cast< uint32_t >( resultInt & 0xFFFFFFFF );
-    uint32_t arg1 = static_cast< uint32_t >( resultInt >> 32 );
+    const uint32_t arg0 = static_cast< uint32_t >( returnInt & 0xFFFFFFFFu );
+    const uint32_t arg1 = static_cast< uint32_t >( ( returnInt >> 32 ) & 0xFFFFFFFFu );
+
+    auto resumeDefault = [ & ]( std::initializer_list< uint32_t > args ) {
+      eventMgr().resumeScene( player, eventId, sceneId, yieldId, std::vector< uint32_t >( args ) );
+    };
+
+    playerMgr().sendDebug( player,
+                           "RetainerCall::onYield sceneId={} yieldId={} arg0=0x{:08X} arg1=0x{:08X}",
+                           sceneId,
+                           yieldId,
+                           arg0,
+                           arg1 );
 
     switch( yieldId )
     {
@@ -143,29 +117,15 @@ public:
 
       case YIELD_SELECT_RETAINER:
       {
-        uint8_t retainerCount = retainerMgr.getRetainerCount( player );
-        if( retainerCount == 0 )
-        {
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 444 } );
-        }
-        else
-        {
-          // Send the retainer list packets so client can display them
-          retainerMgr.sendRetainerList( player );
-          // Retail 3.35 capture: ResumeEventScene2(resumeId=13) returns numArgs=1, arg0=0 on success.
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-        }
+        // Retainer list was already sent in onTalk (before scene started), per retail 3.35 ordering.
+        // Just send the resume with the retainer count (0 = success with retainers, 444 = no retainers).
+        const uint8_t retainerCount = retainerMgr.getRetainerCount( player );
+        resumeDefault( { retainerCount == 0 ? 444u : 0u } );
         break;
       }
 
       case YIELD_CALL_RETAINER:
       {
-        // 3.35 observed shapes:
-        // - Some scenes provide a slot index (displayOrder 0..7).
-        // - Other scenes provide a retainerId directly (e.g., 0x0E / 0x0F).
-        // Additionally, we've seen arg0==0 while arg1 carries the meaningful value.
-        // Prefer matching a known retainerId before interpreting as a slot.
-
         const auto retainers = retainerMgr.getRetainers( player );
 
         uint64_t retainerId = 0;
@@ -207,7 +167,6 @@ public:
             return false;
           };
 
-          // Prefer the high-dword slot when it is meaningful.
           if( slotCandidateB < 8 )
             ( void ) tryMatchSlot( slotCandidateB );
           if( retainerId == 0 && slotCandidateA < 8 )
@@ -216,27 +175,24 @@ public:
 
         if( retainerId == 0 || retainerSlot == 0xFF )
         {
-          Logger::warn( "RetainerCall: CALL_RETAINER unable to resolve selection (arg0=0x{:08X} arg1=0x{:08X})",
-                        arg0,
-                        arg1 );
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1, 0, 0 } );
+          playerMgr().sendDebug( player,
+                                 "RetainerCall: CALL_RETAINER unable to resolve selection (arg0=0x{:08X} arg1=0x{:08X})",
+                                 arg0,
+                                 arg1 );
+          resumeDefault( { 1, 0, 0 } );
           break;
         }
 
-        // Store current retainer for subsequent operations.
         m_currentRetainerId = retainerId;
         m_currentRetainerIndex = retainerSlot;
 
-        // Get the summoning bell's position from the event
         const Common::FFXIVARR_POSITION3* bellPos = nullptr;
         Common::FFXIVARR_POSITION3 bellPosition;
 
-        auto pEvent = player.getEvent( eventId );
-        if( pEvent )
+        if( auto pEvent = player.getEvent( eventId ) )
         {
-          uint64_t bellActorId = pEvent->getActorId();
-          auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
-          auto pZone = teriMgr.getTerritoryByGuId( player.getTerritoryId() );
+          const uint64_t bellActorId = pEvent->getActorId();
+          auto pZone = teriMgr().getTerritoryByGuId( player.getTerritoryId() );
           if( pZone )
           {
             auto pBell = pZone->getEObj( static_cast< uint32_t >( bellActorId ) );
@@ -248,22 +204,19 @@ public:
           }
         }
 
-        // Spawn the retainer NPC
-        uint32_t actorId = retainerMgr.spawnRetainer( player, retainerId, bellPos );
+        const uint32_t actorId = retainerMgr.spawnRetainer( player, retainerId, bellPos );
 
         if( actorId == 0 )
         {
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1, 0, 0 } );
+          resumeDefault( { 1, 0, 0 } );
         }
         else
         {
-          // Send retainer info and inventory data so client can display bag/gil screens
           retainerMgr.sendRetainerInfo( player, retainerId );
           retainerMgr.sendRetainerInventory( player, retainerId );
 
-          uint8_t greetingType = static_cast< uint8_t >( std::rand() % 3 );
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId,
-                                  { 0, actorId, greetingType } );
+          const uint8_t greetingType = static_cast< uint8_t >( std::rand() % 3 );
+          resumeDefault( { 0, actorId, greetingType } );
         }
         break;
       }
@@ -287,20 +240,21 @@ public:
         m_currentRetainerId = 0;
         m_currentRetainerIndex = 0;
 
-        // Clear active retainer context for inventory operations (gil transfer, etc.).
         retainerMgr.clearActiveRetainer( player );
 
-        // Retail ordering (3.35 capture) after client YieldEventScene2(yieldId=14):
-        //   ResumeEventScene2 -> PopEventState (+Condition) -> Delete (ActorFreeSpawn) -> IsMarket -> MarketRetainerUpdate
-        // The critical piece for avoiding the client getting stuck Busy is ensuring we actually finish the event,
-        // which clears InNpcEvent and emits the Condition packet.
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
+        resumeDefault( { 0 } );
+        // Retail ordering (3.35 capture): client sends 0x01E0, then server emits:
+        //   0x01D8 (ResumeEventScene2) -> 0x01CD (PopEventState) -> 0x01A3 (Condition) -> 0x0143 (OrderMySelf close)
+        // Keep our sequence aligned to avoid leaving the player in a "busy" state.
+        retainerMgr.sendRetainerSessionClose( player );
         eventMgr().eventFinish( player, eventId, 1 );
+        retainerMgr.sendRetainerConditionClose( player );
+        retainerMgr.sendRetainerActorControlCloseGate( player );
+        retainerMgr.sendRetainerOrderMySelfClose( player );
 
         for( const uint32_t actorId : actorIdsToDespawn )
           retainerMgr.despawnRetainer( player, actorId );
 
-        // Refresh market/retainer state after despawn.
         retainerMgr.sendIsMarket( player );
         if( closingRetainerId != 0 )
         {
@@ -315,287 +269,95 @@ public:
 
       case YIELD_RETAINER_MAIN_MENU:
       {
-        // RetainerMainMenu() yields to server before showing the menu
-        // Server should send any necessary data updates, then resume with menu option count
-        // The Lua script then displays the menu and waits for user selection
-        // After selection, RetainerMainMenuAfter() is called (NO YIELD - client-side only)
-        // Then based on selection, RetainerBag(mode) or other functions are called (also client-side)
-
         if( m_currentRetainerId != 0 )
         {
-          // Send updated retainer info and inventory data before showing menu
-          // This ensures the client has current data for any option the user might pick
           retainerMgr.sendRetainerInfo( player, m_currentRetainerId );
           retainerMgr.sendRetainerInventory( player, m_currentRetainerId );
         }
 
-        // Retail 3.35 capture: ResumeEventScene2(resumeId=34) returns numArgs=1, arg0=0.
-        // The client-side Lua then drives the actual menu UI.
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
+        resumeDefault( { 0 } );
         break;
       }
 
-        // ========== Data Queries ==========
+        // ========== Venture / Tutorial / Flags ==========
 
-      case YIELD_GET_RETAINER_NAME:
+      case YIELD_ACCEPT_RETAINER_TASK:
       {
-        std::string name = "";
-        if( m_currentRetainerId != 0 )
+        // arg0 = venture/task id.
+        if( !HasVentureUnlockQuestCompleted( player ) )
         {
-          auto retainerOpt = retainerMgr.getRetainer( m_currentRetainerId );
-          if( retainerOpt )
-          {
-            name = retainerOpt->name;
-          }
+          resumeDefault( { 1 } );
+          break;
         }
-        // Return name via string result (if supported) or as placeholder
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-        break;
-      }
 
-      case YIELD_GET_RETAINER_CLASS_JOB:
-      {
-        uint8_t classId = 0;
-        uint8_t level = 1;
-        if( m_currentRetainerId != 0 )
-        {
-          auto retainerOpt = retainerMgr.getRetainer( m_currentRetainerId );
-          if( retainerOpt )
-          {
-            classId = retainerOpt->classJob;
-            level = retainerOpt->level;
-          }
-        }
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { classId, level } );
-        break;
-      }
-
-      case YIELD_GET_RETAINER_TASK_DETAILS:
-      {
-        uint32_t taskId = 0;
-        bool isComplete = false;
-        if( m_currentRetainerId != 0 )
-        {
-          auto retainerOpt = retainerMgr.getRetainer( m_currentRetainerId );
-          if( retainerOpt && retainerOpt->ventureId != 0 )
-          {
-            taskId = retainerOpt->ventureId;
-            // Check if venture is complete (ventureComplete flag or time check)
-            isComplete = retainerOpt->ventureComplete;
-          }
-        }
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId,
-                                { taskId, isComplete ? 1u : 0u } );
-        break;
-      }
-
-      case YIELD_GET_RETAINER_EMPLOYED_COUNT:
-      {
-        uint8_t count = retainerMgr.getRetainerCount( player );
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { count } );
-        break;
-      }
-
-      case YIELD_IS_RETAINER_MANNEQUIN_EMPTY:
-      {
-        // Check if retainer has any equipment
-        // For now, assume empty (no equipment system implemented)
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );// 1 = empty
-        break;
-      }
-
-      case YIELD_CAN_RETAINER_JOB_CHANGE:
-      {
-        // Check if retainer can change to a job (has appropriate level/items)
-        // For now, return false
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// 0 = cannot
-        break;
-      }
-
-        // ========== Class/Job Operations ==========
-
-      case YIELD_RETAINER_CLASS_SELECT:
-      {
-        // Show class selection menu
-        // Return 0 to indicate cancelled, or class ID selected
-        eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-        break;
-      }
-
-      case YIELD_SET_RETAINER_CLASS_JOB:
-      {
-        // arg0 = class/job ID to set
         if( m_currentRetainerId != 0 && arg0 != 0 )
         {
-          retainerMgr.setRetainerClass( player, m_currentRetainerId, static_cast< uint8_t >( arg0 ) );
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// 0 = success
-          break;
+          const auto error = retainerMgr.startVenture( player, m_currentRetainerId, arg0 );
+          resumeDefault( { error == World::Manager::RetainerError::None ? 0u : 1u } );
         }
-
-        case YIELD_RETAINER_JOB_SELECT:
+        else
         {
-          // Show job selection menu (for job crystal upgrade)
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// 0 = cancelled
-          break;
+          resumeDefault( { 1 } );
         }
-
-          // ========== Venture Operations ==========
-
-        case YIELD_RETAINER_TASK_LV_RANGE:
-        {
-          // Return the max level range available for ventures
-          // Based on retainer level, return number of available level brackets
-          uint8_t maxRange = 1;
-          if( m_currentRetainerId != 0 )
-          {
-            auto retainerOpt = retainerMgr.getRetainer( m_currentRetainerId );
-            if( retainerOpt )
-            {
-              // Each 5 levels opens a new range
-              maxRange = ( retainerOpt->level / 5 ) + 1;
-            }
-          }
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { maxRange } );
-          break;
-        }
-
-        case YIELD_RETAINER_TASK_SELECT:
-        {
-          // arg0 = level range, arg1 = isTreasure (exploration)
-          // Return selected task ID or 0 for cancel
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-          break;
-        }
-
-        case YIELD_RETAINER_TASK_STATUS:
-        {
-          // Show current venture status
-          // Return 0 = don't cancel, 1 = cancel venture
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-          break;
-        }
-
-        case YIELD_RETAINER_TASK_RESULT:
-        {
-          // Show venture results (called after completing venture)
-          // Return 0 for success
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-          break;
-        }
-
-        case YIELD_RETAINER_TASK_ASK:
-        {
-          // Confirm starting a venture
-          // arg0 = task ID
-          // Return 0 for no, task ID for yes
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { arg0 } );
-          break;
-        }
-
-        case YIELD_ACCEPT_RETAINER_TASK:
-        {
-          // arg0 = task ID to start
-          if( m_currentRetainerId != 0 && arg0 != 0 )
-          {
-            auto error = retainerMgr.startVenture( player, m_currentRetainerId, arg0 );
-            if( error == World::Manager::RetainerError::None )
-            {
-              eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// Success
-            }
-            else
-            {
-              eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );// Error
-            }
-          }
-          else
-          {
-            eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
-          }
-          break;
-        }
-
-        case YIELD_CANCEL_RETAINER_TASK:
-        {
-          if( m_currentRetainerId != 0 )
-          {
-            retainerMgr.cancelVenture( player, m_currentRetainerId );
-          }
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );
-          break;
-        }
-
-          // ========== Tutorial Flags ==========
-
-        case YIELD_SET_VENTURE_TUTORIAL_FLAG:
-        {
-          // arg0 = flag, arg1 = value
-          // TODO: Implement tutorial flag storage
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
-          break;
-        }
-
-        case YIELD_IS_VENTURE_TUTORIAL_FLAG:
-        {
-          // arg0 = flag to check
-          // TODO: Implement tutorial flag checking
-          // For now, return true (flag is set) to skip tutorials
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
-          break;
-        }
-
-          // ========== Misc ==========
-
-        case YIELD_IS_HOUSING_INDOOR:
-        {
-          // Check if current territory is indoor housing
-          // TODO: Proper housing territory detection
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// 0 = not indoor
-          break;
-        }
-
-        case YIELD_GET_RETAINER_FLAG:
-        {
-          // arg0 = flag ID
-          // TODO: Implement retainer flags
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 0 } );// Flag not set
-          break;
-        }
-
-        case YIELD_SET_RETAINER_FLAG:
-        {
-          // arg0 = flag ID, arg1 = value
-          // TODO: Implement retainer flags
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
-          break;
-        }
-
-        default:
-          eventMgr().resumeScene( player, eventId, sceneId, yieldId, { 1 } );
-          break;
+        break;
       }
-    }
 
-    void Scene00000( Entity::Player & player )
-    {
-      eventMgr().playScene( player, getId(), 0, HIDE_HOTBAR, bindSceneReturn( &CmnDefRetainerCall::Scene00000Return ) );
-    }
-
-    void Scene00000Return( Entity::Player & player, const Event::SceneResult& result )
-    {
-      // Despawn any spawned retainers when the event ends
-      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-      auto retainers = retainerMgr.getRetainers( player );
-      for( const auto& retainer : retainers )
+      case YIELD_CANCEL_RETAINER_TASK:
       {
-        uint32_t actorId = retainerMgr.getSpawnedRetainerActorId( player, retainer.retainerId );
-        if( actorId != 0 )
-        {
-          retainerMgr.despawnRetainer( player, actorId );
-        }
+        if( m_currentRetainerId != 0 )
+          retainerMgr.cancelVenture( player, m_currentRetainerId );
+        resumeDefault( { 0 } );
+        break;
       }
 
-      eventMgr().eventFinish( player, getId(), 1 );
-    }
-  };
+      case YIELD_SET_VENTURE_TUTORIAL_FLAG:
+      case YIELD_IS_VENTURE_TUTORIAL_FLAG:
+        // TODO: Persist actual tutorial flags; for now, behave as "flag is set" to avoid repeated tutorials.
+        resumeDefault( { 1 } );
+        break;
 
-  EXPOSE_SCRIPT( CmnDefRetainerCall );
+      case YIELD_IS_HOUSING_INDOOR:
+        // TODO: Proper housing territory detection.
+        resumeDefault( { 0 } );
+        break;
+
+      case YIELD_GET_RETAINER_FLAG:
+        // TODO: Implement per-retainer flags.
+        resumeDefault( { 0 } );
+        break;
+
+      case YIELD_SET_RETAINER_FLAG:
+        // TODO: Implement per-retainer flags.
+        resumeDefault( { 1 } );
+        break;
+
+      default:
+        resumeDefault( { 1 } );
+        break;
+    }
+  }
+
+  void Scene00000( Entity::Player& player )
+  {
+    eventMgr().playScene( player, getId(), 0, HIDE_HOTBAR, bindSceneReturn( &CmnDefRetainerCall::Scene00000Return ) );
+  }
+
+  void Scene00000Return( Entity::Player& player, const Event::SceneResult& result )
+  {
+    // Despawn any spawned retainers when the event ends
+    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+    auto retainers = retainerMgr.getRetainers( player );
+    for( const auto& retainer : retainers )
+    {
+      uint32_t actorId = retainerMgr.getSpawnedRetainerActorId( player, retainer.retainerId );
+      if( actorId != 0 )
+      {
+        retainerMgr.despawnRetainer( player, actorId );
+      }
+    }
+
+    eventMgr().eventFinish( player, getId(), 1 );
+  }
+};
+
+EXPOSE_SCRIPT( CmnDefRetainerCall );

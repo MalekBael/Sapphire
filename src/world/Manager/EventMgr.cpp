@@ -125,16 +125,16 @@ namespace
     const bool inNpcEvent = player.hasCondition( Common::PlayerCondition::InNpcEvent );
 
     PlayerMgr::sendUrgent(
-      player,
-      "[{0}][YieldIntStr] scene={1} yieldId={2} int=0x{3:016X} (lo=0x{4:08X} hi=0x{5:08X}) str='{6}' inNpcEvent={7}",
-      tag,
-      sceneId,
-      yieldId,
-      resultInt,
-      low32,
-      high32,
-      resultString,
-      inNpcEvent ? 1 : 0 );
+            player,
+            "[{0}][YieldIntStr] scene={1} yieldId={2} int=0x{3:016X} (lo=0x{4:08X} hi=0x{5:08X}) str='{6}' inNpcEvent={7}",
+            tag,
+            sceneId,
+            yieldId,
+            resultInt,
+            low32,
+            high32,
+            resultString,
+            inNpcEvent ? 1 : 0 );
 
     Logger::debug( "[{0}][YieldIntStr] scene={1} yieldId={2} int=0x{3:016X} (lo=0x{4:08X} hi=0x{5:08X}) str='{6}' inNpcEvent={7}",
                    tag,
@@ -146,7 +146,7 @@ namespace
                    resultString,
                    inNpcEvent ? 1 : 0 );
   }
-}
+}// namespace
 
 //retainer logging end ------------------------------------------------------------------------------------------------------------
 
@@ -466,11 +466,11 @@ void EventMgr::handleYieldEventScene( Entity::Player& player, uint32_t eventId, 
   if( results.size() >= 2 )
   {
     // Pack both args: low 32 bits = results[0], high 32 bits = results[1]
-    resultInt = static_cast< uint64_t >( results[0] ) | ( static_cast< uint64_t >( results[1] ) << 32 );
+    resultInt = static_cast< uint64_t >( results[ 0 ] ) | ( static_cast< uint64_t >( results[ 1 ] ) << 32 );
   }
   else if( results.size() >= 1 )
   {
-    resultInt = results[0];
+    resultInt = results[ 0 ];
   }
 
   std::string tmp{};
@@ -487,7 +487,7 @@ void EventMgr::handleYieldStringEventScene( Entity::Player& player, uint32_t eve
 
   PlayerMgr::sendDebug( player, "eventId: {0} ({0:08X}) scene: {1}, resumeId: {2} resultString: {3}",
                         eventId, sceneId, resumeId, resultString );
-//retainer yield logging, can be removed once the feature is complete -------------------------------------------------------------
+  //retainer yield logging, can be removed once the feature is complete -------------------------------------------------------------
   traceRetainerYieldString( player, eventId, sceneId, resumeId, resultString );
 
   if( !scriptMgr.onYield( player, eventId, sceneId, resumeId, resultString, 0 ) )
@@ -687,8 +687,8 @@ void EventMgr::eventFinish( Sapphire::Entity::Player& player, uint32_t eventId, 
 
   if( player.hasCondition( Common::PlayerCondition::WatchingCutscene ) )
     player.removeCondition( Common::PlayerCondition::WatchingCutscene );
-  
-  if( player.hasCondition( Common::PlayerCondition::Casting ))
+
+  if( player.hasCondition( Common::PlayerCondition::Casting ) )
     player.removeCondition( Common::PlayerCondition::Casting );
 
   player.removeEvent( pEvent->getId() );
@@ -836,27 +836,42 @@ void EventMgr::playScene( Entity::Player& player, uint32_t eventId, uint32_t sce
 
 void EventMgr::resumeScene( Entity::Player& player, uint32_t eventId, uint32_t scene, uint8_t yieldId, std::vector< uint32_t > values )
 {
-  FFXIVPacketBasePtr pPacket = nullptr;
-  size_t paramCount = values.size();
-
+  const size_t paramCount = values.size();
   assert( paramCount <= 255 );
 
-  if( paramCount < 2 )
+  FFXIVPacketBasePtr pPacket = nullptr;
+  if( paramCount <= 2 )
+  {
     pPacket = std::move( std::make_shared< EventResume2Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 4 )
+  }
+  else if( paramCount <= 4 )
+  {
     pPacket = std::move( std::make_shared< EventResume4Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 8 )
+  }
+  else if( paramCount <= 8 )
+  {
     pPacket = std::move( std::make_shared< EventResume8Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 16 )
+  }
+  else if( paramCount <= 16 )
+  {
     pPacket = std::move( std::make_shared< EventResume16Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 32 )
+  }
+  else if( paramCount <= 32 )
+  {
     pPacket = std::move( std::make_shared< EventResume32Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 64 )
+  }
+  else if( paramCount <= 64 )
+  {
     pPacket = std::move( std::make_shared< EventResume64Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 128 )
+  }
+  else if( paramCount <= 128 )
+  {
     pPacket = std::move( std::make_shared< EventResume128Packet >( player, eventId, scene, yieldId, values ) );
-  else if( paramCount < 255 )
+  }
+  else
+  {
     pPacket = std::move( std::make_shared< EventResume255Packet >( player, eventId, scene, yieldId, values ) );
+  }
 
   auto& server = Common::Service< World::WorldServer >::ref();
   server.queueForPlayer( player.getCharacterId(), pPacket );

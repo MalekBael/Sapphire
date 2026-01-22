@@ -52,7 +52,6 @@ void Player::removeQuest( uint16_t questId )
 
   mapMgr.updateQuests( *this );
   questMgr.onRemoveQuest( *this, idx );
-
 }
 
 void Player::removeQuestTracking( int8_t idx )
@@ -157,8 +156,18 @@ void Player::addQuestTracking( uint8_t idx )
 
 void Player::updateQuestsCompleted( uint32_t questId )
 {
-  uint8_t index = questId / 8;
-  uint8_t bitIndex = ( questId ) % 8;
+  const uint32_t normalizedQuestId = questId & 0xFFFFu;
+  const size_t index = normalizedQuestId / 8;
+  const uint8_t bitIndex = static_cast< uint8_t >( normalizedQuestId % 8 );
+
+  if( index >= m_questCompleteFlags.size() )
+  {
+    Logger::warn( "QuestCompleteFlags: QuestId {} (normalized={}) out of range (size={})",
+                  questId,
+                  normalizedQuestId,
+                  m_questCompleteFlags.size() );
+    return;
+  }
 
   uint8_t value = 0x80 >> bitIndex;
 
@@ -167,20 +176,34 @@ void Player::updateQuestsCompleted( uint32_t questId )
   Common::Service< Manager::MapMgr >::ref().updateQuests( *this );
 }
 
-bool Player::isQuestCompleted( uint32_t questId )
+bool Player::isQuestCompleted( uint32_t questId ) const
 {
-  uint8_t index = questId / 8;
-  uint8_t bitIndex = ( questId ) % 8;
+  const uint32_t normalizedQuestId = questId & 0xFFFFu;
+  const size_t index = normalizedQuestId / 8;
+  const uint8_t bitIndex = static_cast< uint8_t >( normalizedQuestId % 8 );
+
+  if( index >= m_questCompleteFlags.size() )
+    return false;
 
   uint8_t value = 0x80 >> bitIndex;
 
-  return m_questCompleteFlags[ index ] & value;
-} 
+  return ( m_questCompleteFlags[ index ] & value ) != 0;
+}
 
 void Player::removeQuestsCompleted( uint32_t questId )
 {
-  uint8_t index = questId / 8;
-  uint8_t bitIndex = ( questId ) % 8;
+  const uint32_t normalizedQuestId = questId & 0xFFFFu;
+  const size_t index = normalizedQuestId / 8;
+  const uint8_t bitIndex = static_cast< uint8_t >( normalizedQuestId % 8 );
+
+  if( index >= m_questCompleteFlags.size() )
+  {
+    Logger::warn( "QuestCompleteFlags: QuestId {} (normalized={}) out of range (size={})",
+                  questId,
+                  normalizedQuestId,
+                  m_questCompleteFlags.size() );
+    return;
+  }
 
   uint8_t value = 0x80 >> bitIndex;
 
@@ -217,8 +240,3 @@ uint16_t Player::getQuestItemIcon( uint32_t itemId )
 
   return questMgr.getItemIcon( itemId );
 }
-
-
-
-
-

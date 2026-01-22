@@ -10,6 +10,7 @@
 #include "Manager/HousingMgr.h"
 #include "Manager/WarpMgr.h"
 #include "Manager/AchievementMgr.h"
+#include "Manager/RetainerMgr.h"
 
 #include "Network/GameConnection.h"
 
@@ -212,6 +213,8 @@ const char* packetCommandToString( uint16_t commandId )
       return "JUMP_LANDING";
     case GIMMICK_JUMP_END:
       return "GIMMICK_JUMP_END";
+    case ENTER_TERRITORY_EVENT_FINISHED:
+      return "ENTER_TERRITORY_EVENT_FINISHED";
     case START_CRAFT:
       return "START_CRAFT";
     case FISHING:
@@ -409,7 +412,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
 
   switch( data.Id )
   {
-    case PacketCommand::DRAWN_SWORD:  // Toggle sheathe
+    case PacketCommand::DRAWN_SWORD:// Toggle sheathe
     {
       if( data.Arg0 == 1 )
         player.setStance( Stance::Active );
@@ -421,7 +424,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       Network::Util::Packet::sendActorControl( player.getInRangePlayerIds(), player.getId(), ToggleWeapon, data.Arg0, 1 );
       break;
     }
-    case PacketCommand::AUTO_ATTACK:  // Toggle auto-attack
+    case PacketCommand::AUTO_ATTACK:// Toggle auto-attack
     {
       if( data.Arg0 == 1 )
       {
@@ -435,7 +438,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
 
       break;
     }
-    case PacketCommand::TARGET_DECIDE: // Change target
+    case PacketCommand::TARGET_DECIDE:// Change target
     {
       uint64_t targetId = arg0arg1;
 
@@ -460,7 +463,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       player.setCompanion( 0 );
       break;
     }
-    case PacketCommand::REQUEST_STATUS_RESET: // Remove status (clicking it off)
+    case PacketCommand::REQUEST_STATUS_RESET:// Remove status (clicking it off)
     {
       // todo: check if status can be removed by client from exd
       player.removeSingleStatusEffectById( data.Arg0 );
@@ -474,19 +477,70 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
     }
     case PacketCommand::INSPECT:
     {
+      // Retail retainer "View Attributes & Gear" uses the generic INSPECT command (0x12C)
+      // with Arg0 = retainer actor id (e.g. 0x4001xxxx). In that context, the server must
+      // emit the retainer inspect flow rather than player examine.
+      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+      const auto activeRetainerId = retainerMgr.getActiveRetainerId( player );
+      if( activeRetainerId )
+      {
+        const uint32_t expectedActorId = retainerMgr.getSpawnedRetainerActorId( player, *activeRetainerId );
+        if( expectedActorId != 0 && expectedActorId == data.Arg0 )
+        {
+          if( const auto retainerOpt = retainerMgr.getRetainer( *activeRetainerId ) )
+          {
+            Logger::debug( "[{0}] Retainer INSPECT (View Attributes) actorId=0x{1:08X} retainerId={2}",
+                           player.getId(), expectedActorId, *activeRetainerId );
+            // Retail ordering for the attributes flow: 0x0143 -> 0x01D9 -> 0x01A6 -> 0x01D8
+            retainerMgr.sendRetainerOrderMySelfAttributes( player );
+            retainerMgr.sendRetainerEventScene4( player, 0x000B000A );
+            retainerMgr.sendRetainerInspect( player, *retainerOpt );
+            retainerMgr.sendRetainerResumeScene2( player, 0x000B000A, 0x22 );
+          }
+          break;
+        }
+      }
+
       examineHandler( player, data.Arg0 );
       break;
     }
-    case PacketCommand::MARKING: // Mark player
+
+    case PacketCommand::SET_RETAINER_TASK:
+    {
+      // Best-effort support: some client flows may use a Command for venture assignment.
+      // data.Arg0 is treated as venture/task id.
+      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+      if( const auto activeRetainerId = retainerMgr.getActiveRetainerId( player ) )
+      {
+        Logger::debug( "[{0}] SET_RETAINER_TASK ventureId={1} retainerId={2}",
+                       player.getId(), data.Arg0, *activeRetainerId );
+        ( void ) retainerMgr.startVenture( player, *activeRetainerId, data.Arg0 );
+        retainerMgr.sendRetainerInfo( player, *activeRetainerId );
+      }
+      break;
+    }
+
+    case PacketCommand::CANCEL_RETAINER_TASK:
+    {
+      auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+      if( const auto activeRetainerId = retainerMgr.getActiveRetainerId( player ) )
+      {
+        Logger::debug( "[{0}] CANCEL_RETAINER_TASK retainerId={1}", player.getId(), *activeRetainerId );
+        ( void ) retainerMgr.cancelVenture( player, *activeRetainerId );
+        retainerMgr.sendRetainerInfo( player, *activeRetainerId );
+      }
+      break;
+    }
+    case PacketCommand::MARKING:// Mark player
     {
       break;
     }
-    case PacketCommand::ACTIVE_TITLE: // Set player title
+    case PacketCommand::ACTIVE_TITLE:// Set player title
     {
       player.setTitle( static_cast< uint16_t >( data.Arg0 ) );
       break;
     }
-    case PacketCommand::TITLE_LIST: // Get title list
+    case PacketCommand::TITLE_LIST:// Get title list
     {
       Network::Util::Packet::sendTitleList( player );
       break;
@@ -496,7 +550,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       player.setBorrowAction( static_cast< uint8_t >( data.Arg1 ), data.Arg2 );
       break;
     }
-    case PacketCommand::SET_HOWTO: // Update howtos seen
+    case PacketCommand::SET_HOWTO:// Update howtos seen
     {
       player.updateHowtosSeen( data.Arg0 );
       break;
@@ -506,7 +560,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       Network::Util::Packet::sendActorControl( player, player.getId(), SetCutsceneFlag, data.Arg0, 1 );
       break;
     }
-    case PacketCommand::EMOTE: // emote
+    case PacketCommand::EMOTE:// emote
     {
       uint64_t targetId = player.getTargetId();
       uint32_t emoteId = data.Arg0;
@@ -530,7 +584,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
         player.setStatus( ActorStatus::EmoteMode );
 
         Network::Util::Packet::sendActorControl( player.getInRangePlayerIds( true ), player.getId(), SetStatus, static_cast< uint8_t >( ActorStatus::EmoteMode ),
-                                                 emoteData->data().IsEndEmoteMode ? 1 : 0  );
+                                                 emoteData->data().IsEndEmoteMode ? 1 : 0 );
       }
 
       if( emoteData->data().IsAvailableWhenDrawn )
@@ -540,13 +594,13 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
 
       break;
     }
-    case PacketCommand::EMOTE_CANCEL: // emote
+    case PacketCommand::EMOTE_CANCEL:// emote
     {
       Network::Util::Packet::sendActorControl( player.getInRangePlayerIds(), player.getId(), EmoteModeInterrupt );
       break;
     }
     case PacketCommand::EMOTE_MODE_CANCEL:
-    { 
+    {
       if( player.getPersistentEmote() > 0 )
       {
         player.setPersistentEmote( 0 );
@@ -559,21 +613,21 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       }
       break;
     }
-    case PacketCommand::POSE_EMOTE_CONFIG: // change pose
-    case PacketCommand::POSE_EMOTE_WORK: // reapply pose
+    case PacketCommand::POSE_EMOTE_CONFIG:// change pose
+    case PacketCommand::POSE_EMOTE_WORK:  // reapply pose
     {
       player.setPose( static_cast< uint8_t >( data.Arg1 ) );
       Network::Util::Packet::sendActorControl( player.getInRangePlayerIds( true ), player.getId(), SetPose, data.Arg0, data.Arg1 );
       break;
     }
-    case PacketCommand::POSE_EMOTE_CANCEL: // cancel pose
+    case PacketCommand::POSE_EMOTE_CANCEL:// cancel pose
     {
       break;
     }
-    case PacketCommand::REVIVE: // return dead / accept raise
+    case PacketCommand::REVIVE:// return dead / accept raise
     {
       auto& warpMgr = Service< WarpMgr >::ref();
-      switch( static_cast < ResurrectType >( data.Arg0 ) )
+      switch( static_cast< ResurrectType >( data.Arg0 ) )
       {
         case ResurrectType::RaiseSpell:
           // todo: handle raise case (set position to raiser, apply weakness status, set hp/mp/tp as well as packet)
@@ -588,7 +642,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
 
       break;
     }
-    case PacketCommand::FINISH_LOADING: // Finish zoning
+    case PacketCommand::FINISH_LOADING:// Finish zoning
     {
       auto& warpMgr = Service< WarpMgr >::ref();
       warpMgr.finishWarp( player );
@@ -610,14 +664,14 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       Network::Util::Packet::sendAchievementList( player );
       break;
     }
-    case PacketCommand::TELEPO_INQUIRY: // Teleport
+    case PacketCommand::TELEPO_INQUIRY:// Teleport
     {
       // data.Arg0 = aetheryte id
       // data.Arg1 = confirm or cancel if using aetheryte ticket
       player.teleportQuery( static_cast< uint16_t >( data.Arg0 ), data.Arg1 == 1 );
       break;
     }
-    case PacketCommand::DYE_ITEM: // Dye item
+    case PacketCommand::DYE_ITEM:// Dye item
     {
       // data.Arg0 = item to dye container
       // data.Arg1 = item to dye slot
@@ -636,21 +690,21 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       player.setGlamouringInfo( data.Arg0, data.Arg1, data.Arg2, data.Arg3, false );
       break;
     }
-    case PacketCommand::DIRECTOR_INIT_RETURN: // Director init finish
+    case PacketCommand::DIRECTOR_INIT_RETURN:// Director init finish
     {
       pZone->onInitDirector( player );
       break;
     }
-    case PacketCommand::SYNC_DIRECTOR: // Director init finish
+    case PacketCommand::SYNC_DIRECTOR:// Director init finish
     {
       pZone->onDirectorSync( player );
       break;
     }
-/*    case PacketCommand::EnterTerritoryEventFinished:// this may still be something else. I think i have seen it elsewhere
+    case PacketCommand::ENTER_TERRITORY_EVENT_FINISHED:
     {
       player.setOnEnterEventDone( true );
       break;
-    }*/
+    }
     case PacketCommand::EVENT_HANDLER:
     {
       pZone->onEventHandlerOrder( player, data.Arg0, data.Arg1, data.Arg2, static_cast< uint32_t >( data.Target ), data.Arg3 );
@@ -728,7 +782,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
 
       break;
     }
-   /* case PacketCommand::RequestEstateEditGuestAccessSettings:
+      /* case PacketCommand::RequestEstateEditGuestAccessSettings:
     {
       auto& housingMgr = Service< HousingMgr >::ref();
 
@@ -769,7 +823,7 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
       break;
     }
 
-/*    case PacketCommand::RequestLandInventory:
+      /*    case PacketCommand::RequestLandInventory:
     {
       uint8_t plot = ( data.Arg1 & 0xFF );
 

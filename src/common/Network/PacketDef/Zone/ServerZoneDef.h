@@ -980,6 +980,11 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     } Materia[ 5 ];
   };
 
+  // NOTE: FFXIVIpcInspect (0x01A6) - 1016 byte inspection packet
+  // Field layout derived from InspectPacket.h wrapper implementation
+  // Not currently reverse-engineered from binary - fields are inferred from usage in InspectPacket wrapper
+  // Field layout should be verified against decomp.c and binary analysis when possible
+  // TODO: Verify field offsets and layout with proper binary analysis of 3.35 ffxiv_dx11.exe
   struct FFXIVIpcInspect : FFXIVIpcBasePacket< Inspect > {
     uint8_t ObjType;
     uint8_t Sex;
@@ -1019,7 +1024,9 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     uint8_t SkillLv[ 3 ];
     uint8_t __padding13;
     uint32_t BaseParam[ 50 ];
+    uint8_t __padding14[ 32 ];// Unknown trailing data
   };
+  static_assert( sizeof( FFXIVIpcInspect ) == 1016, "FFXIVIpcInspect payload size must be 1016 bytes" );
 
   struct FFXIVIpcName : FFXIVIpcBasePacket< Name > {
     uint64_t contentId;
@@ -1280,7 +1287,10 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   */
   struct FFXIVIpcPlayEventSceneHeader : FFXIVIpcBasePacket< EventPlayHeader >, FFXIVIpcPlayEventSceneN< 1 > {
   };
-  struct FFXIVIpcPlayEventScene2 : FFXIVIpcBasePacket< EventPlay2 >, FFXIVIpcPlayEventSceneN< 2 > {
+  // NOTE: Retail 3.35 captures show opcode 0x01C3 (EventPlay2) carries 4 uint32 params on the wire,
+  // even when paramCount is 0. The additional params appear to be reserved/constant values.
+  // Using 4 params here matches the observed 72-byte segment size (0x20 header + 0x28 payload).
+  struct FFXIVIpcPlayEventScene2 : FFXIVIpcBasePacket< EventPlay2 >, FFXIVIpcPlayEventSceneN< 4 > {
   };
   struct FFXIVIpcPlayEventScene4 : FFXIVIpcBasePacket< EventPlay4 >, FFXIVIpcPlayEventSceneN< 4 > {
   };
@@ -2216,6 +2226,123 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   static_assert( sizeof( FFXIVIpcMarketPrice ) == 24 );
 
   /**
+   * Server -> Client: Item size update
+   * Opcode: 0x01B0 (ItemSize)
+   * Size: 48 bytes payload
+   * 
+   * Sent to update retainer container size and context.
+   * May indicate number of items in a container or transaction state.
+   */
+  struct FFXIVIpcItemSizeUpdate : FFXIVIpcBasePacket< ItemSize > {
+    uint32_t contextId; // +0  Sequence number for transaction grouping
+    uint32_t retainerId;// +4  Retainer ID
+    uint32_t storageId; // +8  Container type
+    uint32_t unknown12; // +12 Unknown field
+    uint32_t unknown16; // +16 Unknown field
+    uint32_t unknown20; // +20 Unknown field
+    uint32_t unknown24; // +24
+    uint32_t unknown28; // +28
+    uint32_t unknown32; // +32
+    uint32_t unknown36; // +36
+    uint32_t unknown40; // +40
+    uint32_t unknown44; // +44
+  };
+  static_assert( sizeof( FFXIVIpcItemSizeUpdate ) == 48 );
+
+  /**
+   * Server -> Client: Gil item update
+   * Opcode: 0x01B3 (GilItem)
+   * Size: 64 bytes payload
+   * 
+   * Handshake/confirmation packet after retainer status updates.
+   * May contain retainer count or active task indicators.
+   */
+  struct FFXIVIpcGilItemUpdate : FFXIVIpcBasePacket< GilItem > {
+    uint32_t retainerId; // +0
+    uint32_t unknown4;   // +4
+    uint32_t unknown8;   // +8
+    uint32_t unknown12;  // +12
+    uint32_t itemCount;  // +16 Possibly count of items or slots
+    uint32_t statusFlags;// +20 Status flags (value observed: 1)
+    uint8_t __padding1[ 40 ];
+  };
+  static_assert( sizeof( FFXIVIpcGilItemUpdate ) == 64 );
+
+  /**
+   * Server -> Client: Pop event state / Event scene control
+   * Opcode: 0x01CD (PopEventState)
+   * Size: 48 bytes payload
+   * 
+   * Sent during retainer event transitions.
+   * Similar to 0x01D8 (ResumeEventScene2) for scene management.
+   */
+  struct FFXIVIpcEventSceneControl : FFXIVIpcBasePacket< PopEventState > {
+    uint32_t handlerId;// +0  Event handler ID
+    uint16_t sceneId;  // +4  Scene ID
+    uint8_t unknown6;  // +6  Unknown marker
+    uint8_t __padding1;// +7
+    uint32_t unknown8; // +8  Scene control data
+    uint32_t unknown12;// +12
+    uint32_t unknown16;// +16
+    uint32_t unknown20;// +20
+    uint32_t unknown24;// +24
+    uint32_t unknown28;// +28
+    uint32_t unknown32;// +32
+    uint32_t unknown36;// +36
+    uint32_t unknown40;// +40
+    uint32_t unknown44;// +44
+  };
+  static_assert( sizeof( FFXIVIpcEventSceneControl ) == 48 );
+
+  /**
+   * Server -> Client: Session completion or daily task marker
+   * Opcode: 0x00D5 (UpdateOnlineStatus)
+   * Size: 40 bytes payload
+   * 
+   * Sent at end of retainer interaction.
+   * May indicate quest completion, daily reset, or task slot information.
+   */
+  struct FFXIVIpcSessionMarker : FFXIVIpcBasePacket< UpdateOnlineStatus > {
+    uint32_t unknown0; // +0
+    uint32_t unknown4; // +4
+    uint32_t taskCount;// +8  Observed value: 4 (possibly daily task slots)
+    uint32_t unknown12;// +12
+    uint32_t unknown16;// +16
+    uint32_t unknown20;// +20
+    uint32_t unknown24;// +24
+    uint32_t unknown28;// +28
+    uint32_t unknown32;// +32
+    uint32_t unknown36;// +36
+  };
+  static_assert( sizeof( FFXIVIpcSessionMarker ) == 40 );
+
+  /**
+   * Server -> Client: Session termination / Logout marker
+   * Opcode: 0x0065 (SyncReply in Zone connection)
+   * Size: 56 bytes payload
+   * 
+   * Sent at absolute end of retainer session.
+   * Signals client to clear session state and return to normal gameplay.
+   */
+  struct FFXIVIpcSessionTerminate : FFXIVIpcBasePacket< SyncReply > {
+    uint32_t sessionHash;// +0  Session hash or timestamp
+    uint32_t unknown4;   // +4
+    uint32_t unknown8;   // +8
+    uint32_t unknown12;  // +12
+    uint32_t unknown16;  // +16
+    uint32_t unknown20;  // +20
+    uint32_t unknown24;  // +24
+    uint32_t unknown28;  // +28
+    uint32_t unknown32;  // +32
+    uint32_t unknown36;  // +36
+    uint32_t unknown40;  // +40
+    uint32_t unknown44;  // +44
+    uint32_t unknown48;  // +48
+    uint32_t unknown52;  // +52
+  };
+  static_assert( sizeof( FFXIVIpcSessionTerminate ) == 56 );
+
+  /**
    * Server -> Client: Get retainer list result
    * Opcode: 0x0106 (GetRetainerListResult)
    * Size: 384 bytes payload
@@ -2223,13 +2350,18 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
    * Retail capture shows only the first ~47 bytes populated; remainder is zero.
    */
   struct FFXIVIpcGetRetainerListResult : FFXIVIpcBasePacket< GetRetainerListResult > {
-    uint64_t retainerId;   // +0
-    uint32_t createTime;   // +8
-    uint16_t unknown12;    // +12 (observed 3)
-    uint8_t unknown14;     // +14 (observed 3)
-    char name[ 32 ];       // +15
-    uint8_t padding[ 337 ];// +47 .. +383
+    struct Entry {
+      uint64_t retainerId;// +0
+      uint32_t createTime;// +8
+      uint16_t level;     // +12 Retainer level
+      uint8_t classJob;   // +14 Retainer class/job ID
+      char name[ 33 ];    // +15 (null-terminated; field extends to end of 0x30-byte entry)
+    };
+
+    Entry entries[ 8 ];// 8 * 0x30 = 0x180 bytes payload
   };
   static_assert( sizeof( FFXIVIpcGetRetainerListResult ) == 384 );
-  static_assert( offsetof( FFXIVIpcGetRetainerListResult, name ) == 15 );
+  static_assert( sizeof( FFXIVIpcGetRetainerListResult::Entry ) == 48 );
+  static_assert( offsetof( FFXIVIpcGetRetainerListResult::Entry, name ) == 15 );
+  static_assert( offsetof( FFXIVIpcGetRetainerListResult, entries ) == 0 );
 }// namespace Sapphire::Network::Packets::WorldPackets::Server

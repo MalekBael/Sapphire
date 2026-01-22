@@ -301,7 +301,7 @@ namespace Sapphire::World::Manager
      * @param player The player to send to
      * @param handlerId Event handler ID for context (default 0 = auto-generate)
      */
-    void sendRetainerList( Entity::Player& player, uint32_t handlerId = 0 );
+    void sendRetainerList( Entity::Player& player, uint32_t handlerId = 0, bool sendGatingPackets = true, bool sendEventStart = true );
 
     /**
      * @brief Send detailed RetainerInfo packet for a specific retainer
@@ -338,6 +338,92 @@ namespace Sapphire::World::Manager
      * opening retainer inventory/gil related UIs.
      */
     void sendGetRetainerListResult( Entity::Player& player );
+
+    /**
+     * @brief Send retail retainer Condition (0x01A3) for opening the bell UI
+     *
+     * Retail emits a Condition packet immediately after PushEventState.
+     * This appears to gate the UI/state machine into a "busy but usable" mode.
+     */
+    void sendRetainerConditionOpen( Entity::Player& player );
+
+    /**
+     * @brief Send retail retainer Condition (0x01A3) for closing/unbusy
+     *
+     * Retail emits a second Condition packet after PopEventState during close.
+     */
+    void sendRetainerConditionClose( Entity::Player& player );
+
+    /**
+     * @brief Send retainer session close packets (ResumeEventScene2 + OrderMySelf)
+     *
+     * Called after retainer inventory/interaction is complete to finalize the UI.
+     * Matches retail packet flow for proper client state machine progression.
+     * 
+     * @param player The player to send to
+     * @param handlerId The event handler ID from the session
+     */
+    void sendRetainerSessionClose( Entity::Player& player, uint32_t handlerId = 0 );
+
+    /**
+     * @brief Send retail close-gate ActorControl (0x0142)
+     *
+     * Retail emits an additional 0x0142 during the close/unbusy sequence.
+     */
+    void sendRetainerActorControlCloseGate( Entity::Player& player );
+
+    /**
+     * @brief Send retail OrderMySelf packet used by the "View Attributes & Gear" flow (0x0143)
+     *
+     * Retail sequence: 0x0143 -> 0x01D9 -> 0x01A6 -> 0x01D8
+     */
+    void sendRetainerOrderMySelfAttributes( Entity::Player& player );
+
+    /**
+     * @brief Send retail OrderMySelf close packet (0x0143)
+     */
+    void sendRetainerOrderMySelfClose( Entity::Player& player );
+
+    /**
+     * @brief Send retainer ResumeEventScene2 packet (0x01D8)
+     *
+     * @param player The player to send to
+     * @param handlerId The event handler ID (defaults to retainer-call event)
+     * @param resumeId The resume ID to emit (retail uses different values per phase)
+     */
+    void sendRetainerResumeScene2( Entity::Player& player, uint32_t handlerId = 0, uint8_t resumeId = 0x0d,
+                                   uint32_t arg0 = 0, uint32_t arg1 = 0xE20B2858 );
+
+    /**
+     * @brief Send retainer equipped gear packet (0x01A5 - Equip)
+     *
+     * Retail sends this during inventory flow to display retainer's equipped gear.
+     * 
+     * @param player The player to send to
+     * @param retainer The retainer data
+     */
+    void sendRetainerEquip( Entity::Player& player, const RetainerData& retainer );
+
+    /**
+     * @brief Send retainer inspection packet (0x01A6 - Inspect)
+     *
+     * Retail sends this late in the retainer sequence to provide detailed gear, stats,
+     * and character data for the "View Attributes & Gear" menu.
+     * 
+     * @param player The player to send to
+     * @param retainer The retainer data to inspect
+     */
+    void sendRetainerInspect( Entity::Player& player, const RetainerData& retainer );
+
+    /**
+     * @brief Send extended event scene packet (0x01D9 - ResumeEventScene4)
+     *
+     * Retail sends this near the end of retainer sequence with 4 event arguments.
+     * 
+     * @param player The player to send to
+     * @param handlerId The event handler ID (typically 0x000B000A for retainer-call)
+     */
+    void sendRetainerEventScene4( Entity::Player& player, uint32_t handlerId );
 
     /**
      * @brief Send market listings for a retainer

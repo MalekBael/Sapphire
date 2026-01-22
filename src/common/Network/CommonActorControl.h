@@ -578,6 +578,10 @@ namespace Sapphire::Network::ActorControl
     JUMP_START = 0x258,
     JUMP_LANDING = 0x259,
     GIMMICK_JUMP_END = 0x25A,
+
+    // Sent shortly after FINISH_LOADING on zone-in; used by server-side state
+    // to allow/finish enter-territory events.
+    ENTER_TERRITORY_EVENT_FINISHED = 0x330,
     START_CRAFT = 0x2BC,
     FISHING = 0x2BD,
     PACKET_COMMOND_TRACKING = 0x2BE,
