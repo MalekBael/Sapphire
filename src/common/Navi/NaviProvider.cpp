@@ -622,7 +622,7 @@ int32_t Sapphire::Common::Navi::NaviProvider::addAgent( const Common::FFXIVARR_P
                     DT_CROWD_OPTIMIZE_VIS |
                     DT_CROWD_OPTIMIZE_TOPO |
                     DT_CROWD_OBSTACLE_AVOIDANCE;
-  params.separationWeight = 2.0f;
+  params.separationWeight = 100.0f;
   params.obstacleAvoidanceType = 3;
 
 
@@ -647,7 +647,7 @@ void Sapphire::Common::Navi::NaviProvider::updateAgentParameters( int32_t naviAg
                     DT_CROWD_OPTIMIZE_VIS |
                     DT_CROWD_OPTIMIZE_TOPO |
                     DT_CROWD_OBSTACLE_AVOIDANCE;
-  params.separationWeight = 2.0f;
+  params.separationWeight = 100.0f;
   params.obstacleAvoidanceType = 3;
   m_pCrowd->updateAgentParameters( naviAgentId, &params );
 }

@@ -366,11 +366,12 @@ namespace Sapphire
 
       if( elapsed >= timepoint.m_offset )
       {
-        state.m_scheduleInfo.m_lastTimepointTime = time;
-        state.m_scheduleInfo.m_lastTimepointIndex = ++i;
-
-        timepoint.execute( self, pack, pEncounter, time );
-        continue;
+        if( timepoint.execute( self, pack, pEncounter, time ) )
+        {
+          state.m_scheduleInfo.m_lastTimepointTime = time;
+          state.m_scheduleInfo.m_lastTimepointIndex = ++i;
+          continue;
+        }
       }
       break;
     }

@@ -992,6 +992,25 @@ Entity::BNpcPtr Territory::createBNpcFromLayoutIdNoPush( uint32_t layoutId, uint
   return pBNpc;
 }
 
+Entity::GameObjectPtr Territory::getEntityById( uint32_t entityId )
+{
+  Entity::GameObjectPtr pRet = nullptr;
+
+  pRet = getPlayer( entityId );
+  if( pRet )
+    return pRet;
+
+  pRet = getActiveBNpcByEntityId( entityId );
+  if( pRet )
+    return pRet;
+
+  pRet = getEObj( entityId );
+  if( pRet )
+    return pRet;
+
+  return pRet;
+}
+
 Entity::BNpcPtr Territory::getActiveBNpcByEntityId( uint32_t entityId )
 {
   auto it = m_bNpcMap.find( entityId );

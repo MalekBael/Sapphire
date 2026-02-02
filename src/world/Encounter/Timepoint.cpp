@@ -460,6 +460,29 @@ namespace Sapphire
           auto& actionMgr = Common::Service< Sapphire::World::Manager::ActionMgr >::ref();
           auto pAction = pBNpc->getCurrentAction();
 
+          // todo: probably a flag on TimelinePack for PauseIfOutOfRange? idk
+          // we need to pause the timeline if the player is out of range
+          auto topHateId = pBNpc->getTargetId();
+          {
+            auto pTargetActor = pEncounter->getTeriPtr()->getEntityById( topHateId );
+
+            if( pTargetActor )
+            {
+              if( auto pTargetChara = pTargetActor->getAsChara() )
+              {
+                auto distance = Common::Util::distance2D( pBNpc->getPos().x, pBNpc->getPos().z, pTargetChara->getPos().x, pTargetChara->getPos().z );
+                if( targetId != pBNpc->getId() && distance >= 3.f + pBNpc->getRadius() + pTargetChara->getRadius() )
+                {
+                  // pause at this timepoint
+                  return false;
+                }
+              }
+            }
+          }
+
+          if( pAction )
+            return false;
+
           // todo: this is probably wrong
           //if( !pAction || pAction->isInterrupted() )
           {
@@ -612,7 +635,7 @@ namespace Sapphire
         }
       }
       break;
-      */
+      //*/
       case TimepointDataType::LogMessage:
       {
         auto pLogMessage = std::dynamic_pointer_cast< TimepointDataLogMessage, TimepointData >( m_pData );
@@ -914,8 +937,8 @@ namespace Sapphire
           break;
         }
       }
-
       break;
+
       default:
         break;
     }

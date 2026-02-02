@@ -325,9 +325,9 @@ void PlayerMgr::onUpdate( Entity::Player& player, uint64_t tickCount )
     auto pNaviProvider = pTeri->getNaviProvider();
     // update with speed 0 to essentially have them as an obstacle
     if( pNaviProvider )
-      pNaviProvider->updateAgentPosition( player.getAgentId(), player.getPos(), player.getRadius(), 0.0f );
+      pNaviProvider->updateAgentPosition( player.getAgentId(), player.getPos(), 1.0f, 0.0f );
   }
-  */
+  //*/
 }
 
 void PlayerMgr::checkAutoAttack( Entity::Player& player, uint64_t tickCount ) const

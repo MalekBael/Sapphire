@@ -65,7 +65,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   if( bnpc.pathingActive() && !hasQueuedAction &&
       !bnpc.hasFlag( Entity::Immobile ) &&
-      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 1.0f ) )
+      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
   {
 
     if( pNaviProvider )
