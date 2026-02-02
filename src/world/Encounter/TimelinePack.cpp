@@ -34,69 +34,6 @@
 
 namespace Sapphire
 {
-
-  /*
-  class RngCondition : TimepointCondition
-  {
-    EncounterTimepointcondition m_type;
-    std::vector< uint32_t > m_params
-    
-    RngCondition( EncounterTimepointcondition condition std::vector< uint32_t params ) : m_type( condition ), m_params( params ){}
-    bool isConditionMet( uint32_t shit )
-    {
-      switch( m_type )
-      {
-        case EncounterTimepointcondition::RngMinMax:
-          return RNGMgr::generate( params[0], params[1] ) == params[2];
-      }
-      return false;
-    }
-  }
-  enum class ActionCallbackType : uint32_t
-  {
-    OnActionInit,
-    OnActionStart,
-    OnActionInterrupt,
-    OnActionExecute
-  };
-
-  using CallbackFunc = std::function< void < CharaPtr, Action > >;
-
-  std::unordered_map< ActionCallbackType, CallbackFunc > m_actionCallbacks;
-  void Chara::registerActionCallback( ActionCallbackType type, CallbackFunc callback )
-  {
-    m_actionCallbacks[ type ].push_back( callback );
-  }
-
-  // call this when changing EncounterPack
-  void Chara::clearActionCallbacks()
-  {
-    for( auto& callback : m_actionCallbacks )
-      callback.second.clear()
-  }
-
-  void Chara::onActionInterrupt()
-  {
-    auto action = getCurrentAction();
-    for( auto& callback : m_actionCallbacks[ ActionCallbackType::OnActionInterrupt ] )
-      callback( this, action );
-  }
-
-  void EncounterTimeline::Timepoint::execute( TerritoryPtr pTeri, uint64_t time )
-  {
-    switch( m_type )
-    {
-      case TimepointDataType::CastAction:
-      {
-        auto pActionData = std::dynamic_pointer_cast< TimepointDataAction, TimepointData >( getData() );
-
-        // todo: filter the correct target
-        // todo: tie to mechanic script?
-      }
-    }
-  }
-  */
-
   //
   // parsing stuff below
   //

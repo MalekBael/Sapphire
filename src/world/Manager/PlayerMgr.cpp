@@ -305,6 +305,7 @@ void PlayerMgr::onMoveZone( Sapphire::Entity::Player& player )
 
 void PlayerMgr::onUpdate( Entity::Player& player, uint64_t tickCount )
 {
+  // todo: shouldnt all this be in Player::update()?
   if( player.getHp() <= 0 && player.getStatus() != Common::ActorStatus::Dead )
   {
     player.die();
@@ -315,6 +316,18 @@ void PlayerMgr::onUpdate( Entity::Player& player, uint64_t tickCount )
     return;
 
   checkAutoAttack( player, tickCount );
+
+  /*
+  auto& teriMgr = Common::Service< Manager::TerritoryMgr >::ref();
+  auto pTeri = teriMgr.getTerritoryByGuId( player.getTerritoryId() );
+  if( pTeri )
+  {
+    auto pNaviProvider = pTeri->getNaviProvider();
+    // update with speed 0 to essentially have them as an obstacle
+    if( pNaviProvider )
+      pNaviProvider->updateAgentPosition( player.getAgentId(), player.getPos(), player.getRadius(), 0.0f );
+  }
+  */
 }
 
 void PlayerMgr::checkAutoAttack( Entity::Player& player, uint64_t tickCount ) const

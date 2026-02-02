@@ -87,6 +87,13 @@ void ActionResultBuilder::startCombo( Entity::CharaPtr& target, uint16_t actionI
   addResultToActor( target, nextResult );
 }
 
+void ActionResultBuilder::knockback( Entity::CharaPtr& target, uint32_t kbExdKey, float offset )
+{
+  ActionResultPtr nextResult = make_ActionResult( m_sourceChara, target );
+  nextResult->knockback( kbExdKey, offset );
+  addResultToActor( target, nextResult );
+}
+
 void ActionResultBuilder::comboSucceed( Entity::CharaPtr& target )
 {
   ActionResultPtr nextResult = make_ActionResult( m_sourceChara, target );
@@ -196,7 +203,7 @@ std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket
 
       for( auto& result : actorResultList )
       {
-        auto effect = result->getCalcResultParam();
+        const auto& effect = result->getCalcResultParam();
         if( result->getTarget() == m_sourceChara )
           actionResult->addSourceEffect( effect );
         else
@@ -226,7 +233,7 @@ std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket
 
       for( auto& result : actorResultList )
       {
-        auto effect = result->getCalcResultParam();
+        const auto& effect = result->getCalcResultParam();
         if( result->getTarget() == m_sourceChara &&
             result->getCalcResultParam().Type != Common::CalcResultType::TypeSetStatusMe )
           actionResult->addSourceEffect( effect );
