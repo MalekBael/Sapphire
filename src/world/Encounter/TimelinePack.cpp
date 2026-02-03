@@ -129,7 +129,7 @@ namespace Sapphire
         phase.m_description = description;
         for( const auto& timepointJ : timepointsJ.items() )
         {
-          auto timepointV = timepointJ.value();
+          auto& timepointV = timepointJ.value();
           Timepoint timepoint;
           timepoint.from_json( timepointV, actorNameMap, actor.m_layoutId );
 
@@ -365,11 +365,11 @@ namespace Sapphire
     auto it = m_vars.find( index );
     if( it != m_vars.end() )
       return it->second;
-    return 0xFFFFFFFF;
+    return 0;
   }
 
   void TimelinePack::setVar( uint32_t index, uint32_t val )
   {
-    m_vars[index] = val;
+    m_vars[ index ] = val;
   }
 }// namespace Sapphire::Encounter

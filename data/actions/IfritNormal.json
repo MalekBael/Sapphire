@@ -35,7 +35,7 @@
   },
   "455": {
     "name": "Eruption",
-    "potency": 100,
+    "potency": 1,
     "comboPotency": 0,
     "flankPotency": 0,
     "frontPotency": 0,
@@ -43,7 +43,7 @@
     "curePotency": 0,
     "restorePercentage": 0,
     "nextCombo": [],
-    "targetFilter": 0,
+    "targetFilter": 1,
     "aggroModifier": 1.0,
     "statuses": {
       "caster": [],

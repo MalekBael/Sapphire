@@ -1014,6 +1014,7 @@ void Action::Action::addDefaultActorFilters()
     }
     case Common::CastType::Cone:
     {
+      // todo: account for Caster radius and Target radius
       ConeEntry shapeEntry = { 0, 0 };
       if( ActionShapeLut::validConeEntryExists( static_cast< uint16_t >( getId() ) ) )
       {

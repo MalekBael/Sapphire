@@ -40,7 +40,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   if( !pHatedActor->isAlive() || bnpc.getTerritoryId() != pHatedActor->getTerritoryId() )
   {
-    bnpc.hateListRemove( pHatedActor );
+    bnpc.deaggro( pHatedActor );
     pHatedActor = bnpc.hateListGetHighest();
   }
 
@@ -86,7 +86,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   {
     auto pos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
     if( ( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z ) && Common::Util::distance( bnpc.getPos(), pos ) > bnpc.getNaviTargetReachedDistance() )
-      bnpc.setPos( pos );
+        bnpc.setPos( pos );
   }
 
   if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 1.0f ) )
