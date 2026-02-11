@@ -131,6 +131,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
   m_territoryId = zone.getGuId();
 
   m_spawnPos = m_pos;
+  m_spawnRot = pInfo->rotation;
 
   m_timeOfDeath = 0;
   m_targetId = Common::INVALID_GAME_OBJECT_ID64;
@@ -248,6 +249,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
   m_class = ClassJob::Gladiator;
 
   m_spawnPos = m_pos;
+  m_spawnRot = pInfo->rotation;
 
   m_timeOfDeath = 0;
   m_targetId = Common::INVALID_GAME_OBJECT_ID64;
@@ -316,6 +318,26 @@ uint8_t BNpc::getAggressionMode() const
 float BNpc::getNaviTargetReachedDistance() const
 {
   return m_naviTargetReachedDistance;
+}
+
+uint64_t BNpc::getLastNaviMoveRequest() const
+{
+  return m_naviLastMoveRequest;
+}
+
+bool BNpc::getNaviIsPathing() const
+{
+  return m_naviIsPathing;
+}
+
+Common::FFXIVARR_POSITION3 BNpc::getNaviLastMoveTarget() const
+{
+  return m_naviLastTarget;
+}
+
+Common::FFXIVARR_POSITION3 BNpc::getNaviMoveTarget() const
+{
+  return m_naviTarget;
 }
 
 uint8_t BNpc::getEnemyType() const
@@ -412,9 +434,15 @@ bool BNpc::moveTo( const FFXIVARR_POSITION3& pos )
     setPos( pos1 );
     auto newAgentId = pNaviProvider->updateAgentPosition( getAgentId(), pos1, getRadius(), getCurrentSpeed() );
     setAgentId( newAgentId );
+    m_naviTarget = pos;
+    m_naviLastTarget = pos;
+    m_naviIsPathing = false;
     return true;
   }
 
+  m_naviLastTarget = pos;
+  m_naviTarget = pos;
+  m_naviIsPathing = true;
   pZone->updateActorPosition( *this );
   face( pos );
   if( distance > 2.0f )
@@ -1330,7 +1358,7 @@ void BNpc::initFsm()
       m_fsm->addState( stateRoam );
     }
     stateIdle->addTransition( stateCombat, make_HateListHasEntriesCondition() );
-    stateCombat->addTransition( stateIdle, make_HateListEmptyCondition() );
+    //stateCombat->addTransition( stateIdle, make_HateListEmptyCondition() );
     stateIdle->addTransition( stateDead, make_IsDeadCondition() );
     stateCombat->addTransition( stateDead, make_IsDeadCondition() );
     m_fsm->addState( stateIdle );
@@ -1338,6 +1366,7 @@ void BNpc::initFsm()
     {
       auto stateRetreat = make_StateRetreat();
       stateCombat->addTransition( stateRetreat, make_SpawnPointDistanceGtMaxDistanceCondition() );
+      stateCombat->addTransition( stateRetreat, make_HateListEmptyCondition() );
       stateRetreat->addTransition( stateIdle, make_RoamTargetReachedCondition() );
     }
     m_fsm->setCurrentState( stateIdle );
@@ -1389,6 +1418,11 @@ const Common::FFXIVARR_POSITION3& BNpc::getRoamTargetPos() const
 const Common::FFXIVARR_POSITION3& BNpc::getSpawnPos() const
 {
   return m_spawnPos;
+}
+
+float BNpc::getSpawnRot() const
+{
+  return m_spawnRot;
 }
 
 bool BNpc::getCanSwapTarget()

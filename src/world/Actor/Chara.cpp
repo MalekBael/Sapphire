@@ -1092,8 +1092,10 @@ void Chara::knockback( const FFXIVARR_POSITION3& origin, float distance, bool ig
       }
     }
     setPos( navPos );
+
     // speed needs to be reset properly here
-    setAgentId( pNav->updateAgentPosition( getAgentId(), getPos(), getRadius(), pNav->getAgentSpeed( getAgentId() ) ) );
+    if( !isPlayer()  )
+      setAgentId( pNav->updateAgentPosition( getAgentId(), getPos(), getRadius(), pNav->getAgentSpeed( getAgentId() ) ) );
   }
   else
   {

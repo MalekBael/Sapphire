@@ -99,6 +99,10 @@ namespace Sapphire::Entity
     void setTriggerOwnerId( uint32_t triggerOwnerId );
 
     float getNaviTargetReachedDistance() const;
+    uint64_t getLastNaviMoveRequest() const;
+    bool getNaviIsPathing() const;
+    Common::FFXIVARR_POSITION3 getNaviLastMoveTarget() const;
+    Common::FFXIVARR_POSITION3 getNaviMoveTarget() const;
 
     // return true if it reached the position
     bool moveTo( const Common::FFXIVARR_POSITION3& pos );
@@ -186,6 +190,8 @@ namespace Sapphire::Entity
 
     const Common::FFXIVARR_POSITION3& getRoamTargetPos() const;
     const Common::FFXIVARR_POSITION3& getSpawnPos() const;
+    float getSpawnRot() const;
+
     void initFsm();
 
     bool getCanSwapTarget();
@@ -217,6 +223,9 @@ namespace Sapphire::Entity
     Common::BNpcType m_bnpcType;
 
     float m_naviTargetReachedDistance;
+    uint64_t m_naviLastMoveRequest{ 0 };
+    bool m_naviIsPathing{ false };
+    Common::FFXIVARR_POSITION3 m_naviLastTarget{ 0 };
 
     std::shared_ptr< Common::BNPCData > m_pInfo;
 
@@ -225,6 +234,7 @@ namespace Sapphire::Entity
     bool m_roamTargetReached{ false };
 
     Common::FFXIVARR_POSITION3 m_spawnPos;
+    float m_spawnRot;
     Common::FFXIVARR_POSITION3 m_roamPos;
     Common::FFXIVARR_POSITION3 m_lastPos;
     float m_lastRot;

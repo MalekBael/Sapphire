@@ -1002,13 +1002,13 @@ void Action::Action::addDefaultActorFilters()
     case Common::CastType::Unknown:
     case Common::CastType::Circle:
     {
-      auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
+      auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange + m_pSource->getRadius() );
       addActorFilter( filter );
       break;
     }
     case Common::CastType::Box:
     {
-      auto filter = std::make_shared< World::Util::ActorFilterBox >( m_pos, m_effectWidth, m_effectRange );
+      auto filter = std::make_shared< World::Util::ActorFilterBox >( m_pos, m_effectWidth, m_effectRange + m_pSource->getRadius() );
       addActorFilter( filter );
       break;
     }
@@ -1021,7 +1021,11 @@ void Action::Action::addDefaultActorFilters()
         shapeEntry = ActionShapeLut::getConeEntry( static_cast< uint16_t >( getId() ) );
       }
 
-      auto rangeFilter = std::make_shared< World::Util::ActorFilterInRange >( m_pSource->getPos(), m_range );
+      auto p1 = m_pSource->getPos();
+      auto p2 = m_pos;
+      Logger::debug( "Action#{} Range:{} EffectRange:{} EffectWidth:{} SrcPos:({},{},{}) Pos:({},{},{}) ", m_id, m_range, m_effectRange, m_effectWidth, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z );
+
+      auto rangeFilter = std::make_shared< World::Util::ActorFilterInRange >( m_pSource->getPos(), m_effectRange + m_pSource->getRadius() );
       addActorFilter( rangeFilter );
       auto coneFilter = std::make_shared< World::Util::ActorFilterCone >( m_pSource->getPos(), m_pos, shapeEntry.startAngle, shapeEntry.endAngle );
       addActorFilter( coneFilter );
@@ -1066,14 +1070,16 @@ bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
     }
     case Common::TargetFilter::Players:
     {
-      // todo: handle pets (use TargetHelper::OwnBattalionFilter maybe?)
+      // todo: should pets fall under TargetFilter::Players or Allies?
       actorApplicable = kind == ObjKind::Player;
       break;
     }
     case Common::TargetFilter::Allies:
     {
-      // Todo: Make this work for allies properly
-      actorApplicable = kind != ObjKind::BattleNpc;
+      if( kind == ObjKind::Player )
+        actorApplicable = true;
+      else if( kind == ObjKind::BattleNpc && pChara->getAsBNpc()->getEnemyType() == 0 )
+        actorApplicable = true;
       break;
     }
     case Common::TargetFilter::Party:
@@ -1099,7 +1105,7 @@ bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
     }
     case Common::TargetFilter::Enemies:
     {
-      actorApplicable = kind == ObjKind::BattleNpc;
+      actorApplicable = kind == ObjKind::BattleNpc && pChara->getAsBNpc()->getEnemyType() != 0;
       break;
     }
   }

@@ -90,7 +90,7 @@ Player::Player() :
   m_onlineStatus = 0;
   m_status = ActorStatus::Idle;
   m_invincibilityType = InvincibilityType::InvincibilityNone;
-  m_radius = 2.f;
+  m_radius = 0.f;
 
   memset( m_name, 0, sizeof( m_name ) );
   memset( m_searchMessage, 0, sizeof( m_searchMessage ) );

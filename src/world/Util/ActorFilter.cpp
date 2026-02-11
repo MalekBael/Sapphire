@@ -17,7 +17,8 @@ bool Sapphire::World::Util::ActorFilterInRange::conditionApplies( Entity::GameOb
 {
   auto radius = m_radius;
 
-  if( actor.isChara() )
+  // todo: does transfiguration status give player a larger hitbox?
+  if( !actor.isPlayer() )
     radius += actor.getAsChara()->getRadius();
 
   return Sapphire::Common::Util::distance( m_aoePos, actor.getPos() ) <= radius;

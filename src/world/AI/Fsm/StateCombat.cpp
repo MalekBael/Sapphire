@@ -65,7 +65,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   if( bnpc.pathingActive() && !hasQueuedAction &&
       !bnpc.hasFlag( Entity::Immobile ) &&
-      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 2.0f ) )
   {
 
     if( pNaviProvider )
@@ -85,17 +85,21 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   if( bnpc.getAgentId() != -1 )
   {
     auto pos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
-    if( ( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z ) && Common::Util::distance( bnpc.getPos(), pos ) > bnpc.getNaviTargetReachedDistance() )
-        bnpc.setPos( pos );
+    if( ( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z ) )
+      bnpc.setPos( pos );
   }
 
-  if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 1.0f ) )
+  // todo: there are mobs that ignore aggro and continue their path
+  //       such as Labyrinth of The Ancients adds in Thanatos boss fight, account for those
+  if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 3.0f ) )
   {
     bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
     if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) )
       bnpc.autoAttack( pHatedActor );
+
+    pNaviProvider->resetMoveTarget( bnpc.getAgentId() );
   }
 
 }

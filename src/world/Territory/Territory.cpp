@@ -333,9 +333,9 @@ void Territory::pushActor( const Entity::GameObjectPtr& pActor )
   {
     auto pPlayer = pActor->getAsPlayer();
 
-    if( m_pNaviProvider )
-      agentId = m_pNaviProvider->addAgent( pPlayer->getPos(), pPlayer->getRadius() );
-    pPlayer->setAgentId( agentId );
+    //if( m_pNaviProvider )
+    //  agentId = m_pNaviProvider->addAgent( pPlayer->getPos(), pPlayer->getRadius() );
+    //pPlayer->setAgentId( agentId );
 
     m_playerMap[ pPlayer->getId() ] = pPlayer;
     updateCellActivity( cx, cy, 1 );
