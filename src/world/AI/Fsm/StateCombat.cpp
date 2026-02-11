@@ -63,45 +63,75 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     }
   }
 
+  auto dtMove = tickCount - m_lastMoveTime;
+  auto dtRot = tickCount - m_lastRotTime;
+
+  if( dtRot == tickCount )
+    dtRot = 300;
+
   if( bnpc.pathingActive() && !hasQueuedAction &&
-      !bnpc.hasFlag( Entity::Immobile ) &&
-      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 2.0f ) )
+      !bnpc.hasFlag( Entity::Immobile ) && dtMove >= 1500 &&
+      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
   {
 
     if( pNaviProvider )
       pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
 
     bnpc.moveTo( *pHatedActor );
+    m_lastMoveTime = tickCount;
   }
   else
   {
-    if( !bnpc.hasFlag( Entity::TurningDisabled ) && !bnpc.isFacingTarget( *pHatedActor, 1.0f ) )
+    // todo: turn speed per bnpc since retail doesn't have spin2win on newer mobs
+    if( !bnpc.hasFlag( Entity::TurningDisabled ) && !bnpc.isFacingTarget( *pHatedActor, 1.0f ) && dtRot >= 300 )
     {
-      bnpc.face( pHatedActor->getPos() );
+      float oldRot = bnpc.getRot();
+      float rot = Common::Util::calcAngFrom( bnpc.getPos().x, bnpc.getPos().z, pHatedActor->getPos().x, pHatedActor->getPos().z );
+
+      // Convert to facing direction
+      float newRot = rot + ( PI / 2 );
+
+      // Normalize to [-π, π] range
+      newRot = -fmod( newRot + PI, 2 * PI ) - PI;
+
+      volatile auto dRot = newRot - oldRot;
+      dRot = dRot * ( dtRot / 300.f );
+
+      bnpc.setRot( oldRot + dRot );
+
+      //bnpc.face( pHatedActor->getPos() );
       bnpc.sendPositionUpdate( tickCount );
+      m_lastRotTime = tickCount;
     }
   }
 
   if( bnpc.getAgentId() != -1 )
   {
     auto pos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
-    if( ( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z ) )
+    auto myPos = bnpc.getPos();
+    if( ( pos.x != myPos.x || pos.y != myPos.y || pos.z != myPos.z ) )
+    {
       bnpc.setPos( pos );
+    }
   }
 
   // todo: there are mobs that ignore aggro and continue their path
   //       such as Labyrinth of The Ancients adds in Thanatos boss fight, account for those
-  if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 3.0f ) )
+  if( !hasQueuedAction && distance <= ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 3.0f ) )
   {
     bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
-    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) )
+    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 1.0f ) )
       bnpc.autoAttack( pHatedActor );
 
-    pNaviProvider->resetMoveTarget( bnpc.getAgentId() );
+    if( bnpc.getNaviIsPathing() )
+    {
+      pNaviProvider->resetMoveTarget( bnpc.getAgentId() );
+      bnpc.setNaviIsPathing( false );
+    }
   }
-
+  m_lastTick = tickCount;
 }
 
 void AI::Fsm::StateCombat::onEnter( Entity::BNpc& bnpc )

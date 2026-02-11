@@ -366,11 +366,16 @@ namespace Sapphire
 
       if( elapsed >= timepoint.m_offset )
       {
+        // todo: stall the timeline while auto attack is queued
         if( timepoint.execute( self, pack, pEncounter, time ) )
         {
           state.m_scheduleInfo.m_lastTimepointTime = time;
           state.m_scheduleInfo.m_lastTimepointIndex = ++i;
           continue;
+        }
+        else
+        {
+          state.m_scheduleInfo.m_pauseTime = time;
         }
       }
       break;
@@ -380,6 +385,7 @@ namespace Sapphire
   void Schedule::reset( ConditionState& state ) const
   {
     state.m_scheduleInfo.m_startTime = 0;
+    state.m_scheduleInfo.m_pauseTime = 0;
     state.m_scheduleInfo.m_lastTimepointIndex = 0;
     state.m_scheduleInfo.m_lastTimepointTime = 0;
   }

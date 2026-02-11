@@ -330,6 +330,11 @@ bool BNpc::getNaviIsPathing() const
   return m_naviIsPathing;
 }
 
+void BNpc::setNaviIsPathing( bool pathing )
+{
+  m_naviIsPathing = true;
+}
+
 Common::FFXIVARR_POSITION3 BNpc::getNaviLastMoveTarget() const
 {
   return m_naviLastTarget;

@@ -101,6 +101,7 @@ namespace Sapphire::Entity
     float getNaviTargetReachedDistance() const;
     uint64_t getLastNaviMoveRequest() const;
     bool getNaviIsPathing() const;
+    void setNaviIsPathing( bool pathing );
     Common::FFXIVARR_POSITION3 getNaviLastMoveTarget() const;
     Common::FFXIVARR_POSITION3 getNaviMoveTarget() const;
 
