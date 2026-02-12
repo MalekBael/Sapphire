@@ -292,6 +292,21 @@
             },
             {
               "data": {
+                "battleTalkId": 2603,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "",
+              "startTime": 0,
+              "type": "battleTalk"
+            },
+            {
+              "data": {
                 "actionTimelineId": 140,
                 "actorName": "Ifrit"
               },
@@ -350,6 +365,21 @@
               "description": "enable final phase",
               "startTime": 12000,
               "type": "setCondition"
+            },
+            {
+              "data": {
+                "battleTalkId": 2604,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "enable final phase",
+              "startTime": 12000,
+              "type": "battleTalk"
             },
             {
               "data": {
@@ -519,7 +549,7 @@
         {
           "description": "",
           "id": 8,
-          "name": "Reset",
+          "name": "Ifrit Death",
           "timepoints": [
             {
               "data": {
@@ -537,6 +567,21 @@
               "description": "",
               "startTime": 0,
               "type": "bNpcDespawn"
+            },
+            {
+              "data": {
+                "battleTalkId": 2605,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "",
+              "startTime": 0,
+              "type": "battleTalk"
             }
           ]
         }
@@ -1337,11 +1382,11 @@
       "id": 14,
       "loop": false,
       "paramData": {
-        "combatState": 4,
+        "combatState": 5,
         "sourceActor": "Ifrit"
       },
       "targetActor": "Ifrit",
-      "targetSchedule": "Reset"
+      "targetSchedule": "Ifrit Death"
     },
     {
       "condition": "interruptedAction",

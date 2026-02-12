@@ -78,7 +78,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       m_data.NameId = bnpc.getBNpcNameId();
 
       // todo: map out flags
-      if( bnpc.hasFlag( Entity::BNpcFlag::Invisible ) )
+      if( bnpc.hasFlag( Entity::BNpcFlag::Untargetable ) )
         m_data.Flag |= 0x08;
 
       if( bnpc.getInstanceObjectInfo() )
