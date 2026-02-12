@@ -9,7 +9,7 @@
     "curePotency": 0,
     "restorePercentage": 0,
     "nextCombo": [],
-    "targetFilter": 1,
+    "targetFilter": 2,
     "aggroModifier": 1.0,
     "statuses": {
       "caster": [],
@@ -26,7 +26,7 @@
     "curePotency": 0,
     "restorePercentage": 0,
     "nextCombo": [],
-    "targetFilter": 1,
+    "targetFilter": 2,
     "aggroModifier": 1.0,
     "statuses": {
       "caster": [],
@@ -43,7 +43,7 @@
     "curePotency": 0,
     "restorePercentage": 0,
     "nextCombo": [],
-    "targetFilter": 1,
+    "targetFilter": 2,
     "aggroModifier": 1.0,
     "statuses": {
       "caster": [],
@@ -59,7 +59,7 @@
     "rearPotency": 0,
     "curePotency": 0,
     "restorePercentage": 0,
-    "targetFilter": 1,
+    "targetFilter": 2,
     "nextCombo": [],
     "aggroModifier": 1.0,
     "statuses": {
@@ -76,7 +76,7 @@
     "rearPotency": 0,
     "curePotency": 0,
     "restorePercentage": 0,
-    "targetFilter": 1,
+    "targetFilter": 2,
     "nextCombo": [],
     "aggroModifier": 1.0,
     "statuses": {
@@ -93,7 +93,7 @@
     "rearPotency": 0,
     "curePotency": 0,
     "restorePercentage": 0,
-    "targetFilter": 1,
+    "targetFilter": 2,
     "nextCombo": [],
     "aggroModifier": 1.0,
     "statuses": {
@@ -110,7 +110,7 @@
     "rearPotency": 0,
     "curePotency": 0,
     "restorePercentage": 0,
-    "targetFilter": 1,
+    "targetFilter": 2,
     "nextCombo": [],
     "aggroModifier": 1.0,
     "statuses": {

@@ -77,6 +77,10 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       m_data.NpcId = bnpc.getBNpcBaseId();
       m_data.NameId = bnpc.getBNpcNameId();
 
+      // todo: map out flags
+      if( bnpc.hasFlag( Entity::BNpcFlag::Invisible ) )
+        m_data.Flag |= 0x08;
+
       if( bnpc.getInstanceObjectInfo() )
       {
         m_data.LinkCountLimit = bnpc.getInstanceObjectInfo()->LinkCountLimit;

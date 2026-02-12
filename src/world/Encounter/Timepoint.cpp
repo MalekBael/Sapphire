@@ -469,16 +469,19 @@ namespace Sapphire
             if( pTargetActor )
             {
               if( auto pTargetChara = pTargetActor->getAsChara() )
-              {
-                // stall if not facing target
-                if( !pBNpc->isFacingTarget( *pTargetChara, 1.0f ) )
-                  return false;
-
+              {                
                 auto distance = Common::Util::distance2D( pBNpc->getPos().x, pBNpc->getPos().z, pTargetChara->getPos().x, pTargetChara->getPos().z );
-                if( targetId != pBNpc->getId() && distance >= 3.f + pBNpc->getRadius() + pTargetChara->getRadius() )
+                if( targetId != pBNpc->getId() )
                 {
-                  // pause at this timepoint
-                  return false;
+                  // stall if not facing target
+                  if( !pBNpc->isFacingTarget( *pTargetChara, 1.0f ) )
+                    return false;
+
+                  if( distance >= 3.f + pBNpc->getRadius() + pTargetChara->getRadius() )
+                  {
+                    // pause at this timepoint
+                    return false;
+                  }
                 }
               }
             }
@@ -816,7 +819,7 @@ namespace Sapphire
 
         // todo: probably have this info in the timepoint data
         if( !pBNpc )
-          pBNpc = pTeri->createBNpcFromLayoutId( pSpawnData->m_layoutId, 100, Common::BNpcType::Enemy );
+          pBNpc = pTeri->createBNpcFromLayoutIdNoPush( pSpawnData->m_layoutId, 100, Common::BNpcType::Enemy );
 
         if( pBNpc )
         {
