@@ -565,7 +565,7 @@ void Chara::addStatusEffect( StatusEffect::StatusEffectPtr pEffect )
   m_statusEffectMap[ nextSlot ] = pEffect;
   pEffect->applyStatus();
 
-  Network::Util::Packet::sendActorControl( getInRangePlayerIds( isPlayer() ), getId(), StatusEffectGain,
+  Network::Util::Packet::sendActorControl( getInRangePlayerIds( false ), getId(), StatusEffectGain,
                                            pEffect->getId() );
   Network::Util::Packet::sendHudParam( *this );
 }

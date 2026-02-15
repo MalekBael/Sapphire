@@ -305,6 +305,8 @@ namespace Sapphire
       actor.resetAllSubActors( pEncounter->getTeriPtr() );
       actor.resetAllConditionStates();
     }
+    m_startTime = 0;
+    m_vars.clear();
   }
 
   void TimelinePack::setStartTime( uint64_t time )

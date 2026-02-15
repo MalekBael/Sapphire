@@ -1050,7 +1050,7 @@ void Action::Action::addDefaultActorFilters()
 
 bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
 {
-  if( m_castType == Common::CastType::SingleTarget ) // client filters any single target action by itself
+  if( m_castType == Common::CastType::SingleTarget && m_pSource->isPlayer() ) // client filters any single target action by itself
     return true;
 
   auto kind = actor.getObjKind();
