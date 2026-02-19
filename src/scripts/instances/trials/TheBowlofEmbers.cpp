@@ -15,7 +15,7 @@ public:
 
   void setupEncounter( InstanceContent& instance, EncounterPtr pEncounter )
   {
-    std::vector< EncounterActor > actors { { NPC_IFRIT, VAL_IFRIT_HP, Common::BNpcType::Enemy, 0 } };
+    std::vector< EncounterActor > actors { { NPC_IFRIT, VAL_IFRIT_HP, Common::BNpcType::Enemy, 0, true } };
     pEncounter->setInitialActorSetup( actors );
     pEncounter->init();
   }

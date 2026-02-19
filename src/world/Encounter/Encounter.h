@@ -32,6 +32,7 @@ namespace Sapphire
     uint32_t hp;
     Common::BNpcType type;
     uint32_t flags;
+    bool isBoss{ false };
   };
 
   struct EncounterSetup
@@ -63,7 +64,7 @@ namespace Sapphire
 
     void reset();
 
-    void removeBNpcs();
+    void removeBNpcs( bool removeBoss = false );
 
     void setStartTime( uint64_t startTime );
 
@@ -90,6 +91,7 @@ namespace Sapphire
 
     std::set< Entity::PlayerPtr > m_playerList;
     std::unordered_map< uint32_t, Entity::BNpcPtr > m_bnpcs;
+    std::unordered_map< uint32_t, Entity::BNpcPtr > m_bossBnpcs;
     EncounterStatus m_status{ EncounterStatus::IDLE };
     Event::DirectorPtr m_pDirector;
     TerritoryPtr m_pTeri;

@@ -25,6 +25,9 @@ namespace Sapphire
       auto entry = m_pTeri->createBNpcFromLayoutId( actor.layoutId, actor.hp, actor.type );
       entry->init();
       addBNpc( entry );
+
+      if( actor.isBoss )
+        m_bossBnpcs.emplace( entry->getId(), entry );
     }
   }
 
@@ -45,12 +48,25 @@ namespace Sapphire
     init();
   }
 
-  void Encounter::removeBNpcs()
+  void Encounter::removeBNpcs( bool removeBoss )
   {
     for( auto it = m_bnpcs.begin(); it != m_bnpcs.end(); )
     {
-      m_pTeri->removeActor( it->second );
-      it = m_bnpcs.erase( it );
+      bool remove = true;
+      if( auto bossIt = m_bossBnpcs.find( it->second->getId() ); bossIt != m_bossBnpcs.end() )
+      {
+        remove = removeBoss;
+      }
+
+      if( remove )
+      {
+        m_pTeri->removeActor( it->second );
+        it = m_bnpcs.erase( it );
+      }
+      else
+      {
+        ++it;
+      }
     }
   }
 
