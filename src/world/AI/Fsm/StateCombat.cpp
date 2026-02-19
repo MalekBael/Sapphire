@@ -80,7 +80,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     bnpc.moveTo( *pHatedActor );
     m_lastMoveTime = tickCount;
   }
-  else
+  else if( !bnpc.getNaviIsPathing() )
   {
     // todo: turn speed per bnpc since retail doesn't have spin2win on newer mobs
     if( !bnpc.hasFlag( Entity::TurningDisabled ) && !bnpc.isFacingTarget( *pHatedActor, 1.0f ) && dtRot >= 300 )
@@ -122,7 +122,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
-    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 1.0f ) )
+    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 0.99f ) )// 0.99f to prevent bnpc autoattack deadlock
       bnpc.autoAttack( pHatedActor );
 
     if( bnpc.getNaviIsPathing() )
@@ -145,4 +145,3 @@ void AI::Fsm::StateCombat::onExit( Entity::BNpc& bnpc )
   bnpc.setStance( Common::Stance::Passive );
   bnpc.setOwner( nullptr );
 }
-
