@@ -35,7 +35,6 @@ EventObject::EventObject( uint32_t actorId, uint32_t baseId, uint32_t boundInsta
   m_baseId( baseId ),
   m_name( givenName ),
   m_housingLink( 0 ),
-  m_permissionInvisibility( permissionInv ),
   m_ownerId( INVALID_GAME_OBJECT_ID )
 {
   m_id = actorId;
@@ -43,6 +42,7 @@ EventObject::EventObject( uint32_t actorId, uint32_t baseId, uint32_t boundInsta
   m_pos.y = pos.y;
   m_pos.z = pos.z;
   m_rot = rotation;
+  m_permissionInvisibility = permissionInv;
 }
 
 uint32_t EventObject::getBoundInstanceId() const
@@ -160,13 +160,9 @@ uint32_t EventObject::getInstanceId() const
   return m_instanceId;
 }
 
-uint8_t EventObject::getPermissionInvisibility() const
-{
-  return m_permissionInvisibility;
-}
-
 void EventObject::setPermissionInvisibility( uint8_t permissionInvisibility )
 {
+  m_permissionInvisibility = permissionInvisibility;
   Network::Util::Packet::sendActorControl( getInRangePlayerIds(), getId(), DirectorEObjMod, permissionInvisibility );
 }
 

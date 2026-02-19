@@ -81,6 +81,8 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
       if( bnpc.hasFlag( Entity::BNpcFlag::Untargetable ) )
         m_data.Flag |= 0x08;
 
+      m_data.PermissionInvisibility = bnpc.getPermissionInvisibility();
+
       if( bnpc.getInstanceObjectInfo() )
       {
         m_data.LinkCountLimit = bnpc.getInstanceObjectInfo()->LinkCountLimit;
