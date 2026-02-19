@@ -774,7 +774,6 @@ namespace Sapphire
               break;
           }
 
-          // todo: resend packets
           switch( m_type )
           {
             case TimepointDataType::DirectorVar:
@@ -789,6 +788,9 @@ namespace Sapphire
             default:
               break;
           }
+
+          for( const auto& player : pTeri->getPlayers() )
+            pDirector->sendDirectorVars( *player.second );
         }
       }
       break;

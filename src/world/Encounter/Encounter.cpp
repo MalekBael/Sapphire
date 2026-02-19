@@ -43,7 +43,7 @@ namespace Sapphire
 
   void Encounter::reset()
   {
-    removeBNpcs();
+    removeBNpcs( true );
     m_pTimeline->reset( shared_from_this() );
     init();
   }
