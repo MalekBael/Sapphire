@@ -41,12 +41,11 @@ using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::Network::ActorControl;
 
-Chara::Chara( ObjKind type ) :
-  GameObject( type ),
-  m_pose( 0 ),
-  m_targetId( INVALID_GAME_OBJECT_ID64 ),
-  m_directorId( 0 ),
-  m_radius( 2.f )
+Chara::Chara( ObjKind type ) : GameObject( type ),
+                               m_pose( 0 ),
+                               m_targetId( INVALID_GAME_OBJECT_ID64 ),
+                               m_directorId( 0 ),
+                               m_radius( 2.f )
 {
   m_lastTickTime = 0;
   m_lastUpdate = 0;
@@ -327,18 +326,21 @@ position
 bool Chara::face( const FFXIVARR_POSITION3& p )
 {
   float oldRot = getRot();
-  float rot = Common::Util::calcAngFrom( getPos().x, getPos().z, p.x, p.z );
 
-  // Convert to facing direction
-  float newRot = rot + ( PI / 2 );
+  float dx = p.x - getPos().x;
+  float dz = p.z - getPos().z;
 
-  // Normalize to [-π, π] range
-  newRot = -fmod( newRot + PI, 2 * PI ) - PI;
+  if( dx == 0.0f && dz == 0.0f )
+    return true;
+
+  // -3.14 == 3.14 in-game so normalize+clamp (-3.14, 3.14).
+  float newRot = atan2f( dx, dz );
+  if( newRot >= PI )
+    newRot = -PI;
 
   setRot( newRot );
 
-  return ( fabs( oldRot - newRot ) <= std::numeric_limits< float >::epsilon() *
-           fmax( fabs( oldRot ), fabs( newRot ) ) );
+  return ( oldRot == newRot );
 }
 
 
@@ -682,7 +684,7 @@ void Chara::removeStatusEffectByFlag( Common::StatusEffectFlag flag )
 }
 
 std::map< uint8_t, Sapphire::StatusEffect::StatusEffectPtr >::iterator Chara::removeStatusEffect(
-  uint8_t effectSlotId, bool updateStatus )
+        uint8_t effectSlotId, bool updateStatus )
 {
   auto pEffectIt = m_statusEffectMap.find( effectSlotId );
   if( pEffectIt == m_statusEffectMap.end() )
@@ -742,12 +744,12 @@ Sapphire::StatusEffect::StatusEffectPtr Chara::getStatusEffectById( uint32_t id 
   return nullptr;
 }
 
-const uint8_t *Chara::getLookArray() const
+const uint8_t* Chara::getLookArray() const
 {
   return m_customize;
 }
 
-const uint32_t *Chara::getModelArray() const
+const uint32_t* Chara::getModelArray() const
 {
   return m_modelEquip;
 }
@@ -771,7 +773,8 @@ void Chara::sendStatusEffectUpdate()
   for( const auto& effectIt : m_statusEffectMap )
   {
     float timeLeft = static_cast< float >( effectIt.second->getDuration() -
-                                           ( currentTimeMs - effectIt.second->getStartTimeMs() ) ) / 1000;
+                                           ( currentTimeMs - effectIt.second->getStartTimeMs() ) ) /
+                     1000;
     statusEffectList->data().effect[ slot ].Time = timeLeft;
     statusEffectList->data().effect[ slot ].Id = effectIt.second->getId();
     statusEffectList->data().effect[ slot ].Source = effectIt.second->getSrcActorId();
@@ -1094,7 +1097,7 @@ void Chara::knockback( const FFXIVARR_POSITION3& origin, float distance, bool ig
     setPos( navPos );
 
     // speed needs to be reset properly here
-    if( !isPlayer()  )
+    if( !isPlayer() )
       setAgentId( pNav->updateAgentPosition( getAgentId(), getPos(), getRadius(), pNav->getAgentSpeed( getAgentId() ) ) );
   }
   else
@@ -1113,7 +1116,6 @@ void Chara::knockback( const FFXIVARR_POSITION3& origin, float distance, bool ig
   // todo: send the correct knockback packet to player
   server().queueForPlayers( getInRangePlayerIds(),
                             pTransferPacket );
-
 }
 
 void Chara::createAreaObject( uint32_t actionId, uint32_t actionPotency, uint32_t vfxId, float scale,

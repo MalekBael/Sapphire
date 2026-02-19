@@ -76,7 +76,7 @@ BNpc::BNpc() : Npc( ObjKind::BattleNpc )
 }
 
 BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const Territory& zone ) : Npc(
-  ObjKind::BattleNpc )
+                                                                                                            ObjKind::BattleNpc )
 {
   m_id = id;
   m_pInfo = pInfo;
@@ -160,7 +160,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
     auto bnpcCustom = exdData.getRow< Excel::BNpcCustomize >( bNpcBaseData->data().Customize );
     if( bnpcCustom )
     {
-      memcpy( m_customize, reinterpret_cast< char * >( &bnpcCustom->data() ), sizeof( m_customize ) );
+      memcpy( m_customize, reinterpret_cast< char* >( &bnpcCustom->data() ), sizeof( m_customize ) );
     }
   }
 
@@ -171,7 +171,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
     {
       m_weaponMain = bnpcEquip->data().WeaponModel;
       m_weaponSub = bnpcEquip->data().SubWeaponModel;
-      memcpy( m_modelEquip, reinterpret_cast< char * >( bnpcEquip->data().Equip ), sizeof( m_modelEquip ) );
+      memcpy( m_modelEquip, reinterpret_cast< char* >( bnpcEquip->data().Equip ), sizeof( m_modelEquip ) );
     }
   }
 
@@ -197,8 +197,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
 }
 
 BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const Territory& zone, uint32_t hp,
-            Common::BNpcType type ) :
-  Npc( ObjKind::BattleNpc )
+            Common::BNpcType type ) : Npc( ObjKind::BattleNpc )
 {
   m_id = id;
   m_pInfo = pInfo;
@@ -275,7 +274,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
     auto bnpcCustom = exdData.getRow< Excel::BNpcCustomize >( bNpcBaseData->data().Customize );
     if( bnpcCustom )
     {
-      memcpy( m_customize, reinterpret_cast< char * >( &bnpcCustom->data() ), sizeof( m_customize ) );
+      memcpy( m_customize, reinterpret_cast< char* >( &bnpcCustom->data() ), sizeof( m_customize ) );
     }
   }
 
@@ -286,7 +285,7 @@ BNpc::BNpc( uint32_t id, std::shared_ptr< Common::BNpcCacheEntry > pInfo, const 
     {
       m_weaponMain = bnpcEquip->data().WeaponModel;
       m_weaponSub = bnpcEquip->data().SubWeaponModel;
-      memcpy( m_modelEquip, reinterpret_cast< char * >( bnpcEquip->data().Equip ), sizeof( m_modelEquip ) );
+      memcpy( m_modelEquip, reinterpret_cast< char* >( bnpcEquip->data().Equip ), sizeof( m_modelEquip ) );
     }
   }
 
@@ -469,8 +468,8 @@ float mapSpeedToRange( float speed, float minSpeed = 0.0f, float maxSpeed = 18.0
   speed = std::max( minSpeed, std::min( maxSpeed, speed ) );
 
   // Map from [minSpeed, maxSpeed] to [-π, π]
-  float normalized = ( speed - minSpeed ) / ( maxSpeed - minSpeed ); // [0, 1]
-  return ( normalized * 2.0f - 1.0f ) * 3.1415927f; // [-π, π]
+  float normalized = ( speed - minSpeed ) / ( maxSpeed - minSpeed );// [0, 1]
+  return ( normalized * 2.0f - 1.0f ) * 3.1415927f;                 // [-π, π]
 }
 
 
@@ -486,7 +485,7 @@ void BNpc::sendPositionUpdate( uint64_t tickCount )
   if( m_state == BNpcState::Combat || m_state == BNpcState::Retreat )
     animationType = 0;
 
-  if( m_lastPos.x != m_pos.x || m_lastPos.y != m_pos.y || m_lastPos.z != m_lastPos.z || m_lastRot != m_rot )
+  if( m_lastPos.x != m_pos.x || m_lastPos.y != m_pos.y || m_lastPos.z != m_pos.z || m_lastRot != m_rot )
   {
     auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
     auto pZone = teriMgr.getTerritoryByGuId( getTerritoryId() );
@@ -815,7 +814,7 @@ void BNpc::onActionHostile( CharaPtr pSource, int32_t aggro )
 {
   hateListUpdate( pSource, aggro );
 
-  if( getCanSwapTarget() ) // todo: only call on global server tick
+  if( getCanSwapTarget() )// todo: only call on global server tick
     updateAggroTarget();
 
   if( !m_pOwner )
@@ -878,8 +877,7 @@ void BNpc::checkAggro()
     return;
   }
 
-  auto calculateAdjustedRange = []( float baseRange, int targetLevel, int sourceLevel ) -> float
-  {
+  auto calculateAdjustedRange = []( float baseRange, int targetLevel, int sourceLevel ) -> float {
     auto levelDiff = std::abs( targetLevel - sourceLevel );
 
     if( levelDiff >= 10 )
@@ -966,7 +964,7 @@ void BNpc::checkAggro()
           float adjustedSenseRange = calculateAdjustedRange( senseRange, pCharaTarget->getLevel(), getLevel() );
 
           if( distance > adjustedSenseRange )
-            continue; // Too far away
+            continue;// Too far away
 
           // Vision cone check
           // Calculate vector from BNPC to player
@@ -1439,7 +1437,7 @@ void BNpc::setCanSwapTarget( bool value )
 {
   m_canSwapTarget = value;
 
-  if( m_canSwapTarget ) // todo: only call on global server tick
+  if( m_canSwapTarget )// todo: only call on global server tick
   {
     updateAggroTarget();
   }

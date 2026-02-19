@@ -1,9 +1,12 @@
 #include "StateCombat.h"
 #include "Actor/BNpc.h"
+#include "Actor/Player.h"
 #include "Logging/Logger.h"
 #include <Service.h>
+#include <Util/UtilMath.h>
 
 #include <Manager/TerritoryMgr.h>
+#include <Manager/PlayerMgr.h>
 #include <Territory/Territory.h>
 #include <Navi/NaviProvider.h>
 
@@ -47,6 +50,14 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   if( !pHatedActor )
     return;
 
+  if( pHatedActor->isPlayer() )
+  {
+    // i am going nuts :)
+    auto& playerMgr = Common::Service< World::Manager::PlayerMgr >::ref();
+    auto pPlayer = pHatedActor->getAsPlayer();
+    playerMgr.sendDebug( *pPlayer, std::to_string( bnpc.getRot() ) );
+  }
+
   auto distance = Common::Util::distance( bnpc.getPos(), pHatedActor->getPos() );
 
   // All possibilities to automatically lose aggro go here
@@ -65,46 +76,38 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   auto dtMove = tickCount - m_lastMoveTime;
   auto dtRot = tickCount - m_lastRotTime;
-
   if( dtRot == tickCount )
     dtRot = 300;
 
-  if( bnpc.pathingActive() && !hasQueuedAction &&
-      !bnpc.hasFlag( Entity::Immobile ) && dtMove >= 1500 &&
-      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
-  {
+  float targetRadius = pHatedActor->getRadius();
+  float stopDistance = targetRadius + bnpc.getNaviTargetReachedDistance() + 3.0f;
+  float startDistance = stopDistance + 0.5f;
 
-    if( pNaviProvider )
-      pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
+  bool isPathing = bnpc.getNaviIsPathing();
 
-    bnpc.moveTo( *pHatedActor );
-    m_lastMoveTime = tickCount;
-  }
-  else if( !bnpc.getNaviIsPathing() )
+  // movement
+  if( !bnpc.hasFlag( Entity::Immobile ) && !hasQueuedAction )
   {
-    // todo: turn speed per bnpc since retail doesn't have spin2win on newer mobs
-    if( !bnpc.hasFlag( Entity::TurningDisabled ) && !bnpc.isFacingTarget( *pHatedActor, 1.0f ) && dtRot >= 300 )
+    if( distance > startDistance )
     {
-      float oldRot = bnpc.getRot();
-      float rot = Common::Util::calcAngFrom( bnpc.getPos().x, bnpc.getPos().z, pHatedActor->getPos().x, pHatedActor->getPos().z );
+      if( dtMove >= 1500 )
+      {
+        if( pNaviProvider )
+          pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
 
-      // Convert to facing direction
-      float newRot = rot + ( PI / 2 );
-
-      // Normalize to [-π, π] range
-      newRot = -fmod( newRot + PI, 2 * PI ) - PI;
-
-      volatile auto dRot = newRot - oldRot;
-      dRot = dRot * ( dtRot / 300.f );
-
-      bnpc.setRot( oldRot + dRot );
-
-      //bnpc.face( pHatedActor->getPos() );
-      bnpc.sendPositionUpdate( tickCount );
-      m_lastRotTime = tickCount;
+        bnpc.moveTo( *pHatedActor );
+        m_lastMoveTime = tickCount;
+      }
+    }
+    else if( isPathing && distance <= stopDistance )
+    {
+      if( pNaviProvider )
+        pNaviProvider->resetMoveTarget( bnpc.getAgentId() );
+      bnpc.setNaviIsPathing( false );
     }
   }
 
+  // ensure navi pos == bnpc pos
   if( bnpc.getAgentId() != -1 )
   {
     auto pos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
@@ -115,20 +118,41 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     }
   }
 
-  // todo: there are mobs that ignore aggro and continue their path
-  //       such as Labyrinth of The Ancients adds in Thanatos boss fight, account for those
-  if( !hasQueuedAction && distance <= ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() + 3.0f ) )
+  // rotation
+  if( !bnpc.hasFlag( Entity::TurningDisabled ) && !hasQueuedAction )
+  {
+    if( dtRot >= 300 )
+    {
+      Common::FFXIVARR_POSITION3 lookAtPos = pHatedActor->getPos();
+
+      // If moving and outside combat range, face the movement direction (Navi Agent)
+      if( isPathing && distance > stopDistance && bnpc.getAgentId() != -1 )
+      {
+        auto naviPos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
+        float dx = naviPos.x - bnpc.getPos().x;
+        float dz = naviPos.z - bnpc.getPos().z;
+        // Only use heading if we actually moved enough to have a valid vector
+        if( ( dx * dx + dz * dz ) > 0.0001f )
+        {
+          lookAtPos = naviPos;
+        }
+      }
+
+      bnpc.face( lookAtPos );
+      bnpc.sendPositionUpdate( tickCount );
+      m_lastRotTime = tickCount;
+    }
+  }
+
+  // combat
+  if( !hasQueuedAction && distance <= startDistance )
   {
     bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
-    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 0.99f ) )// 0.99f to prevent bnpc autoattack deadlock
-      bnpc.autoAttack( pHatedActor );
-
-    if( bnpc.getNaviIsPathing() )
+    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 0.99f ) )
     {
-      pNaviProvider->resetMoveTarget( bnpc.getAgentId() );
-      bnpc.setNaviIsPathing( false );
+      bnpc.autoAttack( pHatedActor );
     }
   }
   m_lastTick = tickCount;
