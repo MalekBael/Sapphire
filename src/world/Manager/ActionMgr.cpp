@@ -35,6 +35,7 @@ void ActionMgr::handlePlacedAction( Entity::Chara& chara, uint32_t actionId, Com
 
   action->setPos( pos );
   action->setTargetId( targetId );
+  action->setRot( chara.getRot() );
 
   if( !action->init() )
     return;
@@ -56,7 +57,7 @@ void ActionMgr::handlePlacedAction( Entity::Chara& chara, uint32_t actionId, Com
 
 void ActionMgr::handleItemManipulationAction( Entity::Player& player, uint32_t actionId, uint16_t sequence )
 {
-  auto action = Action::make_ItemManipulationAction( player.getAsPlayer(), actionId, sequence, nullptr, 2500 ); // todo: maybe the delay can be retrieved from data
+  auto action = Action::make_ItemManipulationAction( player.getAsPlayer(), actionId, sequence, nullptr, 2500 );// todo: maybe the delay can be retrieved from data
 
   player.setCurrentAction( action );
 
@@ -72,6 +73,7 @@ void ActionMgr::handleTargetedAction( Entity::Chara& src, uint32_t actionId, uin
 
   action->setTargetId( targetId );
   action->setPos( src.getPos() );
+  action->setRot( src.getRot() );
 
   if( !action->init() )
     return;
@@ -154,7 +156,7 @@ void ActionMgr::bootstrapAction( Entity::Chara& src, Action::ActionPtr currentAc
     currentAction->interrupt();
     return;
   }
-  
+
 
   if( src.getCurrentAction() )
   {
@@ -164,7 +166,6 @@ void ActionMgr::bootstrapAction( Entity::Chara& src, Action::ActionPtr currentAc
       PlayerMgr::sendDebug( player, "Skill queued: {0}", currentAction->getId() );
       player.setQueuedAction( currentAction );
     }
-
   }
   else
   {
@@ -178,7 +179,7 @@ void ActionMgr::bootstrapAction( Entity::Chara& src, Action::ActionPtr currentAc
   }
 }
 
-bool ActionMgr::actionHasCastTime( uint32_t actionId ) //TODO: Add logic for special cases
+bool ActionMgr::actionHasCastTime( uint32_t actionId )//TODO: Add logic for special cases
 {
   auto& exdData = Common::Service< Data::ExdData >::ref();
   auto actionInfoPtr = exdData.getRow< Excel::Action >( actionId );

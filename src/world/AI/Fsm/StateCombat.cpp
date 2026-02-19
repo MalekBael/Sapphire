@@ -121,7 +121,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   // rotation
   if( !bnpc.hasFlag( Entity::TurningDisabled ) && !hasQueuedAction )
   {
-    if( dtRot >= 300 )
+    //if( dtRot >= 300 )
     {
       Common::FFXIVARR_POSITION3 lookAtPos = pHatedActor->getPos();
 
@@ -147,11 +147,12 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   // combat
   if( !hasQueuedAction && distance <= startDistance )
   {
-    bnpc.processGambits( tickCount );
+    //bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
     if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 0.99f ) )
     {
+      // todo: *why* is this offseting the bnpc facing dir
       bnpc.autoAttack( pHatedActor );
     }
   }

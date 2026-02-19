@@ -498,9 +498,11 @@ void BNpc::sendPositionUpdate( uint64_t tickCount )
 
     // not 100% certain of this range, but with limited samples i tested, it looked somewhat correct
     float s1 = mapSpeedToRange( getCurrentSpeed(), 0, 25.5f );
+    float scale = 255.0f / ( 2.0f * 3.1415927f );
 
-    auto movePacket = std::make_shared< MoveActorPacket >( *getAsChara(), 0x3A, animationType, 0,
-                                                           static_cast< uint8_t >( ( s1 + 3.1415927f ) / ( 2.4639943f * 0.01f ) ) );
+    uint8_t dirS1 = static_cast< uint8_t >( ( s1 + 3.1415927f ) * scale );
+
+    auto movePacket = std::make_shared< MoveActorPacket >( *getAsChara(), 0x3A, animationType, 0, dirS1 );
     server().queueForPlayers( getInRangePlayerIds(), movePacket );
   }
   m_lastPos = m_pos;
