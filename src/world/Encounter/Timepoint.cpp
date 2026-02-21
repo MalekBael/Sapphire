@@ -297,7 +297,16 @@ namespace Sapphire
         // todo: batallion
         // auto battalion = dataJ.at( "batallion" ).get< uint32_t >();
         auto bnpcType = Common::BNpcType::Enemy;//bnpcTypeMap.at( dataJ.at( "type" ).get< std::string >() );
+        auto flagsMaskJ = dataJ.at( "flagsMask" );
+        auto flagsMask = 0xFFFFFFFF;
+        auto invulnJ = dataJ.at( "invulnType" );
+        auto invincibilityType = Common::InvincibilityNone;
 
+        if( !flagsMaskJ.is_null() )
+          flagsMask = flagsMaskJ.get< uint32_t >();
+
+        if( !invulnJ.is_null() )
+          invincibilityType = invulnJ.get< Common::InvincibilityType >();
         // todo: hateSrc
 
         uint32_t layoutId = Common::INVALID_GAME_OBJECT_ID;
@@ -306,7 +315,7 @@ namespace Sapphire
         else
           throw std::runtime_error( fmt::format( std::string( "Timepoint::from_json: BNpcSpawn invalid actor ref: {}" ), actorRef ) );
 
-        m_pData = std::make_shared< TimepointDataBNpcSpawn >( layoutId, flags, bnpcType );
+        m_pData = std::make_shared< TimepointDataBNpcSpawn >( layoutId, flags, flagsMask, invincibilityType, bnpcType );
       }
       break;
       case TimepointDataType::BNpcFlags:
@@ -314,6 +323,16 @@ namespace Sapphire
         auto& dataJ = json.at( "data" );
         auto actorRef = dataJ.at( "targetActor" ).get< std::string >();
         auto flags = dataJ.at( "flags" ).get< uint32_t >();
+        auto flagsMaskJ = dataJ.at( "flagsMask" );
+        auto flagsMask = 0xFFFFFFFF;
+        auto invulnJ =  dataJ.at( "invulnType" );
+        auto invincibilityType = Common::InvincibilityNone;
+
+        if( !flagsMaskJ.is_null() )
+          flagsMask = flagsMaskJ.get< uint32_t >();
+
+        if( !invulnJ.is_null() )
+          invincibilityType = invulnJ.get< Common::InvincibilityType >();
 
         // todo: hateSrc
 
@@ -323,8 +342,7 @@ namespace Sapphire
         //else
         //  throw std::runtime_error( fmt::format( std::string( "Timepoint::from_json: BNpcFlags invalid actor ref: {}" ), actorRef ) );
 
-        m_pData = std::make_shared< TimepointDataBNpcFlags >( layoutId, flags );
-        // todo: SetBNpcFlags
+        m_pData = std::make_shared< TimepointDataBNpcFlags >( layoutId, flags, flagsMask, invincibilityType );
       }
       break;
 
@@ -469,14 +487,17 @@ namespace Sapphire
             if( pTargetActor )
             {
               if( auto pTargetChara = pTargetActor->getAsChara() )
-              {                
-                auto distance = Common::Util::distance2D( pBNpc->getPos().x, pBNpc->getPos().z, pTargetChara->getPos().x, pTargetChara->getPos().z );
+              {
                 if( targetId != pBNpc->getId() )
                 {
                   // stall if not facing target
-                  if( !pBNpc->isFacingTarget( *pTargetChara, 1.0f ) )
+                  if( !pBNpc->isFacingTarget( *pTargetChara, 0.99f ) )
                     return false;
 
+                  auto bnpcPos = pBNpc->getPos();
+                  auto targPos = pTargetChara->getPos();
+
+                  auto distance = Common::Util::distance( bnpcPos.x, bnpcPos.y, bnpcPos.z, targPos.x, targPos.y, targPos.z );
                   if( distance >= 3.f + pBNpc->getRadius() + pTargetChara->getRadius() )
                   {
                     // pause at this timepoint
@@ -825,7 +846,12 @@ namespace Sapphire
 
         if( pBNpc )
         {
-          pBNpc->resetFlags( pSpawnData->m_flags );
+          auto flagsMask = pSpawnData->m_flagsMask;
+          auto currFlag = pBNpc->getFlags();
+          auto flags = ( currFlag & ~flagsMask ) | ( pSpawnData->m_flags & flagsMask );
+
+          pBNpc->resetFlags( flags );
+          pBNpc->setInvincibilityType( static_cast< Common::InvincibilityType >( pSpawnData->m_invincibilityType ) );
           pBNpc->init();
 
           pTeri->pushActor( pBNpc );
@@ -839,7 +865,12 @@ namespace Sapphire
 
         if( pBNpc )
         {
-          pBNpc->resetFlags( pBNpcFlagData->m_flags );
+          auto flagsMask = pBNpcFlagData->m_flagsMask;
+          auto currFlag = pBNpc->getFlags();
+          auto flags = ( currFlag & ~flagsMask ) | ( pBNpcFlagData->m_flags & flagsMask );
+          
+          pBNpc->resetFlags( flags );
+          pBNpc->setInvincibilityType( static_cast< Common::InvincibilityType >( pBNpcFlagData->m_invincibilityType ) );
           // todo: resend some bnpc packet/actrl?
         }
       }

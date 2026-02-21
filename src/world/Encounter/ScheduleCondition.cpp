@@ -35,6 +35,8 @@ namespace Sapphire
         auto hpPct = pBNpc->getHpPercent();
         return hpPct > m_hp.min && hpPct < m_hp.max;
       }
+      default:
+        break;
     }
     return false;
   };
@@ -57,6 +59,8 @@ namespace Sapphire
         return pDirector->getSequence() == m_param.seq;
       case ConditionType::DirectorSeqGreaterThan:
         return pDirector->getSequence() > m_param.seq;
+      default:
+        break;
     }
     return false;
   }

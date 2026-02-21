@@ -25,6 +25,7 @@ public:
 
   virtual void onStart( Sapphire::World::Action::Action& action ) override
   {
+    /*
     auto pChara = action.getSourceChara();
 
     // todo: should just put the modifier in the status script?
@@ -37,6 +38,7 @@ public:
     );
 
     pChara->addStatusEffect( pEffect );
+    //*/
   }
 
   void onExecute( Sapphire::World::Action::Action& action ) override

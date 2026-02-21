@@ -250,14 +250,18 @@ namespace Sapphire
   {
     uint32_t m_layoutId{ 0xE0000000 };
     uint32_t m_flags{ 0 };
+    uint32_t m_flagsMask{ 0 };
+    uint32_t m_invincibilityType{ 0 };
     uint32_t m_type{ 0 };
 
     // todo: hate type, source
 
-    TimepointDataBNpcSpawn( uint32_t layoutId, uint32_t flags, uint32_t type ) :
+    TimepointDataBNpcSpawn( uint32_t layoutId, uint32_t flags, uint32_t flagsMask, uint32_t invincibilityType, uint32_t type ) :
       TimepointData( TimepointDataType::BNpcSpawn ),
       m_layoutId( layoutId ),
       m_flags( flags ),
+      m_flagsMask( flagsMask ),
+      m_invincibilityType( invincibilityType ),
       m_type( type )
     {
     }
@@ -267,11 +271,15 @@ namespace Sapphire
   {
     uint32_t m_layoutId{ 0xE0000000 };
     uint32_t m_flags{ 0 };
+    uint32_t m_flagsMask{ 0 };
+    uint32_t m_invincibilityType{ 0 };
 
-    TimepointDataBNpcFlags( uint32_t layoutId, uint32_t flags ) :
+    TimepointDataBNpcFlags( uint32_t layoutId, uint32_t flags, uint32_t flagsMask, uint32_t invincibilityType ) :
       TimepointData( TimepointDataType::BNpcFlags ),
       m_layoutId( layoutId ),
-      m_flags( flags )
+      m_flags( flags ),
+      m_flagsMask( flagsMask ),
+      m_invincibilityType( invincibilityType )
     {
     }
   };

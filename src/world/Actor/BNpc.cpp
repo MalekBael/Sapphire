@@ -1123,11 +1123,15 @@ uint32_t BNpc::getLevelId() const
   return m_levelId;
 }
 
+uint32_t BNpc::getFlags() const
+{
+  return m_flags;
+}
+
 bool BNpc::hasFlag( uint32_t flag ) const
 {
   return m_flags & flag;
 }
-
 
 void BNpc::resetFlags( uint32_t flags )
 {
@@ -1159,7 +1163,6 @@ void BNpc::resetFlags( uint32_t flags )
     setPathingActive( true );
   }
 }
-
 
 void BNpc::setFlag( uint32_t flag )
 {

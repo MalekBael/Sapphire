@@ -159,6 +159,7 @@ namespace Sapphire::Entity
     uint32_t getLevelId() const;
     uint32_t getBoundInstanceId() const;
 
+    uint32_t getFlags() const;
     bool hasFlag( uint32_t flag ) const;
     void setFlag( uint32_t flags );
 

@@ -45,7 +45,9 @@ public:
       auto dmg = action.calcDamage( Potency );
       if( dmg.first > 0 )
       {
-        pTarget->knockback( originPos, 20.f - distance );
+        // todo: proper knockback implementation using navmesh, this is wrong
+        //pTarget->knockback( originPos, 10.f - distance );
+
         pActionBuilder->knockback( pTarget, 1, distance );
       }
       pActionBuilder->damage( pSource, pTarget, dmg.first, dmg.second );
