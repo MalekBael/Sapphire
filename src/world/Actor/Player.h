@@ -462,7 +462,7 @@ namespace Sapphire::Entity
     /*! return a reference to the setMount guide bitmask array */
     MountList& getMountGuideBitmask();
 
-    bool checkAction() override;
+    void processActions() override;
 
     bool hasQueuedAction() const;
 

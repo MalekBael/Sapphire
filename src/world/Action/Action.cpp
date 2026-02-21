@@ -96,7 +96,7 @@ bool Action::Action::init()
 
     m_actionData = actionData;
   }
-  auto teriMgr = Common::Service< Manager::TerritoryMgr >::ref();
+  auto& teriMgr = Common::Service< Manager::TerritoryMgr >::ref();
   auto zone = teriMgr.getTerritoryByGuId( m_pSource->getTerritoryId() );
   m_resultId = zone->getNextActionResultId();
 
@@ -216,6 +216,16 @@ bool Action::Action::isInterrupted() const
   return m_interruptType != Common::ActionInterruptType::None;
 }
 
+int Action::Action::getInterruptTickCount() const
+{
+  return m_interruptTickCount;
+}
+
+void Action::Action::addInterruptTickCount()
+{
+  m_interruptTickCount++;
+}
+
 Common::ActionInterruptType Action::Action::getInterruptType() const
 {
   return m_interruptType;
@@ -289,7 +299,7 @@ bool Action::Action::update()
     }
 
     player->setLastActionTick( tickCount );
-    uint64_t delayMs = 100 - lastTickMs;
+    uint64_t delayMs = 100ull - lastTickMs;
     castTime = ( m_castTimeMs + delayMs );
     m_castTimeRestMs = static_cast< uint64_t >( m_castTimeMs ) - static_cast< uint64_t >( std::difftime( tickCount, startTime ) );
   }
@@ -423,7 +433,7 @@ void Action::Action::interrupt()
   }
 
   onInterrupt();
-
+  addInterruptTickCount();
 }
 
 void Action::Action::onInterrupt()
@@ -982,36 +992,40 @@ void Action::Action::addDefaultActorFilters()
 {
   switch( m_castType )
   {
-    // todo: figure these out and remove 5/RectangularAOE to own handler
-    case( Common::CastType ) 5:
     case Common::CastType::SingleTarget:
     {
       auto filter = std::make_shared< World::Util::ActorFilterSingleTarget >( static_cast< uint32_t >( m_targetId ) );
       addActorFilter( filter );
       break;
     }
-
+    // todo: what is this CastType::Unknown (5)? seems to be another circular aoe?
+    case Common::CastType::Unknown:
     case Common::CastType::Circle:
     {
-      auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
+      auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange + m_pSource->getRadius() );
       addActorFilter( filter );
       break;
     }
     case Common::CastType::Box:
     {
-      auto filter = std::make_shared< World::Util::ActorFilterBox >( m_pos, m_effectWidth, m_effectRange );
+      auto filter = std::make_shared< World::Util::ActorFilterBox >( m_pos, m_effectWidth, m_effectRange + m_pSource->getRadius() );
       addActorFilter( filter );
       break;
     }
     case Common::CastType::Cone:
     {
+      // todo: account for Caster radius and Target radius
       ConeEntry shapeEntry = { 0, 0 };
       if( ActionShapeLut::validConeEntryExists( static_cast< uint16_t >( getId() ) ) )
       {
         shapeEntry = ActionShapeLut::getConeEntry( static_cast< uint16_t >( getId() ) );
       }
 
-      auto rangeFilter = std::make_shared< World::Util::ActorFilterInRange >( m_pSource->getPos(), m_range );
+      auto p1 = m_pSource->getPos();
+      auto p2 = m_pos;
+      Logger::debug( "Action#{} Range:{} EffectRange:{} EffectWidth:{} SrcPos:({},{},{}) Pos:({},{},{}) ", m_id, m_range, m_effectRange, m_effectWidth, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z );
+
+      auto rangeFilter = std::make_shared< World::Util::ActorFilterInRange >( m_pSource->getPos(), m_effectRange + m_pSource->getRadius() );
       addActorFilter( rangeFilter );
       auto coneFilter = std::make_shared< World::Util::ActorFilterCone >( m_pSource->getPos(), m_pos, shapeEntry.startAngle, shapeEntry.endAngle );
       addActorFilter( coneFilter );
@@ -1036,11 +1050,11 @@ void Action::Action::addDefaultActorFilters()
 
 bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
 {
-  if( m_castType == Common::CastType::SingleTarget ) // client filters any single target action by itself
+  if( m_castType == Common::CastType::SingleTarget && m_pSource->isPlayer() ) // client filters any single target action by itself
     return true;
 
   auto kind = actor.getObjKind();
-  auto chara = actor.getAsChara();
+  auto pChara = actor.getAsChara();
 
   // todo: are there any server side eobjs that players can hit?
   if( kind != ObjKind::BattleNpc && kind != ObjKind::Player )
@@ -1056,13 +1070,16 @@ bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
     }
     case Common::TargetFilter::Players:
     {
+      // todo: should pets fall under TargetFilter::Players or Allies?
       actorApplicable = kind == ObjKind::Player;
       break;
     }
     case Common::TargetFilter::Allies:
     {
-      // Todo: Make this work for allies properly
-      actorApplicable = kind != ObjKind::BattleNpc;
+      if( kind == ObjKind::Player )
+        actorApplicable = true;
+      else if( kind == ObjKind::BattleNpc && pChara->getAsBNpc()->getEnemyType() == 0 )
+        actorApplicable = true;
       break;
     }
     case Common::TargetFilter::Party:
@@ -1088,15 +1105,15 @@ bool Action::Action::preFilterActor( Entity::GameObject& actor ) const
     }
     case Common::TargetFilter::Enemies:
     {
-      actorApplicable = kind == ObjKind::BattleNpc;
+      actorApplicable = kind == ObjKind::BattleNpc && pChara->getAsBNpc()->getEnemyType() != 0;
       break;
     }
   }
   
-  if( chara->isAlive() && ( m_lutEntry.curePotency > 0 || m_canTargetFriendly ) && m_pSource->isFriendly( *chara ) )
+  if( pChara->isAlive() && ( m_lutEntry.curePotency > 0 || m_canTargetFriendly ) && m_pSource->isFriendly( *pChara ) )
     return actorApplicable;
 
-  if( chara->isAlive() && ( m_lutEntry.potency > 0 || m_canTargetHostile ) && m_pSource->isHostile( *chara ) )
+  if( pChara->isAlive() && ( m_lutEntry.potency > 0 || m_canTargetHostile ) && m_pSource->isHostile( *pChara ) )
     return actorApplicable;
 
   return false;

@@ -8,8 +8,31 @@
       "schedules": [
         {
           "description": "",
+          "id": 10,
+          "name": "Phase 1 Start",
+          "timepoints": [
+            {
+              "data": {
+                "battleTalkId": 2600,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "",
+              "id": 1,
+              "startTime": 0,
+              "type": "battleTalk"
+            }
+          ]
+        },
+        {
+          "description": "",
           "id": 1,
-          "name": "Phase 1",
+          "name": "Phase 1 Main",
           "timepoints": [
             {
               "data": {
@@ -22,6 +45,7 @@
                 "targetType": "target"
               },
               "description": "Incinerate",
+              "id": 1,
               "startTime": 0,
               "type": "castAction"
             },
@@ -36,6 +60,7 @@
                 "targetType": "self"
               },
               "description": "Vulcan Burst",
+              "id": 2,
               "startTime": 8000,
               "type": "castAction"
             },
@@ -50,6 +75,7 @@
                 "targetType": "target"
               },
               "description": "Incinerate",
+              "id": 3,
               "startTime": 16000,
               "type": "castAction"
             },
@@ -64,12 +90,14 @@
                 "targetType": "target"
               },
               "description": "Incinerate",
+              "id": 4,
               "startTime": 24000,
               "type": "castAction"
             },
             {
               "data": {},
               "description": "",
+              "id": 5,
               "startTime": 28000,
               "type": "idle"
             }
@@ -92,6 +120,7 @@
                 "talkerActorName": "Ifrit"
               },
               "description": "Battle Talk",
+              "id": 1,
               "startTime": 0,
               "type": "battleTalk"
             },
@@ -102,6 +131,7 @@
                 "enabled": true
               },
               "description": "Enable Condition Ifrit Phase 2 Main",
+              "id": 2,
               "startTime": 1000,
               "type": "setCondition"
             }
@@ -123,8 +153,19 @@
                 "targetType": "target"
               },
               "description": "Incinerate",
+              "id": 1,
               "startTime": 0,
               "type": "castAction"
+            },
+            {
+              "data": {
+                "selectorName": "Eruption",
+                "sourceActor": "Ifrit"
+              },
+              "description": "Eruption snapshot",
+              "id": 2,
+              "startTime": 8000,
+              "type": "snapshot"
             },
             {
               "data": {
@@ -136,18 +177,10 @@
                 "sourceActor": "Ifrit",
                 "targetType": "self"
               },
-              "description": "Eruption",
+              "description": "Eruption precast",
+              "id": 3,
               "startTime": 8000,
               "type": "castAction"
-            },
-            {
-              "data": {
-                "selectorName": "Eruption",
-                "sourceActor": "Ifrit"
-              },
-              "description": "Eruption snapshot",
-              "startTime": 10000,
-              "type": "snapshot"
             },
             {
               "data": {
@@ -156,6 +189,7 @@
                 "enabled": true
               },
               "description": "",
+              "id": 4,
               "startTime": 10000,
               "type": "setCondition"
             },
@@ -170,12 +204,14 @@
                 "targetType": "self"
               },
               "description": "Vulcan Burst",
+              "id": 5,
               "startTime": 12000,
               "type": "castAction"
             },
             {
               "data": {},
               "description": "",
+              "id": 6,
               "startTime": 16000,
               "type": "idle"
             }
@@ -198,6 +234,7 @@
                 "talkerActorName": "Ifrit"
               },
               "description": "Surrender thyself to the fires of judgment",
+              "id": 1,
               "startTime": 0,
               "type": "battleTalk"
             },
@@ -208,19 +245,23 @@
                 "enabled": true
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "setCondition"
             },
             {
               "data": {
                 "flags": 339,
+                "flagsMask": 4294967295,
                 "hateSource": {
                   "hateType": "<to-be-defined>",
                   "source": "<to-de-befined>"
                 },
+                "invulnType": 0,
                 "spawnActor": "Ifrit Nail 1"
               },
-              "description": "Spawn Nail",
+              "description": "Spawn Nail w/ flags and no invuln",
+              "id": 3,
               "startTime": 5000,
               "type": "bNpcSpawn"
             },
@@ -231,6 +272,7 @@
                 "enabled": true
               },
               "description": "",
+              "id": 4,
               "startTime": 40000,
               "type": "setCondition"
             }
@@ -248,6 +290,7 @@
                 "enabled": false
               },
               "description": "",
+              "id": 1,
               "startTime": 0,
               "type": "setCondition"
             },
@@ -258,6 +301,7 @@
                 "enabled": false
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "setCondition"
             },
@@ -268,6 +312,7 @@
                 "enabled": false
               },
               "description": "",
+              "id": 3,
               "startTime": 0,
               "type": "setCondition"
             },
@@ -278,17 +323,47 @@
                 "enabled": false
               },
               "description": "",
+              "id": 4,
               "startTime": 0,
               "type": "setCondition"
             },
             {
               "data": {
                 "flags": 375,
+                "flagsMask": null,
+                "invulnType": 3,
                 "targetActor": ""
               },
-              "description": "",
+              "description": "set bnpc flags",
+              "id": 5,
               "startTime": 0,
               "type": "bNpcFlags"
+            },
+            {
+              "data": {
+                "battleTalkId": 2603,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "",
+              "id": 6,
+              "startTime": 0,
+              "type": "battleTalk"
+            },
+            {
+              "data": {
+                "actionTimelineId": 140,
+                "actorName": "Ifrit"
+              },
+              "description": "",
+              "id": 7,
+              "startTime": 2000,
+              "type": "actionTimeline"
             },
             {
               "data": {
@@ -306,17 +381,9 @@
                 "targetType": "self"
               },
               "description": "",
-              "startTime": 0,
+              "id": 8,
+              "startTime": 2500,
               "type": "setPos"
-            },
-            {
-              "data": {
-                "actionTimelineId": 140,
-                "actorName": "Ifrit"
-              },
-              "description": "",
-              "startTime": 2000,
-              "type": "actionTimeline"
             },
             {
               "data": {
@@ -324,17 +391,9 @@
                 "actorName": "Ifrit"
               },
               "description": "",
+              "id": 9,
               "startTime": 6000,
               "type": "actionTimeline"
-            },
-            {
-              "data": {
-                "flags": 16,
-                "targetActor": ""
-              },
-              "description": "",
-              "startTime": 7000,
-              "type": "bNpcFlags"
             },
             {
               "data": {
@@ -347,6 +406,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 10,
               "startTime": 7300,
               "type": "castAction"
             },
@@ -357,8 +417,37 @@
                 "enabled": true
               },
               "description": "enable final phase",
+              "id": 11,
               "startTime": 12000,
               "type": "setCondition"
+            },
+            {
+              "data": {
+                "battleTalkId": 2604,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "enable final phase",
+              "id": 12,
+              "startTime": 12000,
+              "type": "battleTalk"
+            },
+            {
+              "data": {
+                "flags": 16,
+                "flagsMask": null,
+                "invulnType": 0,
+                "targetActor": ""
+              },
+              "description": "NoDeaggro, InvincibilityType::None",
+              "id": 13,
+              "startTime": 15000,
+              "type": "bNpcFlags"
             }
           ]
         },
@@ -373,7 +462,8 @@
                 "opc": "set",
                 "val": 1
               },
-              "description": "",
+              "description": "set directorvar success",
+              "id": 1,
               "startTime": 0,
               "type": "directorVar"
             },
@@ -384,6 +474,7 @@
                 "enabled": true
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "setCondition"
             }
@@ -400,7 +491,8 @@
                 "opc": "set",
                 "val": 2
               },
-              "description": "",
+              "description": "set directorvar fail",
+              "id": 1,
               "startTime": 0,
               "type": "directorVar"
             },
@@ -409,6 +501,7 @@
                 "despawnActor": "Ifrit Nail 1"
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "bNpcDespawn"
             },
@@ -419,6 +512,7 @@
                 "enabled": true
               },
               "description": "",
+              "id": 3,
               "startTime": 0,
               "type": "setCondition"
             }
@@ -431,21 +525,7 @@
           "timepoints": [
             {
               "data": {
-                "actionId": 455,
-                "selectorIndex": 0,
-                "selectorName": "<unset>",
-                "snapshot": false,
-                "snapshotTime": 0,
-                "sourceActor": "Ifrit",
-                "targetType": "self"
-              },
-              "description": "",
-              "startTime": 0,
-              "type": "castAction"
-            },
-            {
-              "data": {
-                "actionId": 455,
+                "actionId": 453,
                 "selectorIndex": 0,
                 "selectorName": "<unset>",
                 "snapshot": false,
@@ -453,7 +533,33 @@
                 "sourceActor": "Ifrit",
                 "targetType": "target"
               },
-              "description": "",
+              "description": "Incinerate",
+              "id": 1,
+              "startTime": 0,
+              "type": "castAction"
+            },
+            {
+              "data": {
+                "selectorName": "Eruption",
+                "sourceActor": "Ifrit"
+              },
+              "description": "Eruption snapshot",
+              "id": 2,
+              "startTime": 8000,
+              "type": "snapshot"
+            },
+            {
+              "data": {
+                "actionId": 455,
+                "selectorIndex": 0,
+                "selectorName": "Eruption",
+                "snapshot": false,
+                "snapshotTime": 0,
+                "sourceActor": "Ifrit",
+                "targetType": "self"
+              },
+              "description": "Eruption precast",
+              "id": 3,
               "startTime": 8000,
               "type": "castAction"
             },
@@ -468,6 +574,7 @@
                 "targetType": "self"
               },
               "description": "Ifrit Plumes In",
+              "id": 4,
               "startTime": 16000,
               "type": "castAction"
             },
@@ -478,6 +585,7 @@
                 "enabled": true
               },
               "description": "",
+              "id": 5,
               "startTime": 16000,
               "type": "setCondition"
             },
@@ -492,6 +600,7 @@
                 "targetType": "self"
               },
               "description": "Ifrit Plumes Out",
+              "id": 6,
               "startTime": 23000,
               "type": "castAction"
             },
@@ -502,6 +611,7 @@
                 "enabled": true
               },
               "description": "",
+              "id": 7,
               "startTime": 23000,
               "type": "setCondition"
             }
@@ -510,14 +620,17 @@
         {
           "description": "",
           "id": 8,
-          "name": "Reset",
+          "name": "Ifrit Death",
           "timepoints": [
             {
               "data": {
                 "flags": 16,
+                "flagsMask": null,
+                "invulnType": null,
                 "targetActor": ""
               },
               "description": "",
+              "id": 1,
               "startTime": 0,
               "type": "bNpcFlags"
             },
@@ -526,8 +639,25 @@
                 "despawnActor": "Ifrit Nail 1"
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "bNpcDespawn"
+            },
+            {
+              "data": {
+                "battleTalkId": 2605,
+                "kind": 2,
+                "length": 5000,
+                "nameId": 1185,
+                "params": [
+                  0
+                ],
+                "talkerActorName": "Ifrit"
+              },
+              "description": "",
+              "id": 3,
+              "startTime": 0,
+              "type": "battleTalk"
             }
           ]
         }
@@ -548,17 +678,45 @@
           "timepoints": [
             {
               "data": {
+                "actorName": "Ifrit Control <subactor 1>",
+                "pos": [
+                  0,
+                  0,
+                  0
+                ],
+                "positionType": "absolute",
+                "rot": 0,
+                "selectorIndex": 0,
+                "selectorName": "Eruption",
+                "targetActor": "<unknown>",
+                "targetType": "selectorPos"
+              },
+              "description": "setPos to selector",
+              "id": 1,
+              "startTime": 0,
+              "type": "setPos"
+            },
+            {
+              "data": {
                 "actionId": 733,
                 "selectorIndex": 0,
                 "selectorName": "Eruption",
                 "snapshot": false,
                 "snapshotTime": 0,
                 "sourceActor": "Ifrit Control <subactor 1>",
-                "targetType": "selector"
+                "targetType": "selectorPos"
               },
               "description": "",
+              "id": 2,
               "startTime": 100,
               "type": "castAction"
+            },
+            {
+              "data": {},
+              "description": "",
+              "id": 3,
+              "startTime": 8000,
+              "type": "idle"
             }
           ]
         },
@@ -583,6 +741,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 1,
               "startTime": 0,
               "type": "setPos"
             },
@@ -602,6 +761,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "setPos"
             },
@@ -621,6 +781,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 3,
               "startTime": 0,
               "type": "setPos"
             },
@@ -640,6 +801,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 4,
               "startTime": 0,
               "type": "setPos"
             },
@@ -654,6 +816,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 5,
               "startTime": 0,
               "type": "castAction"
             },
@@ -668,6 +831,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 6,
               "startTime": 0,
               "type": "castAction"
             },
@@ -682,6 +846,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 7,
               "startTime": 0,
               "type": "castAction"
             },
@@ -696,6 +861,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 8,
               "startTime": 0,
               "type": "castAction"
             },
@@ -706,6 +872,7 @@
                 "enabled": false
               },
               "description": "",
+              "id": 9,
               "startTime": 0,
               "type": "setCondition"
             }
@@ -732,6 +899,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 1,
               "startTime": 0,
               "type": "setPos"
             },
@@ -751,6 +919,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 2,
               "startTime": 0,
               "type": "setPos"
             },
@@ -770,6 +939,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 3,
               "startTime": 0,
               "type": "setPos"
             },
@@ -789,6 +959,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 4,
               "startTime": 0,
               "type": "setPos"
             },
@@ -808,6 +979,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 5,
               "startTime": 0,
               "type": "setPos"
             },
@@ -827,6 +999,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 6,
               "startTime": 0,
               "type": "setPos"
             },
@@ -846,6 +1019,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 7,
               "startTime": 0,
               "type": "setPos"
             },
@@ -865,6 +1039,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 8,
               "startTime": 0,
               "type": "setPos"
             },
@@ -879,6 +1054,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 9,
               "startTime": 0,
               "type": "castAction"
             },
@@ -893,6 +1069,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 10,
               "startTime": 0,
               "type": "castAction"
             },
@@ -907,6 +1084,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 11,
               "startTime": 0,
               "type": "castAction"
             },
@@ -921,6 +1099,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 12,
               "startTime": 0,
               "type": "castAction"
             },
@@ -935,6 +1114,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 13,
               "startTime": 0,
               "type": "castAction"
             },
@@ -949,6 +1129,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 14,
               "startTime": 0,
               "type": "castAction"
             },
@@ -963,6 +1144,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 15,
               "startTime": 0,
               "type": "castAction"
             },
@@ -977,6 +1159,7 @@
                 "targetType": "self"
               },
               "description": "",
+              "id": 16,
               "startTime": 0,
               "type": "castAction"
             },
@@ -987,8 +1170,127 @@
                 "enabled": false
               },
               "description": "",
+              "id": 17,
               "startTime": 0,
               "type": "setCondition"
+            }
+          ]
+        },
+        {
+          "description": "",
+          "id": 4,
+          "name": "Interrupt Eruption",
+          "timepoints": [
+            {
+              "data": {
+                "actionId": 733,
+                "sourceActor": "Ifrit Control <subactor 1>"
+              },
+              "description": "Interrupted Action 455 -> interrupt subactor 1 Action 733",
+              "id": 1,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {},
+              "description": "",
+              "id": 2,
+              "startTime": 8000,
+              "type": "idle"
+            }
+          ]
+        },
+        {
+          "description": "",
+          "id": 5,
+          "name": "Interrupt Plumes",
+          "timepoints": [
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 1>"
+              },
+              "description": "Interrupt Plumes Action 456 -> Interrupt Subactor 1 Action 734",
+              "id": 1,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 2>"
+              },
+              "description": "",
+              "id": 2,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 3>"
+              },
+              "description": "",
+              "id": 3,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 4>"
+              },
+              "description": "",
+              "id": 4,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 5>"
+              },
+              "description": "",
+              "id": 5,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 6>"
+              },
+              "description": "",
+              "id": 6,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 7>"
+              },
+              "description": "",
+              "id": 7,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {
+                "actionId": 734,
+                "sourceActor": "Ifrit Control <subactor 8>"
+              },
+              "description": "",
+              "id": 8,
+              "startTime": 0,
+              "type": "interruptAction"
+            },
+            {
+              "data": {},
+              "description": "",
+              "id": 9,
+              "startTime": 4000,
+              "type": "idle"
             }
           ]
         }
@@ -1020,15 +1322,29 @@
       "condition": "hpPctBetween",
       "description": "",
       "enabled": true,
+      "id": 17,
+      "loop": false,
+      "paramData": {
+        "hpMax": 100,
+        "hpMin": 69,
+        "sourceActor": "Ifrit"
+      },
+      "targetActor": "Ifrit",
+      "targetSchedule": "Phase 1 Start"
+    },
+    {
+      "condition": "hpPctBetween",
+      "description": "",
+      "enabled": true,
       "id": 1,
       "loop": true,
       "paramData": {
         "hpMax": 100,
-        "hpMin": 70,
+        "hpMin": 69,
         "sourceActor": "Ifrit"
       },
       "targetActor": "Ifrit",
-      "targetSchedule": "Phase 1"
+      "targetSchedule": "Phase 1 Main"
     },
     {
       "condition": "hpPctBetween",
@@ -1038,7 +1354,7 @@
       "loop": false,
       "paramData": {
         "hpMax": 71,
-        "hpMin": 50,
+        "hpMin": 49,
         "sourceActor": "Ifrit"
       },
       "targetActor": "Ifrit",
@@ -1051,8 +1367,8 @@
       "id": 2,
       "loop": true,
       "paramData": {
-        "hpMax": 70,
-        "hpMin": 50,
+        "hpMax": 71,
+        "hpMin": 49,
         "sourceActor": "Ifrit"
       },
       "targetActor": "Ifrit",
@@ -1065,7 +1381,7 @@
       "id": 6,
       "loop": false,
       "paramData": {
-        "hpMax": 50,
+        "hpMax": 51,
         "hpMin": 0,
         "sourceActor": "Ifrit"
       },
@@ -1180,27 +1496,40 @@
       "condition": "combatState",
       "description": "",
       "enabled": true,
-      "id": 11,
-      "loop": false,
-      "paramData": {
-        "combatState": 0,
-        "sourceActor": "Ifrit"
-      },
-      "targetActor": "Ifrit",
-      "targetSchedule": "Reset"
-    },
-    {
-      "condition": "combatState",
-      "description": "",
-      "enabled": true,
       "id": 14,
       "loop": false,
       "paramData": {
-        "combatState": 4,
+        "combatState": 5,
         "sourceActor": "Ifrit"
       },
       "targetActor": "Ifrit",
-      "targetSchedule": "Reset"
+      "targetSchedule": "Ifrit Death"
+    },
+    {
+      "condition": "interruptedAction",
+      "description": "",
+      "enabled": true,
+      "id": 15,
+      "loop": true,
+      "paramData": {
+        "actionId": 455,
+        "sourceActor": "Ifrit"
+      },
+      "targetActor": "Ifrit Control",
+      "targetSchedule": "Interrupt Eruption"
+    },
+    {
+      "condition": "interruptedAction",
+      "description": "",
+      "enabled": true,
+      "id": 16,
+      "loop": true,
+      "paramData": {
+        "actionId": 456,
+        "sourceActor": "Ifrit"
+      },
+      "targetActor": "Ifrit Control",
+      "targetSchedule": "Interrupt Plumes"
     }
   ],
   "name": "Brand new timeline",
@@ -1228,5 +1557,5 @@
       "name": "Eruption"
     }
   ],
-  "version": 10
+  "version": 21
 }

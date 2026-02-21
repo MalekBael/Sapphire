@@ -143,7 +143,7 @@ void Sapphire::StatusEffect::StatusEffect::onTick()
         
         const auto& pos = pAreaObject->getPos();
         const auto& potency = pAreaObject->getActionPotency();
-        if( Common::Util::distance( pos, pChara->getPos() ) <= m_groundAOE.radius )
+        if( Common::Util::distance( pos, pChara->getPos() ) <= m_groundAOE.radius + pChara->getRadius() )
         {
           auto wepDmg = 1.f;
 

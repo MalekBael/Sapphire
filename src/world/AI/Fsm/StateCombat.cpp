@@ -1,9 +1,12 @@
 #include "StateCombat.h"
 #include "Actor/BNpc.h"
+#include "Actor/Player.h"
 #include "Logging/Logger.h"
 #include <Service.h>
+#include <Util/UtilMath.h>
 
 #include <Manager/TerritoryMgr.h>
+#include <Manager/PlayerMgr.h>
 #include <Territory/Territory.h>
 #include <Navi/NaviProvider.h>
 
@@ -20,7 +23,10 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     return;
   }
   auto pNaviProvider = pZone->getNaviProvider();
-  bool hasQueuedAction = bnpc.checkAction();
+  bool hasQueuedAction = bnpc.hasAction();
+
+  if( hasQueuedAction )
+    return;
 
   auto pHatedActor = bnpc.hateListGetHighest();
   if( !pHatedActor )
@@ -37,7 +43,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
 
   if( !pHatedActor->isAlive() || bnpc.getTerritoryId() != pHatedActor->getTerritoryId() )
   {
-    bnpc.hateListRemove( pHatedActor );
+    bnpc.deaggro( pHatedActor );
     pHatedActor = bnpc.hateListGetHighest();
   }
 
@@ -47,6 +53,7 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   auto distance = Common::Util::distance( bnpc.getPos(), pHatedActor->getPos() );
 
   // All possibilities to automatically lose aggro go here
+  // todo: use status flags here instead of bnpc flags?
   if( !bnpc.hasFlag( Entity::NoDeaggro ) )
   {
     if( bnpc.hasFlag( Entity::Immobile ) && distance > 40.0f )
@@ -59,43 +66,88 @@ void AI::Fsm::StateCombat::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
     }
   }
 
-  if( bnpc.pathingActive() && !hasQueuedAction &&
-      !bnpc.hasFlag( Entity::Immobile ) &&
-      distance > ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
-  {
+  auto dtMove = tickCount - m_lastMoveTime;
+  auto dtRot = tickCount - m_lastRotTime;
+  if( dtRot == tickCount )
+    dtRot = 300;
 
-    if( pNaviProvider )
-      pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
+  float targetRadius = pHatedActor->getRadius();
+  float stopDistance = targetRadius + bnpc.getNaviTargetReachedDistance() + 3.0f;
+  float startDistance = stopDistance + 0.5f;
 
-    bnpc.moveTo( *pHatedActor );
-  }
-  else
+  bool isPathing = bnpc.getNaviIsPathing();
+
+  // movement
+  if( !bnpc.hasFlag( Entity::Immobile ) && !hasQueuedAction )
   {
-    if( !bnpc.hasFlag( Entity::TurningDisabled ) )
+    if( distance > startDistance )
     {
-      bnpc.face( pHatedActor->getPos() );
-      bnpc.sendPositionUpdate( tickCount );
+      if( dtMove >= 1500 )
+      {
+        if( pNaviProvider )
+          pNaviProvider->setMoveTarget( bnpc.getAgentId(), pHatedActor->getPos() );
+
+        bnpc.moveTo( *pHatedActor );
+        m_lastMoveTime = tickCount;
+      }
+    }
+    else if( isPathing && distance <= stopDistance )
+    {
+      if( pNaviProvider )
+        pNaviProvider->resetMoveTarget( bnpc.getAgentId() );
+      bnpc.setNaviIsPathing( false );
     }
   }
 
+  // ensure navi pos == bnpc pos
   if( bnpc.getAgentId() != -1 )
   {
     auto pos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
-    if( pos.x != bnpc.getPos().x || pos.y != bnpc.getPos().y || pos.z != bnpc.getPos().z )
+    auto myPos = bnpc.getPos();
+    if( ( pos.x != myPos.x || pos.y != myPos.y || pos.z != myPos.z ) )
+    {
       bnpc.setPos( pos );
+    }
   }
 
+  // rotation
+  if( !bnpc.hasFlag( Entity::TurningDisabled ) && !hasQueuedAction )
+  {
+    if( dtRot >= 300 )
+    {
+      Common::FFXIVARR_POSITION3 lookAtPos = pHatedActor->getPos();
 
+      // If moving and outside combat range, face the movement direction (Navi Agent)
+      if( isPathing && distance > stopDistance && bnpc.getAgentId() != -1 )
+      {
+        auto naviPos = pNaviProvider->getAgentPos( bnpc.getAgentId() );
+        float dx = naviPos.x - bnpc.getPos().x;
+        float dz = naviPos.z - bnpc.getPos().z;
+        // Only use heading if we actually moved enough to have a valid vector
+        if( ( dx * dx + dz * dz ) > 0.0001f )
+        {
+          lookAtPos = naviPos;
+        }
+      }
 
-  if( !hasQueuedAction && distance < ( bnpc.getNaviTargetReachedDistance() + pHatedActor->getRadius() ) )
+      bnpc.face( lookAtPos );
+      bnpc.sendPositionUpdate( tickCount );
+      m_lastRotTime = tickCount;
+    }
+  }
+
+  // combat
+  if( !hasQueuedAction && distance <= startDistance )
   {
     bnpc.processGambits( tickCount );
 
     // in combat range. ATTACK!
-    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) )
+    if( !bnpc.hasFlag( Entity::BNpcFlag::AutoAttackDisabled ) && bnpc.isFacingTarget( *pHatedActor, 0.99f ) )
+    {
       bnpc.autoAttack( pHatedActor );
+    }
   }
-
+  m_lastTick = tickCount;
 }
 
 void AI::Fsm::StateCombat::onEnter( Entity::BNpc& bnpc )
@@ -109,4 +161,3 @@ void AI::Fsm::StateCombat::onExit( Entity::BNpc& bnpc )
   bnpc.setStance( Common::Stance::Passive );
   bnpc.setOwner( nullptr );
 }
-

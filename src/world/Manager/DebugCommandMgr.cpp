@@ -31,6 +31,7 @@
 #include "Actor/EventObject.h"
 #include "Actor/BNpc.h"
 
+#include "Action/Action.h"
 #include "Action/ActionLutData.h"
 #include "Action/ActionShapeLutData.h"
 
@@ -86,7 +87,6 @@ DebugCommandMgr::DebugCommandMgr()
   registerCommand( "cf", &DebugCommandMgr::contentFinder, "Content-Finder", 1 );
   registerCommand( "ew", &DebugCommandMgr::easyWarp, "Easy warping", 1 );
   registerCommand( "reload", &DebugCommandMgr::hotReload, "Reloads a resource", 1 );
-  registerCommand( "facing", &DebugCommandMgr::facing, "Checks if you are facing an actor", 1 );
   registerCommand( "facing", &DebugCommandMgr::facing, "Checks if you are facing an actor", 1 );
   registerCommand( "cbt", &DebugCommandMgr::cbt, "Create, bind and teleport to an instance", 1 );
 }
@@ -615,6 +615,21 @@ void DebugCommandMgr::add( char* data, Entity::Player& player, std::shared_ptr< 
     {
       if( auto pBNpc = pActor->getAsBNpc(); pBNpc && Common::Util::distance( pBNpc->getPos(), player.getPos() ) <= distance )
         pBNpc->knockback( player.getPos(), distance );
+    }
+  }
+  else if( subCommand == "interrupt" )
+  {
+    auto targetId = player.getTargetId();
+    for( auto& pActor : player.getInRangeActors() )
+    {
+      if( auto pChara = pActor->getAsChara(); pChara && pChara->getId() == targetId )
+      {
+        if( pChara->getCurrentAction() )
+        {
+          pChara->getCurrentAction()->interrupt();
+          break;
+        }
+      }
     }
   }
   else if( subCommand == "achvGeneral" )

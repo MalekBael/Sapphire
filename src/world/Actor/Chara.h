@@ -146,7 +146,7 @@ namespace Sapphire::Entity
 
     void replaceSingleStatusEffect( uint32_t slotId, StatusEffect::StatusEffectPtr pStatus );
 
-    void replaceSingleStatusEffectById( uint32_t id );
+    void replaceSingleStatusEffectById( uint32_t id, StatusEffect::StatusEffectPtr pStatus );
 
     void removeSingleStatusEffectById( uint32_t id );
 
@@ -159,6 +159,8 @@ namespace Sapphire::Entity
     void updateStatusEffects();
 
     bool hasStatusEffect( uint32_t id );
+
+    bool hasStatusEffectByFlag( Common::StatusEffectFlag flag );
 
     int8_t getStatusEffectFreeSlot();
 
@@ -273,11 +275,11 @@ namespace Sapphire::Entity
 
     virtual void onDamageTaken( Chara& pSource ) {};
 
-    virtual bool isHostile( const Chara& chara );
+    virtual bool isHostile( Chara& chara );
 
     virtual void onActionHostile( CharaPtr pSource, int32_t aggro ) {};
 
-    virtual bool isFriendly( const Chara& chara );
+    virtual bool isFriendly( Chara& chara );
 
     virtual void onActionFriendly( Chara& pSource ) {};
 
@@ -293,7 +295,9 @@ namespace Sapphire::Entity
 
     virtual void restoreMP( uint32_t amount );
 
-    virtual bool checkAction();
+    virtual void processActions();
+
+    bool hasAction() const;
 
     virtual void update( uint64_t tickCount );
 

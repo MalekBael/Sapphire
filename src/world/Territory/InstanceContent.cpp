@@ -278,7 +278,7 @@ void Sapphire::InstanceContent::updateState( uint64_t tickCount )
       break;
     }
 
-    case Terminate:
+    case InstanceContentState::Terminate:
     {
       // exit players
       if( ( m_instanceTerminateTime + 3000 ) >= tickCount )

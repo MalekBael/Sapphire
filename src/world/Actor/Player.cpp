@@ -90,7 +90,7 @@ Player::Player() :
   m_onlineStatus = 0;
   m_status = ActorStatus::Idle;
   m_invincibilityType = InvincibilityType::InvincibilityNone;
-  m_radius = 2.f;
+  m_radius = 0.f;
 
   memset( m_name, 0, sizeof( m_name ) );
   memset( m_searchMessage, 0, sizeof( m_searchMessage ) );
@@ -1547,10 +1547,10 @@ void Player::resetRecastGroups()
   Network::Util::Packet::sendRecastGroups( *this );
 }
 
-bool Player::checkAction()
+void Player::processActions()
 {
   if( m_pCurrentAction == nullptr )
-    return false;
+    return;
 
   if( m_pCurrentAction->update() )
   {
@@ -1567,8 +1567,6 @@ bool Player::checkAction()
       m_pQueuedAction = nullptr;
     }
   }
-
-  return true;
 }
 
 uint64_t Player::getPartyId() const

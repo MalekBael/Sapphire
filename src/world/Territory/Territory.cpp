@@ -333,9 +333,9 @@ void Territory::pushActor( const Entity::GameObjectPtr& pActor )
   {
     auto pPlayer = pActor->getAsPlayer();
 
-    if( m_pNaviProvider )
-      agentId = m_pNaviProvider->addAgent( pPlayer->getPos(), pPlayer->getRadius() );
-    pPlayer->setAgentId( agentId );
+    //if( m_pNaviProvider )
+    //  agentId = m_pNaviProvider->addAgent( pPlayer->getPos(), pPlayer->getRadius() );
+    //pPlayer->setAgentId( agentId );
 
     m_playerMap[ pPlayer->getId() ] = pPlayer;
     updateCellActivity( cx, cy, 1 );
@@ -990,6 +990,25 @@ Entity::BNpcPtr Territory::createBNpcFromLayoutIdNoPush( uint32_t layoutId, uint
   pBNpc->init();
   pBNpc->setTriggerOwnerId( triggerOwnerId );
   return pBNpc;
+}
+
+Entity::GameObjectPtr Territory::getEntityById( uint32_t entityId )
+{
+  Entity::GameObjectPtr pRet = nullptr;
+
+  pRet = getPlayer( entityId );
+  if( pRet )
+    return pRet;
+
+  pRet = getActiveBNpcByEntityId( entityId );
+  if( pRet )
+    return pRet;
+
+  pRet = getEObj( entityId );
+  if( pRet )
+    return pRet;
+
+  return pRet;
 }
 
 Entity::BNpcPtr Territory::getActiveBNpcByEntityId( uint32_t entityId )
