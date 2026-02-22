@@ -5,6 +5,8 @@ cmake_policy( SET CMP0091 NEW )
 # See: https://alexreinking.com/blog/how-to-use-cmake-without-the-agonizing-pain-part-1.html
 cmake_minimum_required( VERSION 3.22 )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Prevent common user error
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-tree builds are not supported. Run CMake from a separate directory: cmake -B build")
@@ -88,6 +90,8 @@ add_subdirectory( "src/common" )
 add_subdirectory( "src/api" )
 add_subdirectory( "src/lobby" )
 add_subdirectory( "src/world" )
+add_subdirectory( "src/server_console" )
+add_subdirectory( "src/server_gui" )
 add_subdirectory( "src/dbm" )
 
 set( CMAKE_FOLDER "scripts" )
