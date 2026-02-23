@@ -168,6 +168,7 @@ bool WorldServer::loadSettings( int32_t argc, char *argv[ ] )
   m_config.scripts.cachePath = configMgr.getValue< std::string >( "Scripts", "CachePath", "./cache/" );
 
   m_config.navigation.meshPath = configMgr.getValue< std::string >( "Navigation", "MeshPath", "navi" );
+  m_config.map.eagerENpcEObjCache = configMgr.getValue( "Map", "EagerENpcEObjCache", true );
 
   m_config.network.disconnectTimeout = configMgr.getValue< uint16_t >( "Network", "DisconnectTimeout", 20 );
   m_config.network.listenIp = configMgr.getValue< std::string >( "Network", "ListenIp", "0.0.0.0" );
@@ -339,7 +340,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
   Common::Service< Manager::ActionMgr >::set( pActionMgr );
   logInitStep( "Action LUT reload + ActionMgr set" );
 
-  auto pMapMgr = std::make_shared< Manager::MapMgr >();
+  auto pMapMgr = std::make_shared< Manager::MapMgr >( m_config.map.eagerENpcEObjCache );
 
   Logger::info( "MapMgr: Caching quests" );
   auto mapMgrCacheStart = Common::Util::getTimeMs();

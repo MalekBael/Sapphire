@@ -39,6 +39,19 @@ bool MapMgr::loadQuests()
   m_eNpcCacheMap.clear();
   m_eObjCacheMap.clear();
 
+  if( m_eagerENpcEObjCache )
+  {
+    auto& exdData = Common::Service< Data::ExdData >::ref();
+    m_eNpcCacheMap = exdData.getRows< Excel::ENpcBase >();
+    m_eObjCacheMap = exdData.getRows< Excel::EObj >();
+
+    Logger::info( "MapMgr: Hybrid preload enabled - cached {} ENpcBase rows and {} EObj rows, quests lazy ({}ms)",
+                  m_eNpcCacheMap.size(),
+                  m_eObjCacheMap.size(),
+                  Common::Util::getTimeMs() - startMs );
+    return true;
+  }
+
   Logger::info( "MapMgr: Deferred EXD preload enabled (quests/enpcs/eobjs cached on demand) in {}ms",
                 Common::Util::getTimeMs() - startMs );
 
