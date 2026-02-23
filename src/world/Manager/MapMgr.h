@@ -72,6 +72,10 @@ namespace Sapphire::World::Manager
     ENpcDataCache m_eNpcCacheMap;
     EObjDataCache m_eObjCacheMap;
 
+    std::shared_ptr< Excel::ExcelStruct< Excel::Quest > > getQuestRow( uint32_t questId );
+    std::shared_ptr< Excel::ExcelStruct< Excel::ENpcBase > > getENpcBaseRow( uint32_t eNpcBaseId );
+    std::shared_ptr< Excel::ExcelStruct< Excel::EObj > > getEObjRow( uint32_t eObjBaseId );
+
     void insertQuest( Entity::Player& player, uint32_t questId, uint32_t layoutId, EventSet& mapData );
 
     bool isQuestVisible( Entity::Player& player, uint32_t questId, Excel::Quest& quest );
