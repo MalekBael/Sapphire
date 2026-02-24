@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include <Actor/GameObject.h>
 #include <Actor/BNpc.h>
 #include <Actor/Chara.h>
 #include <Actor/Player.h>
@@ -201,13 +202,15 @@ namespace Sapphire::World::AI
     return m_negate ? !ret : ret;
   }
 
-  void Snapshot::createSnapshot( Entity::CharaPtr pSrc, const std::set< Entity::GameObjectPtr >& inRange,
+  void Snapshot::createSnapshot( Entity::Chara& src, const std::set< Entity::GameObjectPtr >& inRange,
                                  uint32_t count, bool fillWithRandom,
                                  const std::vector< TargetSelectFilterPtr >& filters,
                                  const std::vector< uint32_t >& exclude )
   {
     m_results.clear();
     m_targetIds.clear();
+
+    auto pSrc = src.getAsChara();
 
     auto& RNGMgr = Common::Service< Common::Random::RNGMgr >::ref();
     for( const auto& pActor : inRange )

@@ -14,7 +14,7 @@ namespace Sapphire::World::Util
   public:
     ActorFilter() = default;
     virtual ~ActorFilter() = default;
-    virtual bool conditionApplies( const Entity::GameObject& actor ) = 0;
+    virtual bool conditionApplies( Entity::GameObject& actor ) = 0;
   };
 
   using ActorFilterPtr = std::shared_ptr< ActorFilter >;
@@ -27,7 +27,7 @@ namespace Sapphire::World::Util
     float m_radius;
   public:
     ActorFilterInRange( Common::FFXIVARR_POSITION3 aoePos, float range );
-    bool conditionApplies( const Entity::GameObject& actor ) override;
+    bool conditionApplies( Entity::GameObject& actor ) override;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ namespace Sapphire::World::Util
 
   public:
     explicit ActorFilterSingleTarget( uint32_t actorId );
-    bool conditionApplies( const Entity::GameObject& actor ) override;
+    bool conditionApplies( Entity::GameObject& actor ) override;
   };
   
   /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ namespace Sapphire::World::Util
     uint16_t m_height;
   public:
     explicit ActorFilterBox( Common::FFXIVARR_POSITION3 aoePos, uint16_t width, uint16_t height );
-    bool conditionApplies( const Entity::GameObject& actor ) override;
+    bool conditionApplies( Entity::GameObject& actor ) override;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ namespace Sapphire::World::Util
 
   public:
     explicit ActorFilterCone( Common::FFXIVARR_POSITION3 startPos, Common::FFXIVARR_POSITION3 skillTargetPos, float startAngle, float endAngle );
-    bool conditionApplies( const Entity::GameObject& actor ) override;
+    bool conditionApplies( Entity::GameObject& actor ) override;
   };
 }
 

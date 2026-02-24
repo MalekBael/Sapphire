@@ -49,8 +49,7 @@ namespace Sapphire::Entity
 
     uint32_t getInstanceId() const;
 
-    uint8_t getPermissionInvisibility() const;
-    void setPermissionInvisibility( uint8_t permissionInvisibility );
+    void setPermissionInvisibility( uint8_t permissionInvisibility ) override;
 
     uint32_t getOwnerId() const;
 
@@ -61,7 +60,6 @@ namespace Sapphire::Entity
     uint32_t m_baseId;
     uint32_t m_ownerId;
     uint8_t m_state;
-    uint8_t m_permissionInvisibility;
     float m_scale{};
     std::string m_name;
     TerritoryPtr m_parentInstance;

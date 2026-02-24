@@ -69,6 +69,13 @@ void ActionResult::startCombo( uint16_t actionId )
   m_result.Type = CalcResultType::TypeCombo;
 }
 
+void ActionResult::knockback( uint32_t kbExdKey, float offset )
+{
+  m_result.Arg0 = offset;
+  m_result.Value = kbExdKey;
+  m_result.Type = CalcResultType::TypeKnockBack;
+}
+
 void ActionResult::comboSucceed()
 {
   // no EffectOnSource flag on this

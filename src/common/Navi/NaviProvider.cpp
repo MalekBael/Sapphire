@@ -612,7 +612,7 @@ int32_t Sapphire::Common::Navi::NaviProvider::addAgent( const Common::FFXIVARR_P
   dtCrowdAgentParams params{};
   std::memset( &params, 0, sizeof( params ) );
   params.height = 3.f;
-  params.maxAcceleration = 10.f;
+  params.maxAcceleration = 40.f;
   params.maxSpeed = speed;
   params.radius = radius;
   params.collisionQueryRange = speed * 0.5f;
@@ -637,7 +637,7 @@ void Sapphire::Common::Navi::NaviProvider::updateAgentParameters( int32_t naviAg
   dtCrowdAgentParams params{};
   std::memset( &params, 0, sizeof( params ) );
   params.height = 3.f;
-  params.maxAcceleration = 10.f;
+  params.maxAcceleration = 40.f;
   params.maxSpeed = speed;
   params.radius = radius;
   params.collisionQueryRange = speed * 0.5f;
@@ -746,6 +746,7 @@ bool Sapphire::Common::Navi::NaviProvider::hasTargetState( int32_t naviAgentId )
 
 int32_t Sapphire::Common::Navi::NaviProvider::updateAgentPosition( int32_t naviAgentId, const Common::FFXIVARR_POSITION3& pos, float radius, float speed )
 {
+  resetMoveTarget( naviAgentId );
   removeAgent( naviAgentId );
   auto newIndex = addAgent( pos, radius, speed );
   return newIndex;

@@ -1,6 +1,7 @@
 #include <ScriptObject.h>
 #include <Territory/InstanceContent.h>
 #include <Encounter/Encounter.h>
+#include <Actor/Player.h>
 
 using namespace Sapphire;
 
@@ -15,7 +16,7 @@ public:
 
   void setupEncounter( InstanceContent& instance, EncounterPtr pEncounter )
   {
-    std::vector< EncounterActor > actors { { NPC_IFRIT, VAL_IFRIT_HP, Common::BNpcType::Enemy, 0 } };
+    std::vector< EncounterActor > actors { { NPC_IFRIT, VAL_IFRIT_HP, Common::BNpcType::Enemy, Entity::BNpcFlag::NoRoam, true } };
     pEncounter->setInitialActorSetup( actors );
     pEncounter->init();
   }
@@ -33,10 +34,7 @@ public:
 
   void onReset( InstanceContent& instance ) override
   {
-    auto pEncounter = instance.getEncounter();
-    if( !pEncounter )
-      return;
-    setupEncounter( instance, pEncounter );
+
   }
 
   void onUpdate( InstanceContent& instance, uint64_t tickCount ) override
@@ -53,15 +51,32 @@ public:
         pEncounter->start();
       }
 
-      if( pEncounter )
-        pEncounter->update( tickCount );
+      pEncounter->update( tickCount );
 
       // Fight end condition
-      if( pEncounter->getStatus() == EncounterStatus::ACTIVE && ifrit && ( !ifrit->isAlive() ) )
+      if( pEncounter->getStatus() == EncounterStatus::ACTIVE )
       {
-        //Logger::debug( "Setting duty state to failed!" );
-        pEncounter->setStatus( EncounterStatus::SUCCESS );
-        instance.setState( InstanceContentState::DutyFinished );
+        if( ifrit && ( !ifrit->isAlive() ) )
+        {
+          //Logger::debug( "Setting duty state to failed!" );
+          pEncounter->setStatus( EncounterStatus::SUCCESS );
+          instance.setState( InstanceContentState::DutyFinished );
+        }
+      }
+
+      auto deadPlayers = 0;
+      for( const auto& player : instance.getPlayers() )
+      {
+        if( player.second->getHp() != 0 )
+          break;
+
+        ++deadPlayers;
+      }
+
+      if( deadPlayers == instance.getInstancePlayerCount() )
+      {
+        pEncounter->setStatus( EncounterStatus::FAIL );
+        instance.setState( InstanceContentState::DutyReset );
       }
     }
   }

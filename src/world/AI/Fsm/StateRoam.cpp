@@ -28,6 +28,9 @@ void AI::Fsm::StateRoam::onUpdate( Entity::BNpc& bnpc, uint64_t tickCount )
   {
     bnpc.setRoamTargetReached( true );
     bnpc.setLastRoamTargetReachedTime( Common::Util::getTimeSeconds() );
+
+    if( bnpc.getEnemyType() == Common::Friendly )
+      bnpc.setRot( bnpc.getSpawnRot() );
   }
 
 }

@@ -18,6 +18,8 @@
 
 #include "Network/Util/PacketUtil.h"
 
+#include "AI/TargetHelper.h"
+
 #include "Action/Action.h"
 #include "WorldServer.h"
 #include "Session.h"
@@ -39,12 +41,11 @@ using namespace Sapphire::Network::Packets;
 using namespace Sapphire::Network::Packets::WorldPackets::Server;
 using namespace Sapphire::Network::ActorControl;
 
-Chara::Chara( ObjKind type ) :
-  GameObject( type ),
-  m_pose( 0 ),
-  m_targetId( INVALID_GAME_OBJECT_ID64 ),
-  m_directorId( 0 ),
-  m_radius( 2.f )
+Chara::Chara( ObjKind type ) : GameObject( type ),
+                               m_pose( 0 ),
+                               m_targetId( INVALID_GAME_OBJECT_ID64 ),
+                               m_directorId( 0 ),
+                               m_radius( 2.f )
 {
   m_lastTickTime = 0;
   m_lastUpdate = 0;
@@ -325,18 +326,21 @@ position
 bool Chara::face( const FFXIVARR_POSITION3& p )
 {
   float oldRot = getRot();
-  float rot = Common::Util::calcAngFrom( getPos().x, getPos().z, p.x, p.z );
 
-  // Convert to facing direction
-  float newRot = rot + ( PI / 2 );
+  float dx = p.x - getPos().x;
+  float dz = p.z - getPos().z;
 
-  // Normalize to [-π, π] range
-  newRot = -fmod( newRot + PI, 2 * PI ) - PI;
+  if( dx == 0.0f && dz == 0.0f )
+    return true;
+
+  // -3.14 == 3.14 in-game so normalize+clamp (-3.14, 3.14).
+  float newRot = atan2f( dx, dz );
+  if( newRot >= PI )
+    newRot = -PI;
 
   setRot( newRot );
 
-  return ( fabs( oldRot - newRot ) <= std::numeric_limits< float >::epsilon() *
-           fmax( fabs( oldRot ), fabs( newRot ) ) );
+  return ( oldRot == newRot );
 }
 
 
@@ -355,23 +359,36 @@ void Chara::setStance( Stance stance )
 /*!
 Check if an action is queued for execution, if so update it
 and if fully performed, clean up again.
-
-\return true if a queued action has been updated
 */
-bool Chara::checkAction()
+void Chara::processActions()
 {
   if( m_pCurrentAction == nullptr )
-    return false;
+    return;
 
-  if( m_pCurrentAction->update() )
+  // delay removing action for 3 tick after interrupting
+  // todo: why does this need to be held for 3 ticks for TimelinePack to pick this up?
+  if( m_pCurrentAction->isInterrupted() && m_pCurrentAction->getInterruptTickCount() < 3 )
+  {
+    if( m_pCurrentAction->getInterruptTickCount() == -1 )
+      m_pCurrentAction->update();
+    else
+      m_pCurrentAction->addInterruptTickCount();
+  }
+  else if( m_pCurrentAction->update() )
+  {
     m_pCurrentAction.reset();
+  }
+}
 
-  return true;
+bool Chara::hasAction() const
+{
+  return m_pCurrentAction != nullptr;
 }
 
 void Chara::update( uint64_t tickCount )
 {
   updateStatusEffects();
+  processActions();
 
   if( std::difftime( static_cast< time_t >( tickCount ), m_lastTickTime ) > 3000 )
   {
@@ -416,6 +433,9 @@ void Chara::takeDamage( uint32_t damage, bool broadcastUpdate )
   // dont keep dying
   if( m_status == ActorStatus::Dead )
     return;
+
+  if( m_invincibilityType == InvincibilityIgnoreDamage )
+    damage = 0;
 
   if( damage >= m_hp )
   {
@@ -546,6 +566,10 @@ void Chara::addStatusEffect( StatusEffect::StatusEffectPtr pEffect )
   pEffect->setSlot( nextSlot );
   m_statusEffectMap[ nextSlot ] = pEffect;
   pEffect->applyStatus();
+
+  Network::Util::Packet::sendActorControl( getInRangePlayerIds( false ), getId(), StatusEffectGain,
+                                           pEffect->getId() );
+  Network::Util::Packet::sendHudParam( *this );
 }
 
 /*! \param StatusEffectPtr to be applied to the actor */
@@ -594,13 +618,13 @@ void Chara::replaceSingleStatusEffect( uint32_t slotId, StatusEffect::StatusEffe
   pStatus->applyStatus();
 }
 
-void Chara::replaceSingleStatusEffectById( uint32_t id )
+void Chara::replaceSingleStatusEffectById( uint32_t id, StatusEffect::StatusEffectPtr pStatus )
 {
   for( const auto& effectIt : m_statusEffectMap )
   {
     if( effectIt.second->getId() == id )
     {
-      removeStatusEffect( effectIt.first, false );
+      replaceSingleStatusEffect( effectIt.first, pStatus );
       break;
     }
   }
@@ -660,7 +684,7 @@ void Chara::removeStatusEffectByFlag( Common::StatusEffectFlag flag )
 }
 
 std::map< uint8_t, Sapphire::StatusEffect::StatusEffectPtr >::iterator Chara::removeStatusEffect(
-  uint8_t effectSlotId, bool updateStatus )
+        uint8_t effectSlotId, bool updateStatus )
 {
   auto pEffectIt = m_statusEffectMap.find( effectSlotId );
   if( pEffectIt == m_statusEffectMap.end() )
@@ -720,12 +744,12 @@ Sapphire::StatusEffect::StatusEffectPtr Chara::getStatusEffectById( uint32_t id 
   return nullptr;
 }
 
-const uint8_t *Chara::getLookArray() const
+const uint8_t* Chara::getLookArray() const
 {
   return m_customize;
 }
 
-const uint32_t *Chara::getModelArray() const
+const uint32_t* Chara::getModelArray() const
 {
   return m_modelEquip;
 }
@@ -749,7 +773,8 @@ void Chara::sendStatusEffectUpdate()
   for( const auto& effectIt : m_statusEffectMap )
   {
     float timeLeft = static_cast< float >( effectIt.second->getDuration() -
-                                           ( currentTimeMs - effectIt.second->getStartTimeMs() ) ) / 1000;
+                                           ( currentTimeMs - effectIt.second->getStartTimeMs() ) ) /
+                     1000;
     statusEffectList->data().effect[ slot ].Time = timeLeft;
     statusEffectList->data().effect[ slot ].Id = effectIt.second->getId();
     statusEffectList->data().effect[ slot ].Source = effectIt.second->getSrcActorId();
@@ -794,6 +819,17 @@ bool Chara::hasStatusEffect( uint32_t id )
       return true;
   }
 
+  return false;
+}
+
+bool Chara::hasStatusEffectByFlag( Common::StatusEffectFlag flag )
+{
+  auto uflag = static_cast< uint32_t >( flag );
+  for( const auto& [ key, pEffect ] : m_statusEffectMap )
+  {
+    if( ( pEffect->getFlag() & uflag ) != 0 )
+      return true;
+  }
   return false;
 }
 
@@ -976,14 +1012,24 @@ bool Chara::isFacingTarget( const Chara& other, float threshold )
   return dot >= threshold;
 }
 
-bool Sapphire::Entity::Chara::isHostile( const Chara& chara )
+bool Sapphire::Entity::Chara::isHostile( Chara& chara )
 {
-  return m_objKind != chara.getObjKind();
+  static auto pBattalionFilter = std::make_shared< AI::OwnBattalionFilter >();
+
+  auto pTarget = chara.getAsChara();
+  auto pSrc = getAsChara();
+
+  return !pBattalionFilter->isApplicable( pSrc, pTarget );
 }
 
-bool Sapphire::Entity::Chara::isFriendly( const Chara& chara )
+bool Sapphire::Entity::Chara::isFriendly( Chara& chara )
 {
-  return m_objKind == chara.getObjKind();
+  static auto pBattalionFilter = std::make_shared< AI::OwnBattalionFilter >();
+
+  auto pTarget = chara.getAsChara();
+  auto pSrc = getAsChara();
+
+  return pBattalionFilter->isApplicable( pSrc, pTarget );
 }
 
 void Chara::onTick()
@@ -1049,17 +1095,27 @@ void Chara::knockback( const FFXIVARR_POSITION3& origin, float distance, bool ig
       }
     }
     setPos( navPos );
+
     // speed needs to be reset properly here
-    pNav->updateAgentPosition( getAgentId(), getPos(), getRadius(), 1 );
+    if( !isPlayer() )
+      setAgentId( pNav->updateAgentPosition( getAgentId(), getPos(), getRadius(), pNav->getAgentSpeed( getAgentId() ) ) );
   }
   else
   {
     setPos( kbPos );
   }
   pTeri->updateActorPosition( *this );
+
+  auto pTransferPacket = makeZonePacket< FFXIVIpcTransfer >( getId() );
+  pTransferPacket->data().dir = Common::Util::floatToUInt16Rot( getRot() );
+  pTransferPacket->data().pos[ 0 ] = Common::Util::floatToUInt16( kbPos.x );
+  pTransferPacket->data().pos[ 1 ] = Common::Util::floatToUInt16( kbPos.y );
+  pTransferPacket->data().pos[ 2 ] = Common::Util::floatToUInt16( kbPos.z );
+  pTransferPacket->data().duration = 1.0f;
+
   // todo: send the correct knockback packet to player
   server().queueForPlayers( getInRangePlayerIds(),
-                            std::make_shared< MoveActorPacket >( *this, getRotUInt8(), 2, 0, 0, 0x5A / 4 ) );
+                            pTransferPacket );
 }
 
 void Chara::createAreaObject( uint32_t actionId, uint32_t actionPotency, uint32_t vfxId, float scale,
