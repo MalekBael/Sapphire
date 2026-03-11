@@ -752,6 +752,35 @@ bool Player::hasCondition( Common::PlayerCondition flag ) const
 
 void Player::setCondition( Common::PlayerCondition flag )
 {
+  setConditionInternal( flag, true );
+}
+
+void Player::setConditionSilent( Common::PlayerCondition flag )
+{
+  setConditionInternal( flag, false );
+}
+
+void Player::setConditions( const std::vector< Common::PlayerCondition >& flags )
+{
+  for( auto flag : flags )
+  {
+    setConditionInternal( flag, false );
+  }
+  Network::Util::Packet::sendCondition( *this );
+}
+
+void Player::removeCondition( Common::PlayerCondition flag )
+{
+  removeConditionInternal( flag, true );
+}
+
+void Player::removeConditionSilent( Common::PlayerCondition flag )
+{
+  removeConditionInternal( flag, false );
+}
+
+void Player::setConditionInternal( Common::PlayerCondition flag, bool notify )
+{
   auto iFlag = static_cast< int32_t >( flag );
 
   uint16_t index;
@@ -759,25 +788,11 @@ void Player::setCondition( Common::PlayerCondition flag )
   Util::valueToFlagByteIndexValue( iFlag, value, index );
 
   m_condition[ index ] |= value;
-  Network::Util::Packet::sendCondition( *this );
+  if( notify )
+    Network::Util::Packet::sendCondition( *this );
 }
 
-void Player::setConditions( const std::vector< Common::PlayerCondition >& flags )
-{
-  for( auto flag : flags )
-  {
-    auto iFlag = static_cast< int32_t >( flag );
-
-    uint16_t index;
-    uint8_t value;
-    Util::valueToFlagByteIndexValue( iFlag, value, index );
-
-    m_condition[ index ] |= value;
-  }
-  Network::Util::Packet::sendCondition( *this );
-}
-
-void Player::removeCondition( Common::PlayerCondition flag )
+void Player::removeConditionInternal( Common::PlayerCondition flag, bool notify )
 {
   if( !hasCondition( flag ) )
     return;
@@ -788,8 +803,9 @@ void Player::removeCondition( Common::PlayerCondition flag )
   uint8_t value;
   Util::valueToFlagByteIndexValue( iFlag, value, index );
 
-  m_condition[ index ] ^= value;
-  Network::Util::Packet::sendCondition( *this );
+  m_condition[ index ] &= static_cast< uint8_t >( ~value );
+  if( notify )
+    Network::Util::Packet::sendCondition( *this );
 }
 
 void Player::freePlayerSpawnId( uint32_t actorId )

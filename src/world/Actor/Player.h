@@ -508,6 +508,9 @@ namespace Sapphire::Entity
     /* set a specified state flag */
     void setCondition( Common::PlayerCondition flag );
 
+    /* set a specified state flag without sending Condition packet */
+    void setConditionSilent( Common::PlayerCondition flag );
+
     /* set a specified state flag */
     void setConditions( const std::vector< Common::PlayerCondition >& flags );
 
@@ -516,6 +519,9 @@ namespace Sapphire::Entity
 
     /* reset a specified flag */
     void removeCondition( Common::PlayerCondition flag );
+
+    /* reset a specified flag without sending Condition packet */
+    void removeConditionSilent( Common::PlayerCondition flag );
 
     /*! return the userlevel */
     uint8_t getUserLevel() const;
@@ -893,6 +899,9 @@ namespace Sapphire::Entity
     ClassList m_classArray{};
     ExpList m_expArray{};
     Condition m_condition{};
+
+    void setConditionInternal( Common::PlayerCondition flag, bool notify );
+    void removeConditionInternal( Common::PlayerCondition flag, bool notify );
 
     Common::ClassJob m_firstClass{};
 

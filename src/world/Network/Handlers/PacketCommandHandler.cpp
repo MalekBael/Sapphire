@@ -477,26 +477,56 @@ void Sapphire::Network::GameConnection::commandHandler( const Packets::FFXIVARR_
     }
     case PacketCommand::INSPECT:
     {
-      // Retail retainer "View Attributes & Gear" uses the generic INSPECT command (0x12C)
-      // with Arg0 = retainer actor id (e.g. 0x4001xxxx). In that context, the server must
-      // emit the retainer inspect flow rather than player examine.
+      // Retail retainer "View Attributes & Gear" uses INSPECT (0x12C) with Arg0 = retainer actor id.
+      // If the player is in a retainer session, route this to the retainer inspect flow.
       auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
-      const auto activeRetainerId = retainerMgr.getActiveRetainerId( player );
-      if( activeRetainerId )
+
+      bool isRetainerInspect = false;
+      uint64_t retainerId = 0;
+      uint32_t actorId = 0;
+
+      if( const auto activeRetainerId = retainerMgr.getActiveRetainerId( player ) )
       {
         const uint32_t expectedActorId = retainerMgr.getSpawnedRetainerActorId( player, *activeRetainerId );
         if( expectedActorId != 0 && expectedActorId == data.Arg0 )
         {
-          if( const auto retainerOpt = retainerMgr.getRetainer( *activeRetainerId ) )
+          isRetainerInspect = true;
+          retainerId = *activeRetainerId;
+          actorId = expectedActorId;
+        }
+        else if( expectedActorId == 0 )
+        {
+          isRetainerInspect = true;
+          retainerId = *activeRetainerId;
+          actorId = data.Arg0;
+        }
+        else
+        {
+          for( const auto& retainer : retainerMgr.getRetainers( player ) )
           {
-            Logger::debug( "[{0}] Retainer INSPECT (View Attributes) actorId=0x{1:08X} retainerId={2}",
-                           player.getId(), expectedActorId, *activeRetainerId );
-            // Retail ordering for the attributes flow: 0x0143 -> 0x01D9 -> 0x01A6 -> 0x01D8
-            retainerMgr.sendRetainerOrderMySelfAttributes( player );
-            retainerMgr.sendRetainerEventScene4( player, 0x000B000A );
-            retainerMgr.sendRetainerInspect( player, *retainerOpt );
-            retainerMgr.sendRetainerResumeScene2( player, 0x000B000A, 0x22 );
+            const uint32_t candidateActorId = retainerMgr.getSpawnedRetainerActorId( player, retainer.retainerId );
+            if( candidateActorId != 0 && candidateActorId == data.Arg0 )
+            {
+              isRetainerInspect = true;
+              retainerId = retainer.retainerId;
+              actorId = candidateActorId;
+              break;
+            }
           }
+        }
+      }
+
+      if( isRetainerInspect )
+      {
+        if( const auto retainerOpt = retainerMgr.getRetainer( retainerId ) )
+        {
+          Logger::debug( "[{0}] Retainer INSPECT (View Attributes) actorId=0x{1:08X} retainerId={2}",
+                         player.getId(), actorId, retainerId );
+          // Retail ordering for the attributes flow: 0x0143 -> 0x01D9 -> 0x01A6 -> 0x01D8
+          retainerMgr.sendRetainerOrderMySelfAttributes( player );
+          retainerMgr.sendRetainerEventScene4( player, 0x000B000A );
+          retainerMgr.sendRetainerInspect( player, *retainerOpt );
+          retainerMgr.sendRetainerResumeScene2( player, 0x000B000A, 0x22 );
           break;
         }
       }

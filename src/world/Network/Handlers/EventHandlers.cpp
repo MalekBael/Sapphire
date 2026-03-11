@@ -14,7 +14,11 @@
 
 #include "Manager/EventMgr.h"
 #include "Manager/PlayerMgr.h"
+#include "Manager/RetainerMgr.h"
 #include "Manager/TerritoryMgr.h"
+
+#include "WorldServer.h"
+#include <Network/PacketDef/Zone/ServerZoneDef.h>
 
 #include "Territory/InstanceContent.h"
 #include "Territory/QuestBattle.h"
@@ -47,7 +51,35 @@ void Sapphire::Network::GameConnection::eventHandlerTalk( const Packets::FFXIVAR
 
 
   World::Manager::PlayerMgr::sendDebug( player, "Calling: {0}.{1}", objName, eventName );
+
+  // Retail sends 0142 ActorControl BEFORE eventStart for retainer bell events (720906 / 0x000B000A)
+  // This gating packet must precede 01CC (EventStart) and 01A3 (Condition)
+  constexpr uint32_t kRetainerBellEventId = 720906;// 0x000B000A
+  if( eventId == kRetainerBellEventId )
+  {
+    auto& server = Common::Service< World::WorldServer >::ref();
+    auto orderPkt = makeZonePacket< FFXIVIpcActorControl >( player.getId() );
+    auto& orderData = orderPkt->data();
+    std::memset( &orderData, 0, sizeof( orderData ) );
+    orderData.category = 0x0000;
+    orderData.padding = 0xE20D;
+    orderData.param1 = 0;
+    orderData.param2 = 1;
+    orderData.param3 = 1;
+    orderData.param4 = 0;
+    orderData.param5 = 0x20;
+    server.queueForPlayer( player.getCharacterId(), orderPkt );
+  }
+
   eventMgr.eventStart( player, actorId, eventId, Event::EventHandler::Talk, 0, 0 );
+
+  // Retail sends a retainer-specific Condition packet (01A3) after EventStart for the retainer bell event.
+  // Suppression of the generic InNpcEvent condition packet is handled in EventMgr.
+  if( eventId == kRetainerBellEventId )
+  {
+    auto& retainerMgr = Common::Service< World::Manager::RetainerMgr >::ref();
+    retainerMgr.sendRetainerConditionOpen( player );
+  }
 
   auto& teriMgr = Common::Service< World::Manager::TerritoryMgr >::ref();
   auto pZone = teriMgr.getTerritoryByGuId( player.getTerritoryId() );

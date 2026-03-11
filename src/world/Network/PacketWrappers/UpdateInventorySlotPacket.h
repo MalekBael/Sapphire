@@ -14,14 +14,12 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   class UpdateInventorySlotPacket : public ZoneChannelPacket< FFXIVIpcUpdateItem >
   {
   public:
-    UpdateInventorySlotPacket( uint32_t playerId, uint16_t slot, uint16_t storageId, const Item& item, uint32_t contextId ) :
-      ZoneChannelPacket< FFXIVIpcUpdateItem >( playerId, playerId )
+    UpdateInventorySlotPacket( uint32_t playerId, uint16_t slot, uint16_t storageId, const Item& item, uint32_t contextId ) : ZoneChannelPacket< FFXIVIpcUpdateItem >( playerId, playerId )
     {
       initialize( slot, storageId, item, contextId );
     };
 
-    UpdateInventorySlotPacket( uint32_t playerId, uint16_t slot, uint16_t storageId, uint32_t contextId ) :
-      ZoneChannelPacket< FFXIVIpcUpdateItem >( playerId, playerId )
+    UpdateInventorySlotPacket( uint32_t playerId, uint16_t slot, uint16_t storageId, uint32_t contextId ) : ZoneChannelPacket< FFXIVIpcUpdateItem >( playerId, playerId )
     {
       initialize( slot, storageId, contextId );
     };
@@ -30,6 +28,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     void initialize( uint16_t slot, uint16_t storageId, const Item& item, uint32_t contextId )
     {
       m_data.contextId = contextId;
+      m_data.unknown1 = 0;
       m_data.item.storageId = storageId;
       m_data.item.catalogId = item.getId();
       m_data.item.stack = item.getStackSize();
@@ -45,6 +44,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     void initialize( uint16_t slot, uint16_t storageId, uint32_t contextId )
     {
       m_data.contextId = contextId;
+      m_data.unknown1 = 0;
       m_data.item.storageId = storageId;
       m_data.item.containerIndex = slot;
       m_data.item.stack = 0;
@@ -52,4 +52,4 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     };
   };
 
-}
+}// namespace Sapphire::Network::Packets::WorldPackets::Server

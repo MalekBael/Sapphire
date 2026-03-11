@@ -464,6 +464,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     /* 0008 */ uint32_t param2;
     /* 000C */ uint32_t param3;
     /* 0010 */ uint32_t param4;
+    /* 0014 */ uint32_t param5;
   };
 
   /**
@@ -478,7 +479,8 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     /* 000C */ uint32_t param3;
     /* 0010 */ uint32_t param4;
     /* 0014 */ uint32_t param5;
-    /* 0018 */ uint32_t param6;
+    /* 0018 */ uint32_t param6Padding;
+    /* 001C */ uint32_t param6;
   };
 
   /**
@@ -980,7 +982,7 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     } Materia[ 5 ];
   };
 
-  // NOTE: FFXIVIpcInspect (0x01A6) - 1016 byte inspection packet
+  // NOTE: FFXIVIpcInspect (0x01A6) - 984 byte inspection packet
   // Field layout derived from InspectPacket.h wrapper implementation
   // Not currently reverse-engineered from binary - fields are inferred from usage in InspectPacket wrapper
   // Field layout should be verified against decomp.c and binary analysis when possible
@@ -1024,9 +1026,9 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
     uint8_t SkillLv[ 3 ];
     uint8_t __padding13;
     uint32_t BaseParam[ 50 ];
-    uint8_t __padding14[ 32 ];// Unknown trailing data
+    // Retail 3.35 capture indicates no trailing padding beyond BaseParam.
   };
-  static_assert( sizeof( FFXIVIpcInspect ) == 1016, "FFXIVIpcInspect payload size must be 1016 bytes" );
+  static_assert( sizeof( FFXIVIpcInspect ) == 984, "FFXIVIpcInspect payload size must be 984 bytes" );
 
   struct FFXIVIpcName : FFXIVIpcBasePacket< Name > {
     uint64_t contentId;
@@ -1076,11 +1078,13 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   */
   struct FFXIVIpcNormalItem : FFXIVIpcBasePacket< NormalItem > {
     uint32_t contextId;
+    uint32_t unknown1;
     ZoneProtoDownNormalItem item;
   };
 
   struct FFXIVIpcUpdateItem : FFXIVIpcBasePacket< UpdateItem > {
     uint32_t contextId;
+    uint32_t unknown1;
     ZoneProtoDownNormalItem item;
   };
 
@@ -2121,10 +2125,10 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   struct FFXIVIpcRetainerList : FFXIVIpcBasePacket< RetainerList > {
     uint32_t handlerId;// +0  Event handler ID from EventPlay context
     uint8_t maxSlots;  // +4  Maximum retainer slots (usually 8)
-    // NOTE: Despite the name, this field is stored by client as "available slots"
-    // GetAvailableRetainerSlots() returns this value directly from cache (byte_1417A12B2)
-    // Should be set to: maxSlots - currentlyEmployed
-    uint8_t retainerCount;// +5  ACTUALLY available slots (maxSlots - employed)
+    // NOTE: Retail 3.35 captures for the retainer-bell flow show this byte behaves like
+    // "max allowed retainer slots" (base 2 + any purchased extras), not (maxSlots - employed).
+    // The client can derive employed slots from the 0x01AB slot table.
+    uint8_t retainerCount;// +5  Allowed retainer slots for this account/session
     uint16_t padding;     // +6  Padding
   };
   static_assert( sizeof( FFXIVIpcRetainerList ) == 8 );
@@ -2297,24 +2301,16 @@ namespace Sapphire::Network::Packets::WorldPackets::Server
   /**
    * Server -> Client: Session completion or daily task marker
    * Opcode: 0x00D5 (UpdateOnlineStatus)
-   * Size: 40 bytes payload
+   * Size: 8 bytes payload
    * 
    * Sent at end of retainer interaction.
-   * May indicate quest completion, daily reset, or task slot information.
+   * Retail capture shows only 8 bytes after the IPC header, with taskCount=4.
    */
   struct FFXIVIpcSessionMarker : FFXIVIpcBasePacket< UpdateOnlineStatus > {
     uint32_t unknown0; // +0
-    uint32_t unknown4; // +4
-    uint32_t taskCount;// +8  Observed value: 4 (possibly daily task slots)
-    uint32_t unknown12;// +12
-    uint32_t unknown16;// +16
-    uint32_t unknown20;// +20
-    uint32_t unknown24;// +24
-    uint32_t unknown28;// +28
-    uint32_t unknown32;// +32
-    uint32_t unknown36;// +36
+    uint32_t taskCount;// +4  Observed value: 4 (possibly daily task slots)
   };
-  static_assert( sizeof( FFXIVIpcSessionMarker ) == 40 );
+  static_assert( sizeof( FFXIVIpcSessionMarker ) == 8 );
 
   /**
    * Server -> Client: Session termination / Logout marker

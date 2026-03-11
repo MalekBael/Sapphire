@@ -47,7 +47,7 @@ namespace Sapphire::World::Manager
    */
   struct RetainerData {
     uint64_t retainerId{ 0 };
-    uint32_t ownerId{ 0 };
+    uint64_t ownerId{ 0 };
     uint8_t displayOrder{ 0 };
     std::string name;
     RetainerPersonality personality{ RetainerPersonality::Cheerful };
@@ -340,6 +340,16 @@ namespace Sapphire::World::Manager
     void sendGetRetainerListResult( Entity::Player& player );
 
     /**
+     * @brief Send SetRetainerSubscription (0x0143 ActorControlSelf category 0x18) to the client
+     *
+     * Sends the retainer venture subscription time remaining (in seconds).
+     * Retail always sends 604800 (7 days). This is NOT the retainer count.
+     * The client uses this to enable/disable venture-related UI options.
+     * Retail sends this after the first scene yield (YIELD_SELECT_RETAINER).
+     */
+    void sendSetRetainerSubscription( Entity::Player& player );
+
+    /**
      * @brief Send retail retainer Condition (0x01A3) for opening the bell UI
      *
      * Retail emits a Condition packet immediately after PushEventState.
@@ -364,6 +374,16 @@ namespace Sapphire::World::Manager
      * @param handlerId The event handler ID from the session
      */
     void sendRetainerSessionClose( Entity::Player& player, uint32_t handlerId = 0 );
+
+    /**
+     * @brief Send retail session marker packet (0x00D5) at the end of retainer interactions
+     *
+     * Retail emits UpdateOnlineStatus/SessionMarker after closing the retainer UI.
+     * This appears to finalize the session state machine on the client.
+     *
+     * @param player The player to send to
+     */
+    void sendRetainerSessionMarker( Entity::Player& player );
 
     /**
      * @brief Send retail close-gate ActorControl (0x0142)

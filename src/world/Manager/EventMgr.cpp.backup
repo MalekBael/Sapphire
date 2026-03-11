@@ -694,13 +694,7 @@ void EventMgr::eventFinish( Sapphire::Entity::Player& player, uint32_t eventId, 
   player.removeEvent( pEvent->getId() );
 
   if( freePlayer == 1 )
-  {
-    constexpr uint32_t kRetainerBellEventId = 720906;// 0x000B000A
-    if( pEvent->getId() == kRetainerBellEventId )
-      player.removeConditionSilent( Common::PlayerCondition::InNpcEvent );
-    else
-      player.removeCondition( Common::PlayerCondition::InNpcEvent );
-  }
+    player.removeCondition( Common::PlayerCondition::InNpcEvent );
 }
 
 void EventMgr::eventStart( Entity::Player& player, uint64_t actorId, uint32_t eventId, Event::EventHandler::EventType eventType, uint8_t eventParam1,
@@ -711,17 +705,10 @@ void EventMgr::eventStart( Entity::Player& player, uint64_t actorId, uint32_t ev
   newEvent->setEventFinishCallback( std::move( callback ) );
   player.addEvent( newEvent );
 
-  // Retail order: EventStart (01CC) is sent BEFORE Condition (01A3)
+  player.setCondition( Common::PlayerCondition::InNpcEvent );
+
   server.queueForPlayer( player.getCharacterId(), std::make_shared< EventStartPacket >( player.getId(), actorId,
                                                                                         eventId, eventType, eventParam1, eventParam2 ) );
-
-  // For retainer bell (720906 / 0x000B000A), retail uses a retainer-specific Condition payload.
-  // We set the condition bit silently here to avoid emitting the generic Condition packet.
-  constexpr uint32_t kRetainerBellEventId = 720906;// 0x000B000A
-  if( eventId == kRetainerBellEventId )
-    player.setConditionSilent( Common::PlayerCondition::InNpcEvent );
-  else
-    player.setCondition( Common::PlayerCondition::InNpcEvent );
 }
 
 void EventMgr::eventActionStart( Entity::Player& player, uint32_t eventId, uint32_t action,

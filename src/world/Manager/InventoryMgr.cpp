@@ -31,8 +31,8 @@ void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainer
 
   auto& server = Common::Service< World::WorldServer >::ref();
 
-  const auto sequence = player.getNextInventorySequence();
-  const auto containerId = container->getId();
+  const uint32_t sequence = player.getNextInventorySequence();
+  const uint16_t containerId = container->getId();
   const auto& itemMap = container->getItemMap();
 
   const bool isCurrencyContainer = containerId == Common::InventoryType::Currency;
@@ -51,43 +51,49 @@ void InventoryMgr::sendInventoryContainer( Entity::Player& player, ItemContainer
     if( isCurrencyOrCrystal )
     {
       auto currencyInfoPacket = makeZonePacket< FFXIVIpcGilItem >( player.getId() );
-      currencyInfoPacket->data().contextId = sequence;
-      currencyInfoPacket->data().item.catalogId = item->getId();
-      currencyInfoPacket->data().item.subquarity = 1;
-      currencyInfoPacket->data().item.stack = item->getStackSize();
-      currencyInfoPacket->data().item.storageId = containerId;
-      currencyInfoPacket->data().item.containerIndex = slotIndex;
+      auto& data = currencyInfoPacket->data();
+      std::memset( &data, 0, sizeof( data ) );
+      data.contextId = sequence;
+      data.item.catalogId = item->getId();
+      data.item.subquarity = 1;
+      data.item.stack = item->getStackSize();
+      data.item.storageId = containerId;
+      data.item.containerIndex = slotIndex;
 
       server.queueForPlayer( player.getCharacterId(), currencyInfoPacket );
       continue;
     }
 
     auto itemInfoPacket = makeZonePacket< FFXIVIpcNormalItem >( player.getId() );
-    itemInfoPacket->data().contextId = sequence;
-    itemInfoPacket->data().item.storageId = containerId;
-    itemInfoPacket->data().item.containerIndex = slotIndex;
-    itemInfoPacket->data().item.stack = item->getStackSize();
-    itemInfoPacket->data().item.catalogId = item->getId();
-    itemInfoPacket->data().item.durability = item->getDurability();
-    //      itemInfoPacket->data().spiritBond = item->getSpiritbond();
-    //      itemInfoPacket->data().reservedFlag = item->getReservedFlag();
-    // todo: not sure if correct flag?
-    itemInfoPacket->data().item.flags = static_cast< uint8_t >( item->isHq() ? 1 : 0 );
-    itemInfoPacket->data().item.stain = static_cast< uint8_t >( item->getStain() );
-    itemInfoPacket->data().item.pattern = item->getPattern();
+    auto& data = itemInfoPacket->data();
+    std::memset( &data, 0, sizeof( data ) );
+    data.contextId = sequence;
+    data.unknown1 = 0;
+    data.item.storageId = containerId;
+    data.item.containerIndex = slotIndex;
+    data.item.stack = item->getStackSize();
+    data.item.catalogId = item->getId();
+    data.item.durability = item->getDurability();
+    data.item.flags = static_cast< uint8_t >( item->isHq() ? 1 : 0 );
+    data.item.stain = static_cast< uint8_t >( item->getStain() );
+    data.item.pattern = item->getPattern();
+    data.item.signatureId = 0;
+    data.item.refine = item->getSpiritbond();
 
     server.queueForPlayer( player.getCharacterId(), itemInfoPacket );
   }
 
   auto itemSizePacket = makeZonePacket< FFXIVIpcItemSize >( player.getId() );
-  itemSizePacket->data().contextId = sequence;
-  itemSizePacket->data().size = itemCount;
-  itemSizePacket->data().storageId = containerId;
+  auto& sizeData = itemSizePacket->data();
+  std::memset( &sizeData, 0, sizeof( sizeData ) );
+  sizeData.contextId = sequence;
+  sizeData.size = itemCount;
+  sizeData.storageId = containerId;
 
   const bool isRetainerContainer = containerId >= Common::InventoryType::RetainerBag0 &&
                                    containerId <= Common::InventoryType::RetainerMarket;
   if( isCurrencyContainer || isRetainerContainer )
-    itemSizePacket->data().unknown1 = player.getCurrency( Common::CurrencyType::Gil );
+    sizeData.unknown1 = player.getCurrency( Common::CurrencyType::Gil );
 
   server.queueForPlayer( player.getCharacterId(), itemSizePacket );
 }
