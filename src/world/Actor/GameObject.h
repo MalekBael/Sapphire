@@ -31,7 +31,8 @@ namespace Sapphire::Entity
     uint32_t m_territoryTypeId{};
     /*! Specific GUId of the zone the actor currently is in */
     uint32_t m_territoryId{};
-
+    /*! PermissionInvisibility used in Create packet */
+    uint8_t m_permissionInvisibility{ 0 };
     /*! list of various actors in range */
     std::set< GameObjectPtr > m_inRangeActor;
     std::set< PlayerPtr > m_inRangePlayers;
@@ -133,6 +134,10 @@ namespace Sapphire::Entity
 
     uint32_t getTerritoryId() const;
     void setTerritoryId( uint32_t territoryTypeId );
+
+    // 0 visible 1 invisible
+    uint8_t getPermissionInvisibility() const;
+    virtual void setPermissionInvisibility( uint8_t permissionInvisibility );
 
     // get the current cell of a region the actor is in
     Common::CellId getCellId() const;

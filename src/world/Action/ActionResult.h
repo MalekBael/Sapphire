@@ -19,6 +19,8 @@ namespace Sapphire::World::Action
     void heal( uint32_t amount, Common::CalcResultType hitType, uint8_t hitEffect, Common::ActionResultFlag flag = Common::ActionResultFlag::None, float aggroModifier = 1.0f );
     void restoreMP( uint32_t amount, Common::ActionResultFlag flag = Common::ActionResultFlag::None );
     void startCombo( uint16_t actionId );
+    void knockback( uint32_t kbExdKey, float offset );
+
     void comboSucceed();
     void applyStatusEffect( uint32_t id, int32_t duration, Entity::Chara& source, uint8_t param, bool applyAggro, bool shouldOverride );
     void applyStatusEffect( uint32_t id, int32_t duration, Entity::Chara& source, uint8_t param, const std::vector< World::Action::StatusModifier >& modifiers,

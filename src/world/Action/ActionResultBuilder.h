@@ -24,6 +24,8 @@ namespace Sapphire::World::Action
 
     void startCombo( Entity::CharaPtr& target, uint16_t actionId );
 
+    void knockback( Entity::CharaPtr& target, uint32_t kbExdKey, float offset );
+
     void comboSucceed( Entity::CharaPtr& target );
 
     void applyStatusEffect( Entity::CharaPtr& target, uint16_t statusId, uint32_t duration, uint8_t param, bool shouldOverride = false );

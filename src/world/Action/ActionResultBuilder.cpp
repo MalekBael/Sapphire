@@ -87,6 +87,13 @@ void ActionResultBuilder::startCombo( Entity::CharaPtr& target, uint16_t actionI
   addResultToActor( target, nextResult );
 }
 
+void ActionResultBuilder::knockback( Entity::CharaPtr& target, uint32_t kbExdKey, float offset )
+{
+  ActionResultPtr nextResult = make_ActionResult( m_sourceChara, target );
+  nextResult->knockback( kbExdKey, offset );
+  addResultToActor( target, nextResult );
+}
+
 void ActionResultBuilder::comboSucceed( Entity::CharaPtr& target )
 {
   ActionResultPtr nextResult = make_ActionResult( m_sourceChara, target );
@@ -149,15 +156,29 @@ void ActionResultBuilder::mount( Entity::CharaPtr& target, uint16_t mountId )
 
 void ActionResultBuilder::sendActionResults( const std::vector< Entity::CharaPtr >& targetList )
 {
-  //Logger::debug( "EffectBuilder result: " );
-  //Logger::debug( "Targets afflicted: {}", targetList.size() );
+  auto inRange = m_sourceChara->getInRangePlayerIds( true );
 
-  do // we want to send at least one packet even nothing is hit so other players can see
+  // we want to send at least one packet even nothing is hit so other players can see
+  if( targetList.empty() )
   {
-    auto packet = createActionResultPacket( targetList );
-    server().queueForPlayers( m_sourceChara->getInRangePlayerIds( true ), packet );
+    std::vector< Entity::CharaPtr > emptyChunk;
+    auto packet = createActionResultPacket( emptyChunk );
+    server().queueForPlayers( inRange, packet );
+    return;
   }
-  while( !m_actorResultsMap.empty() );
+
+  // split into multiple packets if > 16 targets
+  // todo: test this actually works
+  for( size_t i = 0; i < targetList.size(); i += 16 )
+  {
+    auto begin = targetList.begin() + i;
+    auto end = targetList.begin() + std::min( targetList.size(), i + 16 );
+
+    std::vector< Entity::CharaPtr > chunk( begin, end );
+
+    auto packet = createActionResultPacket( chunk );
+    server().queueForPlayers( inRange, packet );
+  }
 }
 
 std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket( const std::vector< Entity::CharaPtr >& targetList )
@@ -196,7 +217,7 @@ std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket
 
       for( auto& result : actorResultList )
       {
-        auto effect = result->getCalcResultParam();
+        const auto& effect = result->getCalcResultParam();
         if( result->getTarget() == m_sourceChara )
           actionResult->addSourceEffect( effect );
         else
@@ -226,7 +247,7 @@ std::shared_ptr< FFXIVPacketBase > ActionResultBuilder::createActionResultPacket
 
       for( auto& result : actorResultList )
       {
-        auto effect = result->getCalcResultParam();
+        const auto& effect = result->getCalcResultParam();
         if( result->getTarget() == m_sourceChara &&
             result->getCalcResultParam().Type != Common::CalcResultType::TypeSetStatusMe )
           actionResult->addSourceEffect( effect );

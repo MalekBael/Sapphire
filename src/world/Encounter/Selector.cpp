@@ -122,9 +122,9 @@ namespace Sapphire
     }
   }
 
-  void Selector::createSnapshot( Entity::CharaPtr pSrc, const std::vector< uint32_t >& exclude )
+  void Selector::createSnapshot( Entity::Chara& src, const std::vector< uint32_t >& exclude )
   {
-    m_snapshot.createSnapshot( pSrc, pSrc->getInRangeActors(), m_count, m_fillWithRandom, m_filters, exclude );
+    m_snapshot.createSnapshot( src, src.getInRangeActors(), m_count, m_fillWithRandom, m_filters, exclude );
   }
 
   const World::AI::Snapshot::Results& Selector::getResults()

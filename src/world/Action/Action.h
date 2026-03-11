@@ -39,6 +39,10 @@ namespace Sapphire::World::Action
     Entity::CharaPtr getSourceChara() const;
 
     bool isInterrupted() const;
+
+    int getInterruptTickCount() const;
+    void addInterruptTickCount();
+
     Common::ActionInterruptType getInterruptType() const;
     void setInterrupted( Common::ActionInterruptType type );
 
@@ -218,6 +222,7 @@ namespace Sapphire::World::Action
     bool m_enableGenericHandler{};
 
     Common::ActionInterruptType m_interruptType;
+    int m_interruptTickCount{ -1 };
 
     std::shared_ptr< Excel::ExcelStruct< Excel::Action > > m_actionData;
 

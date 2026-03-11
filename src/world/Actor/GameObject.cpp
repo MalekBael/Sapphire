@@ -363,6 +363,16 @@ void GameObject::setTerritoryId( uint32_t territoryId )
   m_territoryId = territoryId;
 }
 
+uint8_t GameObject::getPermissionInvisibility() const
+{
+  return m_permissionInvisibility;
+}
+
+void GameObject::setPermissionInvisibility( uint8_t permissionInvisibility )
+{
+  m_permissionInvisibility = permissionInvisibility;
+}
+
 /*!
 Get the current cellId of a region the actor is in
 

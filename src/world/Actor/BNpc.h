@@ -2,19 +2,18 @@
 
 #include <Common.h>
 
+#include "Chara.h"
 #include "Forwards.h"
 #include "ForwardsZone.h"
-#include "Chara.h"
 #include "Npc.h"
-#include <set>
 #include <map>
 #include <queue>
+#include <set>
 
 namespace Sapphire::Entity
 {
 
-  struct HateListEntry
-  {
+  struct HateListEntry {
     uint32_t m_hateAmount;
     CharaPtr m_pChara;
   };
@@ -32,32 +31,31 @@ namespace Sapphire::Entity
 
   enum BNpcFlag
   {
-    Immobile           = 0x001,
-    TurningDisabled    = 0x002,
-    Invincible         = 0x004,
-    StayAlive          = 0x008,
-    NoDeaggro          = 0x010,
-    Untargetable       = 0x020,
+    Immobile = 0x001,
+    TurningDisabled = 0x002,
+    Invincible = 0x004,
+    StayAlive = 0x008,
+    NoDeaggro = 0x010,
+    Untargetable = 0x020,
     AutoAttackDisabled = 0x040,
-    Invisible          = 0x080,
-    NoRoam             = 0x100,
+    Invisible = 0x080,
+    NoRoam = 0x100,
 
-    Intermission       = 0x77 // for transition phases to ensure boss only moves/acts when scripted
+    Intermission = 0x77// for transition phases to ensure boss only moves/acts when scripted
   };
 
   const std::array< uint32_t, 50 > BnpcBaseHp =
-  {
-    44,51, 59, 68, 91,
-    108, 126, 143, 160, 192,
-    217, 243, 268, 293, 319,
-    344, 369, 394, 420, 413,
-    458, 493, 532, 568, 594,
-    641, 677,714, 750, 780,
-    887, 965, 1055, 1142, 1220,
-    1306, 1409, 1515, 1587, 1601,
-    1703, 1789, 1872, 2008, 2112,
-    2180, 2314, 2383, 2501, 2589
-  };
+          {
+                  44, 51, 59, 68, 91,
+                  108, 126, 143, 160, 192,
+                  217, 243, 268, 293, 319,
+                  344, 369, 394, 420, 413,
+                  458, 493, 532, 568, 594,
+                  641, 677, 714, 750, 780,
+                  887, 965, 1055, 1142, 1220,
+                  1306, 1409, 1515, 1587, 1601,
+                  1703, 1789, 1872, 2008, 2112,
+                  2180, 2314, 2383, 2501, 2589 };
 
   /*!
   \class BNpc
@@ -99,6 +97,11 @@ namespace Sapphire::Entity
     void setTriggerOwnerId( uint32_t triggerOwnerId );
 
     float getNaviTargetReachedDistance() const;
+    uint64_t getLastNaviMoveRequest() const;
+    bool getNaviIsPathing() const;
+    void setNaviIsPathing( bool pathing );
+    Common::FFXIVARR_POSITION3 getNaviLastMoveTarget() const;
+    Common::FFXIVARR_POSITION3 getNaviMoveTarget() const;
 
     // return true if it reached the position
     bool moveTo( const Common::FFXIVARR_POSITION3& pos );
@@ -124,7 +127,7 @@ namespace Sapphire::Entity
     bool hateListHasActor( const CharaPtr& pChara );
     std::vector< CharaPtr > getHateList() override;
     void hateListUpdatePlayers();
-    
+
     void aggro( const CharaPtr& pChara );
     void deaggro( const CharaPtr& pChara );
     void notifyPlayerDeaggro( const CharaPtr& pChara );
@@ -154,6 +157,7 @@ namespace Sapphire::Entity
     uint32_t getLevelId() const;
     uint32_t getBoundInstanceId() const;
 
+    uint32_t getFlags() const;
     bool hasFlag( uint32_t flag ) const;
     void setFlag( uint32_t flags );
 
@@ -186,6 +190,8 @@ namespace Sapphire::Entity
 
     const Common::FFXIVARR_POSITION3& getRoamTargetPos() const;
     const Common::FFXIVARR_POSITION3& getSpawnPos() const;
+    float getSpawnRot() const;
+
     void initFsm();
 
     bool getCanSwapTarget();
@@ -217,6 +223,9 @@ namespace Sapphire::Entity
     Common::BNpcType m_bnpcType;
 
     float m_naviTargetReachedDistance;
+    uint64_t m_naviLastMoveRequest{ 0 };
+    bool m_naviIsPathing{ false };
+    Common::FFXIVARR_POSITION3 m_naviLastTarget{ 0 };
 
     std::shared_ptr< Common::BNPCData > m_pInfo;
 
@@ -225,6 +234,7 @@ namespace Sapphire::Entity
     bool m_roamTargetReached{ false };
 
     Common::FFXIVARR_POSITION3 m_spawnPos;
+    float m_spawnRot;
     Common::FFXIVARR_POSITION3 m_roamPos;
     Common::FFXIVARR_POSITION3 m_lastPos;
     float m_lastRot;
@@ -243,8 +253,6 @@ namespace Sapphire::Entity
     World::AI::GambitPackPtr m_pGambitPack;
 
     std::shared_ptr< World::AI::Fsm::StateMachine > m_fsm;
-
-
   };
 
-}
+}// namespace Sapphire::Entity

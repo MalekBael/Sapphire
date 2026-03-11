@@ -60,7 +60,6 @@ float Util::calcAngFrom( float x, float y, float x1, float y1 )
     return 0.0f;
 
   return atan2( dy, dx );
-
 }
 
 uint16_t Util::floatToUInt16( float val )
@@ -70,20 +69,20 @@ uint16_t Util::floatToUInt16( float val )
 
 uint16_t Util::floatToUInt16Rot( float val )
 {
-  return static_cast< uint16_t >( ( ( ( val + 3.1415927f ) * 100.f ) * 103.30219106f ) );
+  return static_cast< uint16_t >( roundf( ( val + PI ) * ( 32768.0f / PI ) ) );
 }
 
 uint8_t Util::floatToUInt8Rot( float val )
 {
-  return static_cast< uint8_t >( 0x80 * ( ( val + PI ) ) / PI );
+  return static_cast< uint8_t >( roundf( ( val + PI ) * ( 128.0f / PI ) ) );
 }
 
 float Util::radiansToDegrees( float val )
 {
-  return  val * ( 180 / PI );
+  return val * ( 180 / PI );
 }
 
-float Util::degreesToRadians(float val)
+float Util::degreesToRadians( float val )
 {
   return val * ( PI / 180 );
 }
@@ -133,7 +132,7 @@ FFXIVARR_POSITION3 Util::transform( const FFXIVARR_POSITION3& vector, const Matr
   return dst;
 }
 
-float Util::eulerToDirection( const FFXIVARR_POSITION3 &euler )
+float Util::eulerToDirection( const FFXIVARR_POSITION3& euler )
 {
   Matrix33 matrix;
 
@@ -144,24 +143,24 @@ float Util::eulerToDirection( const FFXIVARR_POSITION3 &euler )
   auto sinX = sinf( euler.x );
   auto cosX = cosf( euler.x );
 
-  matrix.m[0][0] = cosZ * cosY;
-  matrix.m[0][1] = sinZ * cosX;
-  matrix.m[0][2] = sinZ * sinX + ( -cosZ * sinY ) * cosX;
+  matrix.m[ 0 ][ 0 ] = cosZ * cosY;
+  matrix.m[ 0 ][ 1 ] = sinZ * cosX;
+  matrix.m[ 0 ][ 2 ] = sinZ * sinX + ( -cosZ * sinY ) * cosX;
 
-  matrix.m[1][0] = -sinZ * cosY;
-  matrix.m[1][1] = cosZ * cosX + ( -sinZ * sinY * sinX );
-  matrix.m[1][2] = cosZ * sinX + sinZ * sinY * cosX;
+  matrix.m[ 1 ][ 0 ] = -sinZ * cosY;
+  matrix.m[ 1 ][ 1 ] = cosZ * cosX + ( -sinZ * sinY * sinX );
+  matrix.m[ 1 ][ 2 ] = cosZ * sinX + sinZ * sinY * cosX;
 
-  matrix.m[2][0] = sinY;
-  matrix.m[2][1] = -cosY * sinX;
-  matrix.m[2][2] = cosY * cosX;
+  matrix.m[ 2 ][ 0 ] = sinY;
+  matrix.m[ 2 ][ 1 ] = -cosY * sinX;
+  matrix.m[ 2 ][ 2 ] = cosY * cosX;
 
   FFXIVARR_POSITION3 AXIS_Z{ 0.0f, 0.0f, 1.0f };
   auto result = transform( AXIS_Z, matrix );
 
   auto squared = result.z * result.z + result.x * result.x;
-  auto v1{0.0f};
-  auto v2{0.0f};
+  auto v1{ 0.0f };
+  auto v2{ 0.0f };
 
   if( squared > 0.00000011920929f )
   {
@@ -185,11 +184,13 @@ float Util::trunc( float value, uint8_t digitsToRemain )
   return std::floor( value * factor ) / factor;
 }
 
-float Util::length( const FFXIVARR_POSITION3& vec ) {
+float Util::length( const FFXIVARR_POSITION3& vec )
+{
   return std::sqrt( vec.x * vec.x + vec.y * vec.y + vec.z * vec.z );
 }
 
-FFXIVARR_POSITION3 Util::normalize( const FFXIVARR_POSITION3& vec ) {
+FFXIVARR_POSITION3 Util::normalize( const FFXIVARR_POSITION3& vec )
+{
   float len = length( vec );
   if( len == 0 ) return FFXIVARR_POSITION3();
   return FFXIVARR_POSITION3{ vec.x / len, vec.y / len, vec.z / len };

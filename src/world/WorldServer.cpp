@@ -169,6 +169,7 @@ bool WorldServer::loadSettings( int32_t argc, char *argv[ ] )
   m_config.scripts.cachePath = configMgr.getValue< std::string >( "Scripts", "CachePath", "./cache/" );
 
   m_config.navigation.meshPath = configMgr.getValue< std::string >( "Navigation", "MeshPath", "navi" );
+  m_config.map.eagerENpcEObjCache = configMgr.getValue( "Map", "EagerENpcEObjCache", true );
 
   m_config.network.disconnectTimeout = configMgr.getValue< uint16_t >( "Network", "DisconnectTimeout", 20 );
   m_config.network.listenIp = configMgr.getValue< std::string >( "Network", "ListenIp", "0.0.0.0" );
@@ -192,11 +193,19 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
 {
   using namespace Sapphire;
 
-  auto start = Common::Util::getTimeMs();
+  const auto start = Common::Util::getTimeMs();
+  auto stepStart = start;
+  auto logInitStep = [ & ]( const char* stepName )
+  {
+    const auto now = Common::Util::getTimeMs();
+    Logger::info( "Init step: {} took {}ms (total {}ms)", stepName, now - stepStart, now - start );
+    stepStart = now;
+  };
 
   // Logger::init( "log/world" );
 
   printBanner();
+  logInitStep( "printBanner" );
 
   Common::Service< Common::ConfigMgr >::set();
   if( !loadSettings( argc, argv ) )
@@ -204,6 +213,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     Logger::fatal( "Unable to load settings!" );
     return;
   }
+  logInitStep( "loadSettings" );
 
   Logger::setLogLevel( m_config.global.general.logLevel );
 
@@ -234,6 +244,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Data::ExdData >::set( pExdData );
+  logInitStep( "ExdData init + set" );
 
   auto pDb = std::make_shared< Db::DbWorkerPool< Db::ZoneDbConnection > >();
   Sapphire::Db::DbLoader loader;
@@ -244,9 +255,11 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::set( pDb );
+  logInitStep( "Database init + set" );
 
   auto pRNGMgr = std::make_shared< Common::Random::RNGMgr >();
   Common::Service< Common::Random::RNGMgr >::set( pRNGMgr );
+  logInitStep( "RNGMgr set" );
 
   auto pPlayerMgr = std::make_shared< Manager::PlayerMgr >();
   Logger::info( "Loading all players" );
@@ -255,9 +268,11 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     Logger::fatal( "Failed to load players!" );
     return;
   }
+  logInitStep( "PlayerMgr loadPlayers" );
 
   auto pChatChannelMgr = std::make_shared< Manager::ChatChannelMgr >();
   Common::Service< Manager::ChatChannelMgr >::set( pChatChannelMgr );
+  logInitStep( "ChatChannelMgr set" );
 
   auto pLsMgr = std::make_shared< Manager::LinkshellMgr >();
 
@@ -268,6 +283,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Manager::LinkshellMgr >::set( pLsMgr );
+  logInitStep( "LinkshellMgr load + set" );
 
   auto pFcMgr = std::make_shared< Manager::FreeCompanyMgr >();
   Logger::info( "FreeCompanyMgr: Caching free companies" );
@@ -277,6 +293,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Manager::FreeCompanyMgr >::set( pFcMgr );
+  logInitStep( "FreeCompanyMgr load + set" );
 
   auto pAchvMgr = std::make_shared< Manager::AchievementMgr >();
 
@@ -287,6 +304,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Manager::AchievementMgr >::set( pAchvMgr );
+  logInitStep( "AchievementMgr cache + set" );
 
   auto pLootTableMgr = std::make_shared< Manager::LootTableMgr >();
 
@@ -297,10 +315,14 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Manager::LootTableMgr >::set( pLootTableMgr );
+  logInitStep( "LootTableMgr cache + set" );
 
   Logger::info( "Setting up InstanceObjectCache" );
+  auto instanceObjectCacheStart = Common::Util::getTimeMs();
   auto pInstanceObjCache = std::make_shared< Sapphire::InstanceObjectCache >();
   Common::Service< Sapphire::InstanceObjectCache >::set( pInstanceObjCache );
+  Logger::info( "InstanceObjectCache ready in {}ms", Common::Util::getTimeMs() - instanceObjectCacheStart );
+  logInitStep( "InstanceObjectCache create + set" );
 
   auto pActionMgr = std::make_shared< Manager::ActionMgr >();
 
@@ -317,22 +339,28 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Manager::ActionMgr >::set( pActionMgr );
+  logInitStep( "Action LUT reload + ActionMgr set" );
 
-  auto pMapMgr = std::make_shared< Manager::MapMgr >();
+  auto pMapMgr = std::make_shared< Manager::MapMgr >( m_config.map.eagerENpcEObjCache );
 
   Logger::info( "MapMgr: Caching quests" );
+  auto mapMgrCacheStart = Common::Util::getTimeMs();
   if( !pMapMgr->loadQuests() )
   {
     Logger::fatal( "Unable to cache quests!" );
     return;
   }
+  Logger::info( "MapMgr: Caching quests completed in {}ms", Common::Util::getTimeMs() - mapMgrCacheStart );
   Common::Service< Manager::MapMgr >::set( pMapMgr );
+  logInitStep( "MapMgr cache + set" );
 
   auto& cfg = getConfig();
   auto pNaviMgr = std::make_shared< Common::Navi::NaviMgr >( cfg.navigation.meshPath );
   Common::Service< Common::Navi::NaviMgr >::set( pNaviMgr );
+  logInitStep( "NaviMgr set" );
 
   Logger::info( "TerritoryMgr: Setting up zones" );
+  auto territoryInitStart = Common::Util::getTimeMs();
   auto pTeriMgr = std::make_shared< Manager::TerritoryMgr >();
   auto pHousingMgr = std::make_shared< Manager::HousingMgr >();
   auto warpMgr = std::make_shared< Manager::WarpMgr >();
@@ -347,17 +375,25 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     return;
   }
   Common::Service< Scripting::ScriptMgr >::set( pScript );
+  logInitStep( "ScriptMgr init + set" );
 
   if( !pHousingMgr->init() )
   {
     Logger::fatal( "Failed to setup housing!" );
     return;
   }
+  Logger::info( "HousingMgr: setup completed in {}ms", Common::Util::getTimeMs() - territoryInitStart );
+  logInitStep( "HousingMgr init" );
+
+  auto territoryMgrInitStart = Common::Util::getTimeMs();
   if( !pTeriMgr->init() )
   {
     Logger::fatal( "Failed to setup zones!" );
     return;
   }
+  Logger::info( "TerritoryMgr: setup completed in {}ms", Common::Util::getTimeMs() - territoryMgrInitStart );
+  Logger::info( "TerritoryMgr + HousingMgr setup completed in {}ms", Common::Util::getTimeMs() - territoryInitStart );
+  logInitStep( "TerritoryMgr init" );
 
   auto pMarketMgr = std::make_shared< Manager::MarketMgr >();
   Common::Service< Manager::MarketMgr >::set( pMarketMgr );
@@ -367,6 +403,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
     Logger::fatal( "Failed to setup market manager!" );
     return;
   }
+  logInitStep( "MarketMgr init" );
 
 
   m_hive = std::make_shared< Network::Hive >();
@@ -380,6 +417,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
   }
 
   m_threadList.emplace_back( std::thread( std::bind( &Network::Hive::run, m_hive.get() ) ) );
+  logInitStep( "Network hive setup + run thread" );
 
   auto pDebugCom = std::make_shared< DebugCommandMgr >();
   auto pShopMgr = std::make_shared< Manager::ShopMgr >();
@@ -405,6 +443,7 @@ void WorldServer::init( int32_t argc, char *argv[ ] )
   Common::Service< Manager::BlacklistMgr >::set( pBlacklistMgr );
   Common::Service< ContentFinder >::set( contentFinder );
   Common::Service< Manager::TaskMgr >::set( taskMgr );
+  logInitStep( "Remaining managers set" );
 
   auto pRetainerMgr = std::make_shared< Manager::RetainerMgr >();
   Common::Service< Manager::RetainerMgr >::set( pRetainerMgr );

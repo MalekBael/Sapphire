@@ -268,7 +268,7 @@ namespace Sapphire::World::AI
   public:
     Snapshot() {}
 
-    void createSnapshot( Entity::CharaPtr pSrc, const std::set< Entity::GameObjectPtr >& inRange,
+    void createSnapshot( Entity::Chara& src, const std::set< Entity::GameObjectPtr >& inRange,
                          uint32_t count, bool fillWithRandom,
                          const std::vector< TargetSelectFilterPtr >& filters,
                          const std::vector< uint32_t >& exclude = {} );
