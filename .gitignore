@@ -151,3 +151,4 @@ config/*.ini
 
 imgui.ini
 .DS_Store
+*.md
