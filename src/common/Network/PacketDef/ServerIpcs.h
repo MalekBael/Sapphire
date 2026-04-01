@@ -13,19 +13,19 @@ namespace Sapphire::Network::Packets
     */
     enum ServerLobbyIpcType : uint16_t
     {
-      SyncReply = 0x0001,
-      NackReply = 0x0002,
-      LoginReply = 0x000C,
-      ServiceLoginReply = 0x000D,
-      CharaMakeReply = 0x000E,
-      GameLoginReply = 0x000F,
-      UpdateRetainerSlotsReply = 0x0010,
-      DistWorldInfo = 0x0015,
-      XiCharacterInfo = 0x0016,
-      DistRetainerInfo = 0x0017,
+      SyncReply = 0x0001,                    // unmapped (no FFXIVOpcodes equivalent)
+      NackReply = 0x0002,                    // FFXIVOpcodes: LobbyError
+      LoginReply = 0x000C,                   // FFXIVOpcodes: LobbyServiceAccountList
+      ServiceLoginReply = 0x000D,            // FFXIVOpcodes: LobbyCharList
+      CharaMakeReply = 0x000E,               // FFXIVOpcodes: LobbyCharCreate
+      GameLoginReply = 0x000F,               // FFXIVOpcodes: LobbyEnterWorld
+      UpdateRetainerSlotsReply = 0x0010,     // unmapped (no FFXIVOpcodes equivalent)
+      DistWorldInfo = 0x0015,                // FFXIVOpcodes: LobbyServerList
+      XiCharacterInfo = 0x0016,             // unmapped (no FFXIVOpcodes equivalent)
+      DistRetainerInfo = 0x0017,             // FFXIVOpcodes: LobbyRetainerList
 
-      DebugNullRepl = 0x1F4,
-      DebugLoginRepl = 0x1F5,
+      DebugNullRepl = 0x1F4,                 // unmapped (no FFXIVOpcodes equivalent)
+      DebugLoginRepl = 0x1F5,                // unmapped (no FFXIVOpcodes equivalent)
 
     };
   }
@@ -47,8 +47,8 @@ namespace Sapphire::Network::Packets
     MoveTerritory = 0x006A,
     MoveInstance = 0x006B,
 
-    SetPSNId = 0x0073,
-    SetBillingTime = 0x0075,
+    //SetPSNId = 0x0073,                    // unmapped; value 0x0073 reassigned to EventPlay32 (FFXIVOpcodes, updated 7.45h2)
+    SetBillingTime = 0x0075,               // unmapped (no FFXIVOpcodes equivalent)
 
     AllienceInviteResult = 0x0078,
     AllienceInviteReplyResult = 0x0079,
@@ -154,14 +154,14 @@ namespace Sapphire::Network::Packets
 
     Create = 0x0190,
     Delete = 0x0191,
-    ActorMove = 0x0192,
+    ActorMove = 0x02B0,                    // FFXIVOpcodes: ActorMove, updated 7.45h2
     Transfer = 0x193,
     Warp = 0x0194,
 
     RequestCast = 0x196,
 
     UpdateParty = 0x199,
-    InitZone = 0x019A,
+    InitZone = 0x02F2,                     // FFXIVOpcodes: InitZone, updated 7.45h2
     HateList = 0x019B,
     HaterList = 0x019C,
     CreateObject = 0x019D,
@@ -201,15 +201,15 @@ namespace Sapphire::Network::Packets
     CreateTreasure = 0x1BF,
     TreasureFadeOut = 0x1C0,
     MonsterNoteCategory = 0x01C1,
-    EventPlayHeader = 0x1C2,
-    EventPlay2 = 0x1C3,
-    EventPlay4 = 0x1C4,
-    EventPlay8 = 0x1C5,
-    EventPlay16 = 0x1C6,
-    EventPlay32 = 0x1C7,
-    EventPlay64 = 0x1C8,
-    EventPlay128 = 0x1C9,
-    EventPlay255 = 0x1CA,
+    EventPlayHeader = 0x1C2,               // unmapped; FFXIVOpcodes equivalent may be EventPlay = 0x02FE (updated 7.45h2)
+    EventPlay2 = 0x1C3,                    // unmapped; FFXIVOpcodes equivalent may be EventPlay = 0x02FE (updated 7.45h2)
+    EventPlay4 = 0x024C,                   // FFXIVOpcodes: EventPlay4, updated 7.45h2
+    EventPlay8 = 0x0294,                   // FFXIVOpcodes: EventPlay8, updated 7.45h2
+    EventPlay16 = 0x0340,                  // FFXIVOpcodes: EventPlay16, updated 7.45h2
+    EventPlay32 = 0x0073,                  // FFXIVOpcodes: EventPlay32, updated 7.45h2
+    EventPlay64 = 0x03C8,                  // FFXIVOpcodes: EventPlay64, updated 7.45h2
+    EventPlay128 = 0x0331,                 // FFXIVOpcodes: EventPlay128, updated 7.45h2
+    EventPlay255 = 0x016C,                 // FFXIVOpcodes: EventPlay255, updated 7.45h2
     DebugActorData = 0x1CB,
     PushEventState = 0x1CC,
     PopEventState = 0x1CD,
@@ -303,7 +303,7 @@ namespace Sapphire::Network::Packets
     GMOrder4 = 0x291,
     GMOrder8 = 0x292,
     GMOrder16 = 0x293,
-    GMOrder32 = 0x294,
+    //GMOrder32 = 0x294,                   // unmapped; value 0x0294 reassigned to EventPlay8 (FFXIVOpcodes, updated 7.45h2)
 
     InspectQuests = 0x29E,
     InspectGuildleves = 0x29F,
@@ -347,7 +347,7 @@ namespace Sapphire::Network::Packets
 
     YardObject = 0x2F0,
     Interior = 0x2F1,
-    HousingAuction = 0x2F2,
+    //HousingAuction = 0x2F2,              // unmapped; value 0x02F2 reassigned to InitZone (FFXIVOpcodes, updated 7.45h2)
     HousingProfile = 0x2F3,
     HousingHouseName = 0x2F4,
     HousingGreeting = 0x2F5,
@@ -403,22 +403,24 @@ namespace Sapphire::Network::Packets
   /// Chat Connection IPC Codes
   /**
   * Server IPC Chat Type Codes.
+  * Note: FFXIVOpcodes.Global.ServerChatIpcType has no active entries (all entries are commented out).
+  * The entries below are Sapphire-internal and have no current FFXIVOpcodes equivalents.
   */
   enum ServerChatIpcType : uint16_t
   {
     //Sync = 0x01, TODO: Fix this cuz name bullshit...
-    LoginReply = 0x02,
+    LoginReply = 0x02,                     // unmapped (no FFXIVOpcodes equivalent)
 
-    ChatFrom = 0x64,
-    Chat = 0x65,
-    TellNotFound = 0x66,
-    RecvBusyStatus = 0x67,
-    GetChannelMemberListResult = 0x68,
-    GetChannelListResult = 0x69,
-    RecvFinderStatus = 0x6A,
+    ChatFrom = 0x64,                       // unmapped (no FFXIVOpcodes equivalent)
+    Chat = 0x65,                           // unmapped (no FFXIVOpcodes equivalent)
+    TellNotFound = 0x66,                   // unmapped (no FFXIVOpcodes equivalent)
+    RecvBusyStatus = 0x67,                 // unmapped (no FFXIVOpcodes equivalent)
+    GetChannelMemberListResult = 0x68,     // unmapped (no FFXIVOpcodes equivalent)
+    GetChannelListResult = 0x69,           // unmapped (no FFXIVOpcodes equivalent)
+    RecvFinderStatus = 0x6A,               // unmapped (no FFXIVOpcodes equivalent)
 
-    JoinChannelResult = 0xC8,
-    LeaveChannelResult = 0xC9
+    JoinChannelResult = 0xC8,              // unmapped (no FFXIVOpcodes equivalent)
+    LeaveChannelResult = 0xC9              // unmapped (no FFXIVOpcodes equivalent)
     //FreeCompanyEvent = 0x012C, // not in 2.3
   };
 
